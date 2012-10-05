@@ -5,6 +5,7 @@
 #include "GUA_OM.h"
 
 Tri_Mesh *mesh;
+static float fov = 0.7f;
 namespace OpenMesh_Course {
 
 	using namespace System;
@@ -23,6 +24,7 @@ namespace OpenMesh_Course {
 		Form1(void)
 		{
 			InitializeComponent();
+
 			mesh = NULL ;
 			//
 			//TODO: Add the constructor code here
@@ -55,6 +57,10 @@ namespace OpenMesh_Course {
 	private: System::Windows::Forms::RadioButton^  rbSelectEdge;
 
 	private: System::Windows::Forms::RadioButton^  rbSelectVertex;
+	private: System::Windows::Forms::GroupBox^  gbShowType;
+	private: System::Windows::Forms::CheckBox^  cbAxis;
+	private: System::Windows::Forms::CheckBox^  cbWireframe;
+	private: System::Windows::Forms::CheckBox^  cbModel;
 
 
 
@@ -75,15 +81,19 @@ namespace OpenMesh_Course {
 		/// </summary>
 		void InitializeComponent(void)
 		{
-			HKOGLPanel::HKCCameraProp^  hkcCameraProp6 = (gcnew HKOGLPanel::HKCCameraProp());
-			HKOGLPanel::HKCDisplayProp^  hkcDisplayProp6 = (gcnew HKOGLPanel::HKCDisplayProp());
-			HKOGLPanel::HKCPixelFormat^  hkcPixelFormat6 = (gcnew HKOGLPanel::HKCPixelFormat());
-			HKOGLPanel::HKCTrackballProp^  hkcTrackballProp6 = (gcnew HKOGLPanel::HKCTrackballProp());
-			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig16 = (gcnew HKOGLPanel::HKCTrackballTrig());
-			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig17 = (gcnew HKOGLPanel::HKCTrackballTrig());
-			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig18 = (gcnew HKOGLPanel::HKCTrackballTrig());
+			HKOGLPanel::HKCCameraProp^  hkcCameraProp1 = (gcnew HKOGLPanel::HKCCameraProp());
+			HKOGLPanel::HKCDisplayProp^  hkcDisplayProp1 = (gcnew HKOGLPanel::HKCDisplayProp());
+			HKOGLPanel::HKCPixelFormat^  hkcPixelFormat1 = (gcnew HKOGLPanel::HKCPixelFormat());
+			HKOGLPanel::HKCTrackballProp^  hkcTrackballProp1 = (gcnew HKOGLPanel::HKCTrackballProp());
+			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig1 = (gcnew HKOGLPanel::HKCTrackballTrig());
+			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig2 = (gcnew HKOGLPanel::HKCTrackballTrig());
+			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig3 = (gcnew HKOGLPanel::HKCTrackballTrig());
 			this->hkoglPanelControl1 = (gcnew HKOGLPanel::HKOGLPanelControl());
 			this->gpCommand = (gcnew System::Windows::Forms::GroupBox());
+			this->gbShowType = (gcnew System::Windows::Forms::GroupBox());
+			this->cbAxis = (gcnew System::Windows::Forms::CheckBox());
+			this->cbWireframe = (gcnew System::Windows::Forms::CheckBox());
+			this->cbModel = (gcnew System::Windows::Forms::CheckBox());
 			this->gpSelectType = (gcnew System::Windows::Forms::GroupBox());
 			this->rbSelectFace = (gcnew System::Windows::Forms::RadioButton());
 			this->rbSelectEdge = (gcnew System::Windows::Forms::RadioButton());
@@ -91,58 +101,60 @@ namespace OpenMesh_Course {
 			this->btnLoadMesh = (gcnew System::Windows::Forms::Button());
 			this->openMeshFileDialog = (gcnew System::Windows::Forms::OpenFileDialog());
 			this->gpCommand->SuspendLayout();
+			this->gbShowType->SuspendLayout();
 			this->gpSelectType->SuspendLayout();
 			this->SuspendLayout();
 			// 
 			// hkoglPanelControl1
 			// 
-			hkcCameraProp6->Enabled = true;
-			hkcCameraProp6->Far = 1000;
-			hkcCameraProp6->Fov = 45;
-			hkcCameraProp6->Near = 0.001;
-			hkcCameraProp6->Type = HKOGLPanel::HKCCameraProp::CAMERATYPE::PERSPECTIVE;
-			hkcCameraProp6->Zoom = 1;
-			this->hkoglPanelControl1->Camera_Property = hkcCameraProp6;
-			hkcDisplayProp6->Back_Color = System::Drawing::Color::White;
-			hkcDisplayProp6->Grid_Axis = System::Drawing::Color::Black;
-			hkcDisplayProp6->Grid_Draw = true;
-			hkcDisplayProp6->Grid_Line = System::Drawing::Color::DimGray;
-			this->hkoglPanelControl1->Display_Property = hkcDisplayProp6;
+			hkcCameraProp1->Enabled = true;
+			hkcCameraProp1->Far = 1000;
+			hkcCameraProp1->Fov = 45;
+			hkcCameraProp1->Near = 0.001;
+			hkcCameraProp1->Type = HKOGLPanel::HKCCameraProp::CAMERATYPE::PERSPECTIVE;
+			hkcCameraProp1->Zoom = 1;
+			this->hkoglPanelControl1->Camera_Property = hkcCameraProp1;
+			hkcDisplayProp1->Back_Color = System::Drawing::Color::White;
+			hkcDisplayProp1->Grid_Axis = System::Drawing::Color::Black;
+			hkcDisplayProp1->Grid_Draw = true;
+			hkcDisplayProp1->Grid_Line = System::Drawing::Color::DimGray;
+			this->hkoglPanelControl1->Display_Property = hkcDisplayProp1;
 			this->hkoglPanelControl1->Dock = System::Windows::Forms::DockStyle::Left;
 			this->hkoglPanelControl1->Empty_Panel = false;
 			this->hkoglPanelControl1->Location = System::Drawing::Point(0, 0);
 			this->hkoglPanelControl1->Name = L"hkoglPanelControl1";
-			hkcPixelFormat6->Accumu_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
-			hkcPixelFormat6->Alpha_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
-			hkcPixelFormat6->Stencil_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
-			this->hkoglPanelControl1->Pixel_Format = hkcPixelFormat6;
+			hkcPixelFormat1->Accumu_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
+			hkcPixelFormat1->Alpha_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
+			hkcPixelFormat1->Stencil_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
+			this->hkoglPanelControl1->Pixel_Format = hkcPixelFormat1;
 			this->hkoglPanelControl1->Size = System::Drawing::Size(800, 835);
 			this->hkoglPanelControl1->TabIndex = 0;
-			hkcTrackballProp6->Const_Res = false;
-			hkcTrackballProp6->Delta_Res = 500;
-			hkcTrackballProp6->Enabled = true;
-			hkcTrackballProp6->Move_Res = 1000;
-			hkcTrackballTrig16->Key_Down = false;
-			hkcTrackballTrig16->Keyboard = System::Windows::Forms::Keys::None;
-			hkcTrackballTrig16->Mouse = System::Windows::Forms::MouseButtons::Right;
-			hkcTrackballTrig16->Mouse_Down = false;
-			hkcTrackballProp6->Move_Trigger = hkcTrackballTrig16;
-			hkcTrackballTrig17->Key_Down = false;
-			hkcTrackballTrig17->Keyboard = System::Windows::Forms::Keys::None;
-			hkcTrackballTrig17->Mouse = System::Windows::Forms::MouseButtons::Left;
-			hkcTrackballTrig17->Mouse_Down = false;
-			hkcTrackballProp6->Rotate_Trigger = hkcTrackballTrig17;
-			hkcTrackballProp6->Zoom_Res = 100;
-			hkcTrackballTrig18->Key_Down = false;
-			hkcTrackballTrig18->Keyboard = System::Windows::Forms::Keys::None;
-			hkcTrackballTrig18->Mouse = System::Windows::Forms::MouseButtons::Middle;
-			hkcTrackballTrig18->Mouse_Down = false;
-			hkcTrackballProp6->Zoom_Trigger = hkcTrackballTrig18;
-			this->hkoglPanelControl1->Trackball_Property = hkcTrackballProp6;
+			hkcTrackballProp1->Const_Res = false;
+			hkcTrackballProp1->Delta_Res = 500;
+			hkcTrackballProp1->Enabled = true;
+			hkcTrackballProp1->Move_Res = 1000;
+			hkcTrackballTrig1->Key_Down = false;
+			hkcTrackballTrig1->Keyboard = System::Windows::Forms::Keys::None;
+			hkcTrackballTrig1->Mouse = System::Windows::Forms::MouseButtons::Right;
+			hkcTrackballTrig1->Mouse_Down = false;
+			hkcTrackballProp1->Move_Trigger = hkcTrackballTrig1;
+			hkcTrackballTrig2->Key_Down = false;
+			hkcTrackballTrig2->Keyboard = System::Windows::Forms::Keys::None;
+			hkcTrackballTrig2->Mouse = System::Windows::Forms::MouseButtons::Left;
+			hkcTrackballTrig2->Mouse_Down = false;
+			hkcTrackballProp1->Rotate_Trigger = hkcTrackballTrig2;
+			hkcTrackballProp1->Zoom_Res = 100;
+			hkcTrackballTrig3->Key_Down = false;
+			hkcTrackballTrig3->Keyboard = System::Windows::Forms::Keys::None;
+			hkcTrackballTrig3->Mouse = System::Windows::Forms::MouseButtons::Middle;
+			hkcTrackballTrig3->Mouse_Down = false;
+			hkcTrackballProp1->Zoom_Trigger = hkcTrackballTrig3;
+			this->hkoglPanelControl1->Trackball_Property = hkcTrackballProp1;
 			this->hkoglPanelControl1->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &Form1::hkoglPanelControl1_Paint);
 			// 
 			// gpCommand
 			// 
+			this->gpCommand->Controls->Add(this->gbShowType);
 			this->gpCommand->Controls->Add(this->gpSelectType);
 			this->gpCommand->Controls->Add(this->btnLoadMesh);
 			this->gpCommand->Dock = System::Windows::Forms::DockStyle::Top;
@@ -153,12 +165,57 @@ namespace OpenMesh_Course {
 			this->gpCommand->TabStop = false;
 			this->gpCommand->Text = L"Command";
 			// 
+			// gbShowType
+			// 
+			this->gbShowType->Controls->Add(this->cbAxis);
+			this->gbShowType->Controls->Add(this->cbWireframe);
+			this->gbShowType->Controls->Add(this->cbModel);
+			this->gbShowType->Location = System::Drawing::Point(19, 102);
+			this->gbShowType->Name = L"gbShowType";
+			this->gbShowType->Size = System::Drawing::Size(153, 93);
+			this->gbShowType->TabIndex = 3;
+			this->gbShowType->TabStop = false;
+			this->gbShowType->Text = L"Show Type";
+			// 
+			// cbAxis
+			// 
+			this->cbAxis->AutoSize = true;
+			this->cbAxis->Location = System::Drawing::Point(6, 65);
+			this->cbAxis->Name = L"cbAxis";
+			this->cbAxis->Size = System::Drawing::Size(74, 16);
+			this->cbAxis->TabIndex = 2;
+			this->cbAxis->Text = L"Show Axis";
+			this->cbAxis->UseVisualStyleBackColor = true;
+			this->cbAxis->CheckedChanged += gcnew System::EventHandler(this, &Form1::cbAxis_CheckedChanged);
+			// 
+			// cbWireframe
+			// 
+			this->cbWireframe->AutoSize = true;
+			this->cbWireframe->Location = System::Drawing::Point(6, 43);
+			this->cbWireframe->Name = L"cbWireframe";
+			this->cbWireframe->Size = System::Drawing::Size(103, 16);
+			this->cbWireframe->TabIndex = 1;
+			this->cbWireframe->Text = L"Show Wireframe";
+			this->cbWireframe->UseVisualStyleBackColor = true;
+			this->cbWireframe->CheckedChanged += gcnew System::EventHandler(this, &Form1::cbWireframe_CheckedChanged);
+			// 
+			// cbModel
+			// 
+			this->cbModel->AutoSize = true;
+			this->cbModel->Location = System::Drawing::Point(6, 21);
+			this->cbModel->Name = L"cbModel";
+			this->cbModel->Size = System::Drawing::Size(83, 16);
+			this->cbModel->TabIndex = 0;
+			this->cbModel->Text = L"Show Model";
+			this->cbModel->UseVisualStyleBackColor = true;
+			this->cbModel->CheckedChanged += gcnew System::EventHandler(this, &Form1::cbModel_CheckedChanged);
+			// 
 			// gpSelectType
 			// 
 			this->gpSelectType->Controls->Add(this->rbSelectFace);
 			this->gpSelectType->Controls->Add(this->rbSelectEdge);
 			this->gpSelectType->Controls->Add(this->rbSelectVertex);
-			this->gpSelectType->Location = System::Drawing::Point(19, 103);
+			this->gpSelectType->Location = System::Drawing::Point(19, 210);
 			this->gpSelectType->Name = L"gpSelectType";
 			this->gpSelectType->Size = System::Drawing::Size(153, 93);
 			this->gpSelectType->TabIndex = 1;
@@ -226,6 +283,8 @@ namespace OpenMesh_Course {
 			this->Name = L"Form1";
 			this->Text = L"Digital Mesh";
 			this->gpCommand->ResumeLayout(false);
+			this->gbShowType->ResumeLayout(false);
+			this->gbShowType->PerformLayout();
 			this->gpSelectType->ResumeLayout(false);
 			this->gpSelectType->PerformLayout();
 			this->ResumeLayout(false);
@@ -234,15 +293,23 @@ namespace OpenMesh_Course {
 #pragma endregion
 private: System::Void hkoglPanelControl1_Paint(System::Object^  sender, System::Windows::Forms::PaintEventArgs^  e) 
 		 {
-			 if ( mesh != NULL )
+			 if ( mesh != NULL && cbModel->Checked)
 				 mesh->Render_Solid();
-		 }
-private: System::Void hkoglPanelControl2_Paint(System::Object^  sender, System::Windows::Forms::PaintEventArgs^  e) {
+			 if ( mesh != NULL && cbWireframe->Checked)
+				 mesh->Render_Wireframe();
+			 if(mesh)
+			 {
+				 //mesh->RenderSpecifiedPoint();
+				 //mesh->RenderSpecifiedVertex();
+				 //mesh->RenderSpecifiedFace();
+				 //mesh->RenderSpecifiedEdge();
+			 }
 		 }
 private: System::Void btnLoadMesh_Click(System::Object^  sender, System::EventArgs^  e) {
 			 openMeshFileDialog->ShowDialog();
 		 }
-private: System::Void openMeshFileDialog_FileOk(System::Object^  sender, System::ComponentModel::CancelEventArgs^  e) {
+private: System::Void openMeshFileDialog_FileOk(System::Object^  sender, System::ComponentModel::CancelEventArgs^  e) 
+		 {
 			 std::string filename;
 			 MarshalString( openMeshFileDialog->FileName, filename );
 
@@ -256,6 +323,18 @@ private: System::Void openMeshFileDialog_FileOk(System::Object^  sender, System:
 				 std::cout<<filename<<std::endl;
 
 			 hkoglPanelControl1->Invalidate();
+		 }
+private: System::Void cbModel_CheckedChanged(System::Object^  sender, System::EventArgs^  e) 
+		 {
+			 hkoglPanelControl1->Refresh();
+		 }
+private: System::Void cbWireframe_CheckedChanged(System::Object^  sender, System::EventArgs^  e) 
+		 {
+			 hkoglPanelControl1->Refresh();
+		 }
+private: System::Void cbAxis_CheckedChanged(System::Object^  sender, System::EventArgs^  e) 
+		 {
+			 hkoglPanelControl1->Refresh();
 		 }
 };
 }
