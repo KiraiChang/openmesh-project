@@ -402,7 +402,25 @@ private: System::Void hkoglPanelControl1_MouseDown(System::Object^  sender, Syst
 
 				 if(rbSelectVertex->Checked)
 				 {
-
+					 //Select Vertex
+					 float mDist=99999.f;
+					 float dist;
+					 OMT::VIter mV;
+					 OMT::VHandle mvH;
+					 for (OMT::VIter v_it = mesh->vertices_begin() ; v_it != mesh->vertices_end() ; ++v_it)
+					 {	
+						 //計算找到的點與vertex之間的距離
+						 dist =	(mesh->point( v_it.handle() )[0] - objX) * (mesh->point( v_it.handle() )[0] - objX) +
+							 (mesh->point( v_it.handle() )[1] - objY) * (mesh->point( v_it.handle() )[1] - objY) +
+							 (mesh->point( v_it.handle() )[2] - objZ) * (mesh->point( v_it.handle() )[2] - objZ);
+						 if( dist < mDist )
+						 {
+							 //距離比較近的記錄下來,接著一一比較
+							 mvH = v_it.handle();
+							 mDist = dist;
+						 }
+					 }
+					 mesh->add_sp_v(mvH, 1.f,0.f,0.f);
 				 }
 				 else if(rbSelectEdge->Checked)
 				 {
