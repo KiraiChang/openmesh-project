@@ -20,6 +20,162 @@ namespace OMT
 		release_edge_status();
 		release_face_status();
 	}
+
+	void Model::RenderSpecifiedPoint()
+	{
+		glPushAttrib(GL_LIGHTING_BIT);
+		glDisable(GL_LIGHTING);
+		glEnable(GL_DEPTH_TEST);
+		glPointSize(5.0f);
+		glBegin(GL_POINTS);
+		SP_POINT_LIST::iterator p_itr = sp_p_list.begin();
+		for (p_itr; p_itr != sp_p_list.end(); ++p_itr)
+		{
+			glColor3f(p_itr->r, p_itr->g, p_itr->b);
+			glVertex3dv(&p_itr->pt[0]);
+		}
+		glEnd();
+		glEnable(GL_LIGHTING);
+		glDisable(GL_POLYGON_OFFSET_FILL);
+	}
+
+	void Model::RenderSpecifiedVertex()
+	{
+		glPushAttrib(GL_LIGHTING_BIT);
+		glDisable(GL_LIGHTING);
+		glEnable(GL_DEPTH_TEST);
+		glPointSize(5.0f);
+		glBegin(GL_POINTS);
+		SP_VERTEX_LIST::iterator v_itr = sp_v_list.begin();
+		for (v_itr; v_itr != sp_v_list.end(); ++v_itr)
+		{
+			glColor3f(v_itr->r, v_itr->g, v_itr->b);
+			glVertex3dv(&point(v_itr->vh)[0]);
+		}
+		glEnd();
+		glEnable(GL_LIGHTING);
+		glDisable(GL_POLYGON_OFFSET_FILL);
+	}
+
+	void Model::RenderSpecifiedEdge()
+	{
+		glDisable(GL_CULL_FACE);
+		glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+		glPushAttrib(GL_LIGHTING_BIT);
+		glEnable(GL_POLYGON_OFFSET_FILL);
+		glPolygonOffset(0.5, 1.0);
+		glLineWidth(3.f);
+		glDisable(GL_LIGHTING);
+		glEnable(GL_DEPTH_TEST);
+
+		glBegin(GL_LINES);
+
+		SP_EDGE_LIST::iterator v_itr = sp_e_list.begin();
+		for (v_itr; v_itr != sp_e_list.end(); v_itr+=2)
+		{
+			glColor3f(v_itr->r, v_itr->g, v_itr->b);
+			glVertex3dv(&point(v_itr->vh)[0]);
+			glVertex3dv(&point( (v_itr+1)->vh)[0]);
+		}
+
+		glEnd();		
+		glEnable(GL_LIGHTING);
+		glDisable(GL_POLYGON_OFFSET_FILL);
+		glPolygonMode(GL_FRONT,GL_FILL);
+		glEnable(GL_CULL_FACE);
+		glLineWidth(1.f);
+	}
+
+	void Model::RenderSpecifiedFace()
+	{
+		glDisable(GL_CULL_FACE);
+		glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+		glPushAttrib(GL_LIGHTING_BIT);
+		glEnable(GL_POLYGON_OFFSET_FILL);
+		glPolygonOffset(0.5, 1.0);
+		glDisable(GL_LIGHTING);
+		glEnable(GL_DEPTH_TEST);
+		glBegin(GL_QUADS);
+		FVIter fv_itr;
+		SP_FACE_LIST::iterator f_itr;
+		for (f_itr = sp_f_list.begin(); f_itr != sp_f_list.end(); ++f_itr)
+		{
+			glColor3f(f_itr->r, f_itr->g, f_itr->b);
+			for (fv_itr=fv_iter(f_itr->fh); fv_itr; ++fv_itr)
+			{						
+				glNormal3dv(&normal(fv_itr.handle())[0]);
+				glVertex3dv(&point(fv_itr.handle())[0]);
+			}
+		}
+		glEnd();		
+		glEnable(GL_LIGHTING);
+		glDisable(GL_POLYGON_OFFSET_FILL);
+		glPolygonMode(GL_FRONT,GL_FILL);
+		glEnable(GL_CULL_FACE);
+	}
+
+	void Model::clear_sp_p()
+	{
+		sp_p_list.clear();
+	}
+
+	void Model::clear_sp_v()
+	{
+		sp_v_list.clear();
+	}
+	
+	void Model::clear_sp_e()
+	{
+		sp_e_list.clear();
+	}
+
+	void Model::clear_sp_f()
+	{
+		sp_f_list.clear();
+	}
+
+	void Model::add_sp_p(const Point &_p, float _r, float _g, float _b)
+	{
+		sp_p input_data;
+		input_data.pt = _p;
+		input_data.r = _r;
+		input_data.g = _g;
+		input_data.b = _b;
+		sp_p_list.push_back(input_data);
+	}
+
+	void Model::add_sp_v(const VHandle &_v, float _r, float _g, float _b)
+	{
+		sp_v input_data;
+		input_data.vh = _v;
+		input_data.r = _r;
+		input_data.g = _g;
+		input_data.b = _b;
+		sp_v_list.push_back(input_data);
+	}
+
+	void Model::add_sp_e(const VHandle &_p1, const VHandle &_p2, float _r, float _g, float _b)
+	{
+		sp_v input_data;
+		input_data.vh = _p1;
+		input_data.r = _r;
+		input_data.g = _g;
+		input_data.b = _b;
+		sp_e_list.push_back(input_data);
+
+		input_data.vh = _p2;
+		sp_e_list.push_back(input_data);
+	}
+
+	void Model::add_sp_f(const FHandle &_f, float _r, float _g, float _b)
+	{
+		sp_f input_data;
+		input_data.fh = _f;
+		input_data.r = _r;
+		input_data.g = _g;
+		input_data.b = _b;
+		sp_f_list.push_back(input_data);
+	}
 }
 /*======================================================================*/
 namespace OMP

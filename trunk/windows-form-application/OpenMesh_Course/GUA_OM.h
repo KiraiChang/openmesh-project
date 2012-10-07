@@ -77,14 +77,57 @@ namespace OMT//OpenMesh Triangle mesh
 
 	/*定義額外資料結構*/
 	using namespace OpenMesh;
+	//指定特別畫出面的資料結構
+	struct sp_f 
+	{
+		FHandle fh;
+		float r, g, b;
+	};
+	//指定特別畫出頂點的資料結構
+	struct sp_v 
+	{
+		VHandle vh;
+		float r, g, b;
+	};
+	//指定另外畫出位置的資料結構
+	struct sp_p
+	{
+		Point pt;
+		float r, g, b;
+	};
+
+	typedef std::vector< sp_p >			SP_POINT_LIST;
+	typedef std::vector< sp_v >			SP_VERTEX_LIST;
+	typedef std::vector< sp_v >			SP_EDGE_LIST;
+	typedef std::vector< sp_f >			SP_FACE_LIST;
 	/*----------------------------------------------------------------------*/
 
 	/*定義類別*/
 	class Model:public MyMesh
 	{
+	private:
+		SP_POINT_LIST					sp_p_list;
+		SP_VERTEX_LIST					sp_v_list;
+		SP_EDGE_LIST					sp_e_list;
+		SP_FACE_LIST					sp_f_list;
 	public:
-		Model();//constructor
-		~Model();//de-constructor
+										Model();//constructor
+										~Model();//de-constructor
+
+		void							RenderSpecifiedPoint();//畫出指定位置的點
+		void							RenderSpecifiedVertex();	//畫出指定的頂點
+		void							RenderSpecifiedEdge();	//畫出指定的頂點
+		void							RenderSpecifiedFace();		//畫出指定的面
+
+		void							clear_sp_p();//清空額外畫出的點
+		void							clear_sp_v();//清空額外畫出的頂點
+		void							clear_sp_e();//清空額外畫出的邊
+		void							clear_sp_f();//清空額外畫出的面
+
+		void							add_sp_p(const Point &_p, float _r, float _g, float _b);//指定額外畫出的點
+		void							add_sp_v(const VHandle &_v, float _r, float _g, float _b);//指定額外畫出的頂點
+		void							add_sp_e(const VHandle &_p1, const VHandle &_p2, float _r, float _g, float _b);//指定額外畫出的邊
+		void							add_sp_f(const FHandle &_f, float _r, float _g, float _b);//指定額外畫出的面
 	};
 }
 /*======================================================================*/
@@ -240,7 +283,6 @@ public:
 	void Render_SolidWireframe();
 	void Render_Wireframe();
 	void Render_Point();
-
 private:
 };
 
