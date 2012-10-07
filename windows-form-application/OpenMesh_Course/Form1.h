@@ -3,9 +3,11 @@
 
 #include "DotNetUtilities.h"
 #include "GUA_OM.h"
+//#include <armadillo>
 
 Tri_Mesh *mesh;
-static float fov = 0.7f;
+//static float fov = 0.7f;
+//arma::mat xf;
 namespace OpenMesh_Course {
 
 	using namespace System;
@@ -24,7 +26,11 @@ namespace OpenMesh_Course {
 		Form1(void)
 		{
 			InitializeComponent();
-
+			//xf.set_size(4, 4);
+			//xf.eye();//identity
+			//xf(0, 0) = 0.0;
+			//xf(0, 1) = 0.0;
+			//xf(0, 2) = 0.0;
 			mesh = NULL ;
 			//
 			//TODO: Add the constructor code here
@@ -61,6 +67,7 @@ namespace OpenMesh_Course {
 	private: System::Windows::Forms::CheckBox^  cbAxis;
 	private: System::Windows::Forms::CheckBox^  cbWireframe;
 	private: System::Windows::Forms::CheckBox^  cbModel;
+	private: System::Windows::Forms::Label^  lOutput;
 
 
 
@@ -100,6 +107,7 @@ namespace OpenMesh_Course {
 			this->rbSelectVertex = (gcnew System::Windows::Forms::RadioButton());
 			this->btnLoadMesh = (gcnew System::Windows::Forms::Button());
 			this->openMeshFileDialog = (gcnew System::Windows::Forms::OpenFileDialog());
+			this->lOutput = (gcnew System::Windows::Forms::Label());
 			this->gpCommand->SuspendLayout();
 			this->gbShowType->SuspendLayout();
 			this->gpSelectType->SuspendLayout();
@@ -155,6 +163,7 @@ namespace OpenMesh_Course {
 			// 
 			// gpCommand
 			// 
+			this->gpCommand->Controls->Add(this->lOutput);
 			this->gpCommand->Controls->Add(this->gbShowType);
 			this->gpCommand->Controls->Add(this->gpSelectType);
 			this->gpCommand->Controls->Add(this->btnLoadMesh);
@@ -274,6 +283,14 @@ namespace OpenMesh_Course {
 			this->openMeshFileDialog->Title = L"Open Mesh File";
 			this->openMeshFileDialog->FileOk += gcnew System::ComponentModel::CancelEventHandler(this, &Form1::openMeshFileDialog_FileOk);
 			// 
+			// lOutput
+			// 
+			this->lOutput->AutoSize = true;
+			this->lOutput->Location = System::Drawing::Point(19, 310);
+			this->lOutput->Name = L"lOutput";
+			this->lOutput->Size = System::Drawing::Size(0, 12);
+			this->lOutput->TabIndex = 4;
+			// 
 			// Form1
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 12);
@@ -284,6 +301,7 @@ namespace OpenMesh_Course {
 			this->Name = L"Form1";
 			this->Text = L"Digital Mesh";
 			this->gpCommand->ResumeLayout(false);
+			this->gpCommand->PerformLayout();
 			this->gbShowType->ResumeLayout(false);
 			this->gbShowType->PerformLayout();
 			this->gpSelectType->ResumeLayout(false);
@@ -300,10 +318,10 @@ private: System::Void hkoglPanelControl1_Paint(System::Object^  sender, System::
 				 mesh->Render_Wireframe();
 			 if(mesh)
 			 {
-				 //mesh->RenderSpecifiedPoint();
-				 //mesh->RenderSpecifiedVertex();
-				 //mesh->RenderSpecifiedFace();
-				 //mesh->RenderSpecifiedEdge();
+				 mesh->RenderSpecifiedPoint();
+				 mesh->RenderSpecifiedVertex();
+				 mesh->RenderSpecifiedFace();
+				 mesh->RenderSpecifiedEdge();
 			 }
 		 }
 private: System::Void btnLoadMesh_Click(System::Object^  sender, System::EventArgs^  e) {
@@ -341,45 +359,46 @@ private: System::Void hkoglPanelControl1_MouseDown(System::Object^  sender, Syst
 		 {
 			 if(mesh)
 			 {
-				 //GLint viewport[4];
-				 //GLdouble modelview[16];
-				 //GLdouble projection[16];
-				 //GLfloat winX, winY, winZ;
-				 //GLdouble objX, objY, objZ;
-				 //glPushMatrix();
+				 GLint viewport[4];
+				 GLdouble modelview[16];
+				 GLdouble projection[16];
+				 GLfloat winX, winY, winZ;
+				 GLdouble objX, objY, objZ;
+				 objX = objY = objZ = 0.0;
+				 glPushMatrix();
 
-				 //glMatrixMode(GL_MODELVIEW);	glMultMatrixd((double *)xf);
-				 //glGetDoublev( GL_MODELVIEW_MATRIX, modelview );
+				 glMatrixMode(GL_MODELVIEW);	//glMultMatrixd(xf.memptr());
+				 glGetDoublev( GL_MODELVIEW_MATRIX, modelview );
 
-				 //glMatrixMode(GL_PROJECTION_MATRIX);	glMultMatrixd((double *)xf);
-				 //glGetDoublev( GL_PROJECTION_MATRIX, projection );
+				 glMatrixMode(GL_PROJECTION_MATRIX);	//glMultMatrixd(xf.memptr());
+				 glGetDoublev( GL_PROJECTION_MATRIX, projection );
 
-				 //glMatrixMode(GL_VIEWPORT); glMultMatrixd((double *)xf);
-				 //glGetIntegerv( GL_VIEWPORT, viewport );
+				 glMatrixMode(GL_VIEWPORT); //glMultMatrixd(xf.memptr());
+				 glGetIntegerv( GL_VIEWPORT, viewport );
 
-				 //winX = (float)e->X;
-				 //winY = (float)viewport[3] - (float)e->Y;
+				 winX = (float)e->X;
+				 winY = (float)viewport[3] - (float)e->Y;
 
-				 //glReadPixels( int(winX), int(winY), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ );
+				 glReadPixels( int(winX), int(winY), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ );
 
-				 //if(winZ>=0.99999f)
-				 //{
-					// std::cerr << "Click on background (z= " << winZ << ")" << std::endl;
-					// glPopMatrix();
-					// return;
-				 //}
-				 //gluUnProject( winX, winY, winZ, modelview, projection, viewport, &objX, &objY, &objZ);
+				 if(winZ>=0.99999f)
+				 {
+					 std::cerr << "Click on background (z= " << winZ << ")" << std::endl;
+					 glPopMatrix();
+					 return;
+				 }
+				 gluUnProject( winX, winY, winZ, modelview, projection, viewport, &objX, &objY, &objZ);
 
-				 //outputL->Text = "ObjectX: "+objX+"\nObjectY: "+objY+"\nObjectZ: "+(objZ);
-				 //glPopMatrix();
+				 lOutput->Text = "ObjectX: "+objX+"\nObjectY: "+objY+"\nObjectZ: "+(objZ);
+				 glPopMatrix();
 
 
-				 //mesh->clear_sp_p();
-				 //mesh->clear_sp_v();
-				 //mesh->clear_sp_f();
-				 //mesh->clear_sp_e();
-				 ////加入目前的滑鼠點
-				 //mesh->add_sp_p( OMT::MyMesh::Point(objX,objY,objZ), 1.0f, 0.0f, 1.0f);
+				 mesh->clear_sp_p();
+				 mesh->clear_sp_v();
+				 mesh->clear_sp_f();
+				 mesh->clear_sp_e();
+				 //加入目前的滑鼠點
+				 mesh->add_sp_p( OMT::MyMesh::Point(objX,objY,objZ), 1.0f, 0.0f, 1.0f);
 
 				 if(rbSelectVertex->Checked)
 				 {
@@ -393,6 +412,7 @@ private: System::Void hkoglPanelControl1_MouseDown(System::Object^  sender, Syst
 				 {
 
 				 }
+				 this->Refresh();
 			 }
 		 }
 };
