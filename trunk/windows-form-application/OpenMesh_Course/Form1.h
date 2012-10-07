@@ -151,6 +151,7 @@ namespace OpenMesh_Course {
 			hkcTrackballProp1->Zoom_Trigger = hkcTrackballTrig3;
 			this->hkoglPanelControl1->Trackball_Property = hkcTrackballProp1;
 			this->hkoglPanelControl1->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &Form1::hkoglPanelControl1_Paint);
+			this->hkoglPanelControl1->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(this, &Form1::hkoglPanelControl1_MouseDown);
 			// 
 			// gpCommand
 			// 
@@ -335,6 +336,64 @@ private: System::Void cbWireframe_CheckedChanged(System::Object^  sender, System
 private: System::Void cbAxis_CheckedChanged(System::Object^  sender, System::EventArgs^  e) 
 		 {
 			 hkoglPanelControl1->Refresh();
+		 }
+private: System::Void hkoglPanelControl1_MouseDown(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) 
+		 {
+			 if(mesh)
+			 {
+				 //GLint viewport[4];
+				 //GLdouble modelview[16];
+				 //GLdouble projection[16];
+				 //GLfloat winX, winY, winZ;
+				 //GLdouble objX, objY, objZ;
+				 //glPushMatrix();
+
+				 //glMatrixMode(GL_MODELVIEW);	glMultMatrixd((double *)xf);
+				 //glGetDoublev( GL_MODELVIEW_MATRIX, modelview );
+
+				 //glMatrixMode(GL_PROJECTION_MATRIX);	glMultMatrixd((double *)xf);
+				 //glGetDoublev( GL_PROJECTION_MATRIX, projection );
+
+				 //glMatrixMode(GL_VIEWPORT); glMultMatrixd((double *)xf);
+				 //glGetIntegerv( GL_VIEWPORT, viewport );
+
+				 //winX = (float)e->X;
+				 //winY = (float)viewport[3] - (float)e->Y;
+
+				 //glReadPixels( int(winX), int(winY), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ );
+
+				 //if(winZ>=0.99999f)
+				 //{
+					// std::cerr << "Click on background (z= " << winZ << ")" << std::endl;
+					// glPopMatrix();
+					// return;
+				 //}
+				 //gluUnProject( winX, winY, winZ, modelview, projection, viewport, &objX, &objY, &objZ);
+
+				 //outputL->Text = "ObjectX: "+objX+"\nObjectY: "+objY+"\nObjectZ: "+(objZ);
+				 //glPopMatrix();
+
+
+				 //mesh->clear_sp_p();
+				 //mesh->clear_sp_v();
+				 //mesh->clear_sp_f();
+				 //mesh->clear_sp_e();
+				 ////加入目前的滑鼠點
+				 //mesh->add_sp_p( OMT::MyMesh::Point(objX,objY,objZ), 1.0f, 0.0f, 1.0f);
+
+				 if(rbSelectVertex->Checked)
+				 {
+
+				 }
+				 else if(rbSelectEdge->Checked)
+				 {
+
+				 }
+				 else if(rbSelectFace->Checked)
+				 {
+
+				 }
+			 }
 		 }
 };
 }
