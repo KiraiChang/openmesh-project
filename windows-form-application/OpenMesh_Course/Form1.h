@@ -357,80 +357,83 @@ private: System::Void cbAxis_CheckedChanged(System::Object^  sender, System::Eve
 		 }
 private: System::Void hkoglPanelControl1_MouseDown(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) 
 		 {
-			 if(mesh)
+			 if(e->Button == System::Windows::Forms::MouseButtons::Right)
 			 {
-				 GLint viewport[4];
-				 GLdouble modelview[16];
-				 GLdouble projection[16];
-				 GLfloat winX, winY, winZ;
-				 GLdouble objX, objY, objZ;
-				 objX = objY = objZ = 0.0;
-				 glPushMatrix();
-
-				 glMatrixMode(GL_MODELVIEW);	//glMultMatrixd(xf.memptr());
-				 glGetDoublev( GL_MODELVIEW_MATRIX, modelview );
-
-				 glMatrixMode(GL_PROJECTION_MATRIX);	//glMultMatrixd(xf.memptr());
-				 glGetDoublev( GL_PROJECTION_MATRIX, projection );
-
-				 glMatrixMode(GL_VIEWPORT); //glMultMatrixd(xf.memptr());
-				 glGetIntegerv( GL_VIEWPORT, viewport );
-
-				 winX = (float)e->X;
-				 winY = (float)viewport[3] - (float)e->Y;
-
-				 glReadPixels( int(winX), int(winY), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ );
-
-				 if(winZ>=0.99999f)
+				 if(mesh)
 				 {
-					 std::cerr << "Click on background (z= " << winZ << ")" << std::endl;
-					 glPopMatrix();
-					 return;
-				 }
-				 gluUnProject( winX, winY, winZ, modelview, projection, viewport, &objX, &objY, &objZ);
+					 GLint viewport[4];
+					 GLdouble modelview[16];
+					 GLdouble projection[16];
+					 GLfloat winX, winY, winZ;
+					 GLdouble objX, objY, objZ;
+					 objX = objY = objZ = 0.0;
+					 glPushMatrix();
 
-				 lOutput->Text = "ObjectX: "+objX+"\nObjectY: "+objY+"\nObjectZ: "+(objZ);
-				 glPopMatrix();
+					 glMatrixMode(GL_MODELVIEW);	//glMultMatrixd(xf.memptr());
+					 glGetDoublev( GL_MODELVIEW_MATRIX, modelview );
 
+					 glMatrixMode(GL_PROJECTION_MATRIX);	//glMultMatrixd(xf.memptr());
+					 glGetDoublev( GL_PROJECTION_MATRIX, projection );
 
-				 mesh->clear_sp_p();
-				 mesh->clear_sp_v();
-				 mesh->clear_sp_f();
-				 mesh->clear_sp_e();
-				 //加入目前的滑鼠點
-				 mesh->add_sp_p( OMT::MyMesh::Point(objX,objY,objZ), 1.0f, 0.0f, 1.0f);
+					 glMatrixMode(GL_VIEWPORT); //glMultMatrixd(xf.memptr());
+					 glGetIntegerv( GL_VIEWPORT, viewport );
 
-				 if(rbSelectVertex->Checked)
-				 {
-					 //Select Vertex
-					 float mDist=99999.f;
-					 float dist;
-					 OMT::VIter mV;
-					 OMT::VHandle mvH;
-					 for (OMT::VIter v_it = mesh->vertices_begin() ; v_it != mesh->vertices_end() ; ++v_it)
-					 {	
-						 //計算找到的點與vertex之間的距離
-						 dist =	(mesh->point( v_it.handle() )[0] - objX) * (mesh->point( v_it.handle() )[0] - objX) +
-							 (mesh->point( v_it.handle() )[1] - objY) * (mesh->point( v_it.handle() )[1] - objY) +
-							 (mesh->point( v_it.handle() )[2] - objZ) * (mesh->point( v_it.handle() )[2] - objZ);
-						 if( dist < mDist )
-						 {
-							 //距離比較近的記錄下來,接著一一比較
-							 mvH = v_it.handle();
-							 mDist = dist;
-						 }
+					 winX = (float)e->X;
+					 winY = (float)viewport[3] - (float)e->Y;
+
+					 glReadPixels( int(winX), int(winY), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ );
+
+					 if(winZ>=0.99999f)
+					 {
+						 std::cerr << "Click on background (z= " << winZ << ")" << std::endl;
+						 glPopMatrix();
+						 return;
 					 }
-					 mesh->add_sp_v(mvH, 1.f,0.f,0.f);
-				 }
-				 else if(rbSelectEdge->Checked)
-				 {
+					 gluUnProject( winX, winY, winZ, modelview, projection, viewport, &objX, &objY, &objZ);
 
-				 }
-				 else if(rbSelectFace->Checked)
-				 {
+					 lOutput->Text = "ObjectX: "+objX+"\nObjectY: "+objY+"\nObjectZ: "+(objZ);
+					 glPopMatrix();
 
+
+					 mesh->clear_sp_p();
+					 mesh->clear_sp_v();
+					 mesh->clear_sp_f();
+					 mesh->clear_sp_e();
+					 //加入目前的滑鼠點
+					 mesh->add_sp_p( OMT::MyMesh::Point(objX,objY,objZ), 1.0f, 0.0f, 1.0f);
+
+					 if(rbSelectVertex->Checked)
+					 {
+						 //Select Vertex
+						 float mDist=99999.f;
+						 float dist;
+						 OMT::VIter mV;
+						 OMT::VHandle mvH;
+						 for (OMT::VIter v_it = mesh->vertices_begin() ; v_it != mesh->vertices_end() ; ++v_it)
+						 {	
+							 //計算找到的點與vertex之間的距離
+							 dist =	(mesh->point( v_it.handle() )[0] - objX) * (mesh->point( v_it.handle() )[0] - objX) +
+								 (mesh->point( v_it.handle() )[1] - objY) * (mesh->point( v_it.handle() )[1] - objY) +
+								 (mesh->point( v_it.handle() )[2] - objZ) * (mesh->point( v_it.handle() )[2] - objZ);
+							 if( dist < mDist )
+							 {
+								 //距離比較近的記錄下來,接著一一比較
+								 mvH = v_it.handle();
+								 mDist = dist;
+							 }
+						 }
+						 mesh->add_sp_v(mvH, 1.f,0.f,0.f);
+					 }
+					 else if(rbSelectEdge->Checked)
+					 {
+
+					 }
+					 else if(rbSelectFace->Checked)
+					 {
+
+					 }
+					 this->Refresh();
 				 }
-				 this->Refresh();
 			 }
 		 }
 };
