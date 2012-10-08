@@ -7,6 +7,22 @@
 
 namespace OMT
 {
+	bool sameSide(const Point &p1, const Point &p2, const Point &p3, const Point &p4)
+	{
+		Point cp1 = cross(p4 - p3, p1 - p3);
+		Point cp2 = cross(p4 - p3, p2 - p3);
+		if(dot(cp1, cp2) >= 0)
+			return true;
+		return false;
+	}
+
+	bool pointInTrangle(const Point &p1, const Point &tv1, const Point &tv2, const Point &tv3)
+	{
+		if(sameSide(p1, tv1, tv2, tv3) && sameSide(p1, tv2, tv3, tv1) && sameSide(p1, tv3, tv1, tv2))
+			return true;
+		return false;
+	}
+
 	/*======================================================================*/
 	Model::Model()
 	{

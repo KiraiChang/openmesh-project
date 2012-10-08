@@ -101,7 +101,8 @@ namespace OMT//OpenMesh Triangle mesh
 	typedef std::vector< sp_v >			SP_EDGE_LIST;
 	typedef std::vector< sp_f >			SP_FACE_LIST;
 	/*----------------------------------------------------------------------*/
-
+	static bool sameSide(const Point &p1, const Point &p2, const Point &p3, const Point &p4);
+	static bool pointInTrangle(const Point &p1, const Point &tv1, const Point &tv2, const Point &tv3);
 	/*定義類別*/
 	class Model:public MyMesh
 	{
