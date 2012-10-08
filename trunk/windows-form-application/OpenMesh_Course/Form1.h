@@ -405,56 +405,20 @@ private: System::Void hkoglPanelControl1_MouseDown(System::Object^  sender, Syst
 
 					 if(rbSelectVertex->Checked)
 					 {
-						 //Select Vertex
-						 float mDist=99999.f;
-						 float dist;
-						 OMT::VIter mV;
-						 OMT::VHandle mvH;
-						 for (OMT::VIter v_it = mesh->vertices_begin() ; v_it != mesh->vertices_end() ; ++v_it)
-						 {	
-							 //計算找到的點與vertex之間的距離
-							 dist =	OMT::distance(mesh->point( v_it.handle()), mouse);
-							 if( dist < mDist )
-							 {
-								 //距離比較近的記錄下來,接著一一比較
-								 mvH = v_it.handle();
-								 mDist = dist;
-							 }
-						 }
-						mesh->add_sp_v(mvH, 1.f,0.f,0.f);
+						 OMT::VHandle mvH = mesh->findVertex(mouse);
+						 mesh->add_sp_v(mvH, 1.f,0.f,0.f);
 					 }
 					 else if(rbSelectEdge->Checked)
 					 {
-
+						 OMT::HEHandle hedge = mesh->findHalfEdge(mouse);
+						 mesh->add_sp_e( (mesh->from_vertex_handle(hedge)), 
+							 (mesh->to_vertex_handle(hedge)), 
+							 1.f, 0.f, 0.f );
 					 }
 					 else if(rbSelectFace->Checked)
 					 {
-						 float mDist=99999.f;
-						 OMT::FIter mf;
-						 OMT::FHandle mfH;
-						 OMT::Point co, fv[3];
-						 int i = 0;
-						 for (OMT::FIter f_it = mesh->faces_begin() ; f_it != mesh->faces_end() ; ++f_it)
-						 {
-							 co[0] = co[1] = co[2] = 0.0;
-							 i = 0;
-							 for(OMT::FVIter fv_it = mesh->fv_iter(f_it.handle()); fv_it ; ++fv_it, ++i) 
-							 {
-								 fv[i] = mesh->point(fv_it.handle());
-								 co += fv[i];
-							 }
-							 co /= 3.0f;//重心位置
-							 float	dist =	OMT::distance(co, mouse);		
-							 if(dist < mDist)
-							 {
-								 if(OMT::pointInTrangle(mouse, fv[0], fv[1], fv[2]))
-								 {
-									 mfH = f_it.handle();
-									 mDist = dist;
-								 }
-							 }
-						 }
-						mesh->add_sp_f(mfH, 1.f,0.f,0.f);
+						 OMT::FHandle mfH = mesh->findFace(mouse);
+						 mesh->add_sp_f(mfH, 1.f,0.f,0.f);
 					 }
 					 this->Refresh();
 				 }

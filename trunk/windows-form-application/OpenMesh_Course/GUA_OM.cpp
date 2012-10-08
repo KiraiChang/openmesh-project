@@ -30,6 +30,17 @@ namespace OMT
 				( p1[2] - p2[2]) * ( p1[2] - p2[2]);
 	}
 
+	double area(const Point &v1, const Point &v2)
+	{
+		return (v1[1]*v2[2])-(v1[2]*v2[1])+(v1[2]*v2[0])-(v1[0]*v2[2])+(v1[0]*v2[1])-(v2[1]*v1[0]);
+	}
+
+	double distanceL(const Point &p, const Point &from, const Point &to)
+	{
+		Point v1 = p - from, v2 = to - from;
+		return fabs(area(v1, v2))/v2.length();
+	}
+
 	/*======================================================================*/
 	Model::Model()
 	{
@@ -198,6 +209,79 @@ namespace OMT
 		input_data.g = _g;
 		input_data.b = _b;
 		sp_f_list.push_back(input_data);
+	}
+
+	VHandle Model::findVertex(const Point &p)
+	{
+		float mDist=99999.f;
+		float dist;
+		OMT::VIter mV;
+		OMT::VHandle mvH;
+		for (OMT::VIter v_it = vertices_begin() ; v_it != vertices_end() ; ++v_it)
+		{	
+			//計算找到的點與vertex之間的距離
+			dist =	OMT::distance(point( v_it.handle()), p);
+			if( dist < mDist )
+			{
+				//距離比較近的記錄下來,接著一一比較
+				mvH = v_it.handle();
+				mDist = dist;
+			}
+		}
+		return mvH;
+	}
+
+	HEHandle	Model::findHalfEdge(const Point &p)
+	{
+		OMT::HEHandle heH;
+		OMT::FHandle fH = findFace(p);
+		//找到面了，接下來在面的三個邊中找最近的線, 從one ring edge開始找
+		float dist, mDist=99999.f;
+		OMT::FEIter e_it;
+		for(e_it = fe_iter(fH);e_it;++e_it)
+		{
+			OMT::HEHandle hedge = halfedge_handle(e_it.handle(),1);
+			Point from = point(from_vertex_handle(hedge));
+			Point to = point(to_vertex_handle(hedge));
+			dist = distanceL(p, from, to);
+			if(dist < mDist)
+			{
+				heH = hedge;
+				mDist = dist;
+			}
+		}
+		return heH;
+	}
+
+	FHandle Model::findFace(const Point &p)
+	{
+		float mDist=99999.f;
+		OMT::FIter mf;
+		OMT::FHandle mfH;
+		OMT::Point co, fv[3];
+		int i = 0;
+		for (OMT::FIter f_it = faces_begin() ; f_it != faces_end() ; ++f_it)
+		{
+			co[0] = co[1] = co[2] = 0.0;
+			i = 0;
+			for(OMT::FVIter fv_it = fv_iter(f_it.handle()); fv_it ; ++fv_it, ++i) 
+			{
+				fv[i] = point(fv_it.handle());
+				co += fv[i];
+			}
+			co /= 3.0f;//重心位置
+			float	dist =	OMT::distance(co, p);		
+			if(dist < mDist)
+			{
+				//檢查是否在三角面內
+				if(OMT::pointInTrangle(p, fv[0], fv[1], fv[2]))
+				{
+					mfH = f_it.handle();
+					mDist = dist;
+				}
+			}
+		}
+		return mfH;
 	}
 }
 /*======================================================================*/
@@ -392,6 +476,7 @@ namespace OMP
 	{
 		sp_f_list.clear();
 	}
+
 	/*======================================================================*/
 	VHandle Model::addVertex(Point _p)
 	{
