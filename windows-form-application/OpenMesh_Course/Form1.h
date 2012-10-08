@@ -400,7 +400,8 @@ private: System::Void hkoglPanelControl1_MouseDown(System::Object^  sender, Syst
 					 mesh->clear_sp_f();
 					 mesh->clear_sp_e();
 					 //加入目前的滑鼠點
-					 mesh->add_sp_p( OMT::MyMesh::Point(objX,objY,objZ), 1.0f, 0.0f, 1.0f);
+					 OMT::Point mouse(objX,objY,objZ);
+					 mesh->add_sp_p(mouse, 1.0f, 0.0f, 1.0f);
 
 					 if(rbSelectVertex->Checked)
 					 {
@@ -412,9 +413,7 @@ private: System::Void hkoglPanelControl1_MouseDown(System::Object^  sender, Syst
 						 for (OMT::VIter v_it = mesh->vertices_begin() ; v_it != mesh->vertices_end() ; ++v_it)
 						 {	
 							 //計算找到的點與vertex之間的距離
-							 dist =	(mesh->point( v_it.handle() )[0] - objX) * (mesh->point( v_it.handle() )[0] - objX) +
-								 (mesh->point( v_it.handle() )[1] - objY) * (mesh->point( v_it.handle() )[1] - objY) +
-								 (mesh->point( v_it.handle() )[2] - objZ) * (mesh->point( v_it.handle() )[2] - objZ);
+							 dist =	OMT::distance(mesh->point( v_it.handle()), mouse);
 							 if( dist < mDist )
 							 {
 								 //距離比較近的記錄下來,接著一一比較
@@ -422,7 +421,7 @@ private: System::Void hkoglPanelControl1_MouseDown(System::Object^  sender, Syst
 								 mDist = dist;
 							 }
 						 }
-						 mesh->add_sp_v(mvH, 1.f,0.f,0.f);
+						mesh->add_sp_v(mvH, 1.f,0.f,0.f);
 					 }
 					 else if(rbSelectEdge->Checked)
 					 {
@@ -430,12 +429,32 @@ private: System::Void hkoglPanelControl1_MouseDown(System::Object^  sender, Syst
 					 }
 					 else if(rbSelectFace->Checked)
 					 {
+						 float mDist=99999.f;
 						 OMT::FIter mf;
 						 OMT::FHandle mfH;
-						 for (OMT::FIter v_it = mesh->faces_begin() ; v_it != mesh->faces_end() ; ++v_it)
-						 {	
+						 OMT::Point co, fv[3];
+						 int i = 0;
+						 for (OMT::FIter f_it = mesh->faces_begin() ; f_it != mesh->faces_end() ; ++f_it)
+						 {
+							 co[0] = co[1] = co[2] = 0.0;
+							 i = 0;
+							 for(OMT::FVIter fv_it = mesh->fv_iter(f_it.handle()); fv_it ; ++fv_it, ++i) 
+							 {
+								 fv[i] = mesh->point(fv_it.handle());
+								 co += fv[i];
+							 }
+							 co /= 3.0f;//重心位置
+							 float	dist =	OMT::distance(co, mouse);		
+							 if(dist < mDist)
+							 {
+								 if(OMT::pointInTrangle(mouse, fv[0], fv[1], fv[2]))
+								 {
+									 mfH = f_it.handle();
+									 mDist = dist;
+								 }
+							 }
 						 }
-						 mesh->add_sp_f(mfH, 1.f,0.f,0.f);
+						mesh->add_sp_f(mfH, 1.f,0.f,0.f);
 					 }
 					 this->Refresh();
 				 }

@@ -23,6 +23,13 @@ namespace OMT
 		return false;
 	}
 
+	double distance(const Point &p1, const Point &p2)
+	{
+		return	( p1[0] - p2[0]) * ( p1[0] - p2[0]) +
+				( p1[1] - p2[1]) * ( p1[1] - p2[1]) +
+				( p1[2] - p2[2]) * ( p1[2] - p2[2]);
+	}
+
 	/*======================================================================*/
 	Model::Model()
 	{
@@ -111,7 +118,7 @@ namespace OMT
 		glPolygonOffset(0.5, 1.0);
 		glDisable(GL_LIGHTING);
 		glEnable(GL_DEPTH_TEST);
-		glBegin(GL_QUADS);
+		glBegin(GL_TRIANGLES);
 		FVIter fv_itr;
 		SP_FACE_LIST::iterator f_itr;
 		for (f_itr = sp_f_list.begin(); f_itr != sp_f_list.end(); ++f_itr)
