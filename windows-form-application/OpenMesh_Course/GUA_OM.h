@@ -104,6 +104,8 @@ namespace OMT//OpenMesh Triangle mesh
 	bool sameSide(const Point &p1, const Point &p2, const Point &p3, const Point &p4);
 	bool pointInTrangle(const Point &p1, const Point &tv1, const Point &tv2, const Point &tv3);
 	double distance(const Point &p1, const Point &p2);
+	double area(const Point &v1, const Point &v2);
+	double distanceL(const Point &p, const Point &from, const Point &to);
 	/*定義類別*/
 	class Model:public MyMesh
 	{
@@ -130,6 +132,10 @@ namespace OMT//OpenMesh Triangle mesh
 		void							add_sp_v(const VHandle &_v, float _r, float _g, float _b);//指定額外畫出的頂點
 		void							add_sp_e(const VHandle &_p1, const VHandle &_p2, float _r, float _g, float _b);//指定額外畫出的邊
 		void							add_sp_f(const FHandle &_f, float _r, float _g, float _b);//指定額外畫出的面
+
+		VHandle							findVertex(const Point &p);
+		HEHandle						findHalfEdge(const Point &p);
+		FHandle							findFace(const Point &p);
 	};
 }
 /*======================================================================*/
