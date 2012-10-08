@@ -430,7 +430,12 @@ private: System::Void hkoglPanelControl1_MouseDown(System::Object^  sender, Syst
 					 }
 					 else if(rbSelectFace->Checked)
 					 {
-
+						 OMT::FIter mf;
+						 OMT::FHandle mfH;
+						 for (OMT::FIter v_it = mesh->faces_begin() ; v_it != mesh->faces_end() ; ++v_it)
+						 {	
+						 }
+						 mesh->add_sp_f(mfH, 1.f,0.f,0.f);
 					 }
 					 this->Refresh();
 				 }
