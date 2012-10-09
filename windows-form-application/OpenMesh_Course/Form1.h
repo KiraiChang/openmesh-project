@@ -470,6 +470,7 @@ private: System::Void hkoglPanelControl1_MouseDown(System::Object^  sender, Syst
 						 if( mesh->findVertex(mouse, handle) < INIT_DIST)
 						 {
 							mesh->add_sp_v(handle, 1.f,0.f,0.f);
+							//One Ring
 							if(rbOneRingVertex->Checked)
 							{
 								OMT::VVIter v_it;
@@ -509,14 +510,11 @@ private: System::Void hkoglPanelControl1_MouseDown(System::Object^  sender, Syst
 							 mesh->add_sp_e( (mesh->from_vertex_handle(handle)), 
 							 (mesh->to_vertex_handle(handle)), 
 							 1.f, 0.f, 0.f );
+							 //One Ring
 							if(rbOneRingVertex->Checked)
 							{
-								//OMT::EVIter v_it;
-								//for(v_it = mesh->ev_iter(handle);v_it;++v_it)
-								//{
-								//	mesh->add_sp_v(v_it.handle() , 
-								//		0.f, 0.f, 1.f );
-								//}
+								mesh->add_sp_v((mesh->from_vertex_handle(handle)), 0.f, 0.f, 1.f);
+								mesh->add_sp_v((mesh->to_vertex_handle(handle)), 0.0, 0.0, 1.0);
 							}
 							else if(rbOneRingEdge->Checked)
 							{
@@ -531,12 +529,8 @@ private: System::Void hkoglPanelControl1_MouseDown(System::Object^  sender, Syst
 							}
 							else if(rbOneRingFace->Checked)
 							{
-								//OMT::EFIter f_it;
-								//for(f_it = mesh->ef_iter(handle);f_it;++f_it)
-								//{
-								//	mesh->add_sp_f(f_it.handle() , 
-								//		0.f, 0.f, 1.f );
-								//}
+								mesh->add_sp_f(mesh->face_handle(handle), 0.f, 0.f, 1.f );
+								mesh->add_sp_f(mesh->opposite_face_handle(handle), 0.f, 0.f, 1.f );
 							}
 						 }
 					 }
@@ -546,6 +540,9 @@ private: System::Void hkoglPanelControl1_MouseDown(System::Object^  sender, Syst
 						 if(mesh->findFace(mouse, handle) < INIT_DIST)
 						 {
 							mesh->add_sp_f(handle, 1.f,0.f,0.f);
+							//self attribute
+
+							//One Ring
 							if(rbOneRingVertex->Checked)
 							{
 								OMT::FVIter v_it;
