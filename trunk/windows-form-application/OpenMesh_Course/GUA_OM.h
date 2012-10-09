@@ -12,6 +12,8 @@
 #include <gl/glu.h>
 //#include "GLCamera.h"
 
+#define INIT_DIST 9999.9f
+
 struct Face_InnerAngle
 {
 	double Vertex_Angle[3];
@@ -133,9 +135,9 @@ namespace OMT//OpenMesh Triangle mesh
 		void							add_sp_e(const VHandle &_p1, const VHandle &_p2, float _r, float _g, float _b);//指定額外畫出的邊
 		void							add_sp_f(const FHandle &_f, float _r, float _g, float _b);//指定額外畫出的面
 
-		VHandle							findVertex(const Point &p);
-		HEHandle						findHalfEdge(const Point &p);
-		FHandle							findFace(const Point &p);
+		double							findVertex(const Point &p, VHandle &handle);
+		double							findHalfEdge(const Point &p, HEHandle &handle);
+		double							findFace(const Point &p, FHandle &handle);
 	};
 }
 /*======================================================================*/

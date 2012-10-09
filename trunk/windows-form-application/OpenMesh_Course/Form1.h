@@ -68,6 +68,13 @@ namespace OpenMesh_Course {
 	private: System::Windows::Forms::CheckBox^  cbWireframe;
 	private: System::Windows::Forms::CheckBox^  cbModel;
 	private: System::Windows::Forms::Label^  lOutput;
+	private: System::Windows::Forms::GroupBox^  gbOneRing;
+	private: System::Windows::Forms::RadioButton^  rbOneRingFace;
+
+	private: System::Windows::Forms::RadioButton^  rbOneRingEdge;
+
+	private: System::Windows::Forms::RadioButton^  rbOneRingVertex;
+
 
 
 
@@ -88,15 +95,20 @@ namespace OpenMesh_Course {
 		/// </summary>
 		void InitializeComponent(void)
 		{
-			HKOGLPanel::HKCCameraProp^  hkcCameraProp1 = (gcnew HKOGLPanel::HKCCameraProp());
-			HKOGLPanel::HKCDisplayProp^  hkcDisplayProp1 = (gcnew HKOGLPanel::HKCDisplayProp());
-			HKOGLPanel::HKCPixelFormat^  hkcPixelFormat1 = (gcnew HKOGLPanel::HKCPixelFormat());
-			HKOGLPanel::HKCTrackballProp^  hkcTrackballProp1 = (gcnew HKOGLPanel::HKCTrackballProp());
-			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig1 = (gcnew HKOGLPanel::HKCTrackballTrig());
-			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig2 = (gcnew HKOGLPanel::HKCTrackballTrig());
-			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig3 = (gcnew HKOGLPanel::HKCTrackballTrig());
+			HKOGLPanel::HKCCameraProp^  hkcCameraProp2 = (gcnew HKOGLPanel::HKCCameraProp());
+			HKOGLPanel::HKCDisplayProp^  hkcDisplayProp2 = (gcnew HKOGLPanel::HKCDisplayProp());
+			HKOGLPanel::HKCPixelFormat^  hkcPixelFormat2 = (gcnew HKOGLPanel::HKCPixelFormat());
+			HKOGLPanel::HKCTrackballProp^  hkcTrackballProp2 = (gcnew HKOGLPanel::HKCTrackballProp());
+			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig4 = (gcnew HKOGLPanel::HKCTrackballTrig());
+			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig5 = (gcnew HKOGLPanel::HKCTrackballTrig());
+			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig6 = (gcnew HKOGLPanel::HKCTrackballTrig());
 			this->hkoglPanelControl1 = (gcnew HKOGLPanel::HKOGLPanelControl());
 			this->gpCommand = (gcnew System::Windows::Forms::GroupBox());
+			this->gbOneRing = (gcnew System::Windows::Forms::GroupBox());
+			this->rbOneRingFace = (gcnew System::Windows::Forms::RadioButton());
+			this->rbOneRingEdge = (gcnew System::Windows::Forms::RadioButton());
+			this->rbOneRingVertex = (gcnew System::Windows::Forms::RadioButton());
+			this->lOutput = (gcnew System::Windows::Forms::Label());
 			this->gbShowType = (gcnew System::Windows::Forms::GroupBox());
 			this->cbAxis = (gcnew System::Windows::Forms::CheckBox());
 			this->cbWireframe = (gcnew System::Windows::Forms::CheckBox());
@@ -107,62 +119,63 @@ namespace OpenMesh_Course {
 			this->rbSelectVertex = (gcnew System::Windows::Forms::RadioButton());
 			this->btnLoadMesh = (gcnew System::Windows::Forms::Button());
 			this->openMeshFileDialog = (gcnew System::Windows::Forms::OpenFileDialog());
-			this->lOutput = (gcnew System::Windows::Forms::Label());
 			this->gpCommand->SuspendLayout();
+			this->gbOneRing->SuspendLayout();
 			this->gbShowType->SuspendLayout();
 			this->gpSelectType->SuspendLayout();
 			this->SuspendLayout();
 			// 
 			// hkoglPanelControl1
 			// 
-			hkcCameraProp1->Enabled = true;
-			hkcCameraProp1->Far = 1000;
-			hkcCameraProp1->Fov = 45;
-			hkcCameraProp1->Near = 0.001;
-			hkcCameraProp1->Type = HKOGLPanel::HKCCameraProp::CAMERATYPE::PERSPECTIVE;
-			hkcCameraProp1->Zoom = 1;
-			this->hkoglPanelControl1->Camera_Property = hkcCameraProp1;
-			hkcDisplayProp1->Back_Color = System::Drawing::Color::White;
-			hkcDisplayProp1->Grid_Axis = System::Drawing::Color::Black;
-			hkcDisplayProp1->Grid_Draw = true;
-			hkcDisplayProp1->Grid_Line = System::Drawing::Color::DimGray;
-			this->hkoglPanelControl1->Display_Property = hkcDisplayProp1;
+			hkcCameraProp2->Enabled = true;
+			hkcCameraProp2->Far = 1000;
+			hkcCameraProp2->Fov = 45;
+			hkcCameraProp2->Near = 0.001;
+			hkcCameraProp2->Type = HKOGLPanel::HKCCameraProp::CAMERATYPE::PERSPECTIVE;
+			hkcCameraProp2->Zoom = 1;
+			this->hkoglPanelControl1->Camera_Property = hkcCameraProp2;
+			hkcDisplayProp2->Back_Color = System::Drawing::Color::White;
+			hkcDisplayProp2->Grid_Axis = System::Drawing::Color::Black;
+			hkcDisplayProp2->Grid_Draw = true;
+			hkcDisplayProp2->Grid_Line = System::Drawing::Color::DimGray;
+			this->hkoglPanelControl1->Display_Property = hkcDisplayProp2;
 			this->hkoglPanelControl1->Dock = System::Windows::Forms::DockStyle::Left;
 			this->hkoglPanelControl1->Empty_Panel = false;
 			this->hkoglPanelControl1->Location = System::Drawing::Point(0, 0);
 			this->hkoglPanelControl1->Name = L"hkoglPanelControl1";
-			hkcPixelFormat1->Accumu_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
-			hkcPixelFormat1->Alpha_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
-			hkcPixelFormat1->Stencil_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
-			this->hkoglPanelControl1->Pixel_Format = hkcPixelFormat1;
+			hkcPixelFormat2->Accumu_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
+			hkcPixelFormat2->Alpha_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
+			hkcPixelFormat2->Stencil_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
+			this->hkoglPanelControl1->Pixel_Format = hkcPixelFormat2;
 			this->hkoglPanelControl1->Size = System::Drawing::Size(800, 835);
 			this->hkoglPanelControl1->TabIndex = 0;
-			hkcTrackballProp1->Const_Res = false;
-			hkcTrackballProp1->Delta_Res = 500;
-			hkcTrackballProp1->Enabled = true;
-			hkcTrackballProp1->Move_Res = 1000;
-			hkcTrackballTrig1->Key_Down = false;
-			hkcTrackballTrig1->Keyboard = System::Windows::Forms::Keys::None;
-			hkcTrackballTrig1->Mouse = System::Windows::Forms::MouseButtons::Right;
-			hkcTrackballTrig1->Mouse_Down = false;
-			hkcTrackballProp1->Move_Trigger = hkcTrackballTrig1;
-			hkcTrackballTrig2->Key_Down = false;
-			hkcTrackballTrig2->Keyboard = System::Windows::Forms::Keys::None;
-			hkcTrackballTrig2->Mouse = System::Windows::Forms::MouseButtons::Left;
-			hkcTrackballTrig2->Mouse_Down = false;
-			hkcTrackballProp1->Rotate_Trigger = hkcTrackballTrig2;
-			hkcTrackballProp1->Zoom_Res = 100;
-			hkcTrackballTrig3->Key_Down = false;
-			hkcTrackballTrig3->Keyboard = System::Windows::Forms::Keys::None;
-			hkcTrackballTrig3->Mouse = System::Windows::Forms::MouseButtons::Middle;
-			hkcTrackballTrig3->Mouse_Down = false;
-			hkcTrackballProp1->Zoom_Trigger = hkcTrackballTrig3;
-			this->hkoglPanelControl1->Trackball_Property = hkcTrackballProp1;
+			hkcTrackballProp2->Const_Res = false;
+			hkcTrackballProp2->Delta_Res = 500;
+			hkcTrackballProp2->Enabled = true;
+			hkcTrackballProp2->Move_Res = 1000;
+			hkcTrackballTrig4->Key_Down = false;
+			hkcTrackballTrig4->Keyboard = System::Windows::Forms::Keys::None;
+			hkcTrackballTrig4->Mouse = System::Windows::Forms::MouseButtons::Right;
+			hkcTrackballTrig4->Mouse_Down = false;
+			hkcTrackballProp2->Move_Trigger = hkcTrackballTrig4;
+			hkcTrackballTrig5->Key_Down = false;
+			hkcTrackballTrig5->Keyboard = System::Windows::Forms::Keys::None;
+			hkcTrackballTrig5->Mouse = System::Windows::Forms::MouseButtons::Left;
+			hkcTrackballTrig5->Mouse_Down = false;
+			hkcTrackballProp2->Rotate_Trigger = hkcTrackballTrig5;
+			hkcTrackballProp2->Zoom_Res = 100;
+			hkcTrackballTrig6->Key_Down = false;
+			hkcTrackballTrig6->Keyboard = System::Windows::Forms::Keys::None;
+			hkcTrackballTrig6->Mouse = System::Windows::Forms::MouseButtons::Middle;
+			hkcTrackballTrig6->Mouse_Down = false;
+			hkcTrackballProp2->Zoom_Trigger = hkcTrackballTrig6;
+			this->hkoglPanelControl1->Trackball_Property = hkcTrackballProp2;
 			this->hkoglPanelControl1->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &Form1::hkoglPanelControl1_Paint);
 			this->hkoglPanelControl1->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(this, &Form1::hkoglPanelControl1_MouseDown);
 			// 
 			// gpCommand
 			// 
+			this->gpCommand->Controls->Add(this->gbOneRing);
 			this->gpCommand->Controls->Add(this->lOutput);
 			this->gpCommand->Controls->Add(this->gbShowType);
 			this->gpCommand->Controls->Add(this->gpSelectType);
@@ -174,6 +187,60 @@ namespace OpenMesh_Course {
 			this->gpCommand->TabIndex = 2;
 			this->gpCommand->TabStop = false;
 			this->gpCommand->Text = L"Command";
+			// 
+			// gbOneRing
+			// 
+			this->gbOneRing->Controls->Add(this->rbOneRingFace);
+			this->gbOneRing->Controls->Add(this->rbOneRingEdge);
+			this->gbOneRing->Controls->Add(this->rbOneRingVertex);
+			this->gbOneRing->Location = System::Drawing::Point(19, 309);
+			this->gbOneRing->Name = L"gbOneRing";
+			this->gbOneRing->Size = System::Drawing::Size(153, 93);
+			this->gbOneRing->TabIndex = 5;
+			this->gbOneRing->TabStop = false;
+			this->gbOneRing->Text = L"One Ring Type";
+			// 
+			// rbOneRingFace
+			// 
+			this->rbOneRingFace->AutoSize = true;
+			this->rbOneRingFace->Location = System::Drawing::Point(7, 66);
+			this->rbOneRingFace->Name = L"rbOneRingFace";
+			this->rbOneRingFace->Size = System::Drawing::Size(92, 16);
+			this->rbOneRingFace->TabIndex = 2;
+			this->rbOneRingFace->TabStop = true;
+			this->rbOneRingFace->Text = L"One Ring Face";
+			this->rbOneRingFace->UseVisualStyleBackColor = true;
+			// 
+			// rbOneRingEdge
+			// 
+			this->rbOneRingEdge->AutoSize = true;
+			this->rbOneRingEdge->Location = System::Drawing::Point(6, 44);
+			this->rbOneRingEdge->Name = L"rbOneRingEdge";
+			this->rbOneRingEdge->Size = System::Drawing::Size(95, 16);
+			this->rbOneRingEdge->TabIndex = 1;
+			this->rbOneRingEdge->TabStop = true;
+			this->rbOneRingEdge->Text = L"One Ring Edge";
+			this->rbOneRingEdge->UseVisualStyleBackColor = true;
+			// 
+			// rbOneRingVertex
+			// 
+			this->rbOneRingVertex->AutoSize = true;
+			this->rbOneRingVertex->Location = System::Drawing::Point(7, 22);
+			this->rbOneRingVertex->Name = L"rbOneRingVertex";
+			this->rbOneRingVertex->Size = System::Drawing::Size(102, 16);
+			this->rbOneRingVertex->TabIndex = 0;
+			this->rbOneRingVertex->TabStop = true;
+			this->rbOneRingVertex->Text = L"One Ring Vertex";
+			this->rbOneRingVertex->UseVisualStyleBackColor = true;
+			// 
+			// lOutput
+			// 
+			this->lOutput->AutoSize = true;
+			this->lOutput->Location = System::Drawing::Point(17, 802);
+			this->lOutput->Name = L"lOutput";
+			this->lOutput->Size = System::Drawing::Size(24, 12);
+			this->lOutput->TabIndex = 4;
+			this->lOutput->Text = L"Log";
 			// 
 			// gbShowType
 			// 
@@ -283,14 +350,6 @@ namespace OpenMesh_Course {
 			this->openMeshFileDialog->Title = L"Open Mesh File";
 			this->openMeshFileDialog->FileOk += gcnew System::ComponentModel::CancelEventHandler(this, &Form1::openMeshFileDialog_FileOk);
 			// 
-			// lOutput
-			// 
-			this->lOutput->AutoSize = true;
-			this->lOutput->Location = System::Drawing::Point(19, 310);
-			this->lOutput->Name = L"lOutput";
-			this->lOutput->Size = System::Drawing::Size(0, 12);
-			this->lOutput->TabIndex = 4;
-			// 
 			// Form1
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 12);
@@ -302,6 +361,8 @@ namespace OpenMesh_Course {
 			this->Text = L"Digital Mesh";
 			this->gpCommand->ResumeLayout(false);
 			this->gpCommand->PerformLayout();
+			this->gbOneRing->ResumeLayout(false);
+			this->gbOneRing->PerformLayout();
 			this->gbShowType->ResumeLayout(false);
 			this->gbShowType->PerformLayout();
 			this->gpSelectType->ResumeLayout(false);
@@ -405,20 +466,116 @@ private: System::Void hkoglPanelControl1_MouseDown(System::Object^  sender, Syst
 
 					 if(rbSelectVertex->Checked)
 					 {
-						 OMT::VHandle mvH = mesh->findVertex(mouse);
-						 mesh->add_sp_v(mvH, 1.f,0.f,0.f);
+						 OMT::VHandle handle;
+						 if( mesh->findVertex(mouse, handle) < INIT_DIST)
+						 {
+							mesh->add_sp_v(handle, 1.f,0.f,0.f);
+							if(rbOneRingVertex->Checked)
+							{
+								OMT::VVIter v_it;
+								for(v_it = mesh->vv_iter(handle);v_it;++v_it)
+								{
+									mesh->add_sp_v(v_it.handle() , 
+										0.f, 0.f, 1.f );
+								}
+							}
+							else if(rbOneRingEdge->Checked)
+							{
+								OMT::VEIter e_it;
+								for(e_it = mesh->ve_iter(handle);e_it;++e_it)
+								{
+									OMT::HEHandle hedge = mesh->halfedge_handle(e_it.handle(),1);
+									mesh->add_sp_e( (mesh->from_vertex_handle(hedge)), 
+										(mesh->to_vertex_handle(hedge)), 
+										0.f, 0.f, 1.f );
+								}
+							}
+							else if(rbOneRingFace->Checked)
+							{
+								OMT::VFIter f_it;
+								for(f_it = mesh->vf_iter(handle);f_it;++f_it)
+								{
+									mesh->add_sp_f(f_it.handle() , 
+										0.f, 0.f, 1.f );
+								}
+							}
+						 }
 					 }
 					 else if(rbSelectEdge->Checked)
 					 {
-						 OMT::HEHandle hedge = mesh->findHalfEdge(mouse);
-						 mesh->add_sp_e( (mesh->from_vertex_handle(hedge)), 
-							 (mesh->to_vertex_handle(hedge)), 
+						 OMT::HEHandle handle;
+						 if(mesh->findHalfEdge(mouse, handle) < INIT_DIST)
+						 {
+							 mesh->add_sp_e( (mesh->from_vertex_handle(handle)), 
+							 (mesh->to_vertex_handle(handle)), 
 							 1.f, 0.f, 0.f );
+							if(rbOneRingVertex->Checked)
+							{
+								//OMT::EVIter v_it;
+								//for(v_it = mesh->ev_iter(handle);v_it;++v_it)
+								//{
+								//	mesh->add_sp_v(v_it.handle() , 
+								//		0.f, 0.f, 1.f );
+								//}
+							}
+							else if(rbOneRingEdge->Checked)
+							{
+								//OMT::EEIter e_it;
+								//for(e_it = mesh->ee_iter(handle);e_it;++e_it)
+								//{
+								//	OMT::HEHandle hedge = mesh->halfedge_handle(e_it.handle(),1);
+								//	mesh->add_sp_e( (mesh->from_vertex_handle(hedge)), 
+								//		(mesh->to_vertex_handle(hedge)), 
+								//		0.f, 0.f, 1.f );
+								//}
+							}
+							else if(rbOneRingFace->Checked)
+							{
+								//OMT::EFIter f_it;
+								//for(f_it = mesh->ef_iter(handle);f_it;++f_it)
+								//{
+								//	mesh->add_sp_f(f_it.handle() , 
+								//		0.f, 0.f, 1.f );
+								//}
+							}
+						 }
 					 }
 					 else if(rbSelectFace->Checked)
 					 {
-						 OMT::FHandle mfH = mesh->findFace(mouse);
-						 mesh->add_sp_f(mfH, 1.f,0.f,0.f);
+						 OMT::FHandle handle;
+						 if(mesh->findFace(mouse, handle) < INIT_DIST)
+						 {
+							mesh->add_sp_f(handle, 1.f,0.f,0.f);
+							if(rbOneRingVertex->Checked)
+							{
+								OMT::FVIter v_it;
+								for(v_it = mesh->fv_iter(handle);v_it;++v_it)
+								{
+									mesh->add_sp_v(v_it.handle() , 
+										0.f, 0.f, 1.f );
+								}
+							}
+							else if(rbOneRingEdge->Checked)
+							{
+								OMT::FEIter e_it;
+								for(e_it = mesh->fe_iter(handle);e_it;++e_it)
+								{
+									OMT::HEHandle hedge = mesh->halfedge_handle(e_it.handle(),1);
+									mesh->add_sp_e( (mesh->from_vertex_handle(hedge)), 
+										(mesh->to_vertex_handle(hedge)), 
+										0.f, 0.f, 1.f );
+								}
+							}
+							else if(rbOneRingFace->Checked)
+							{
+								OMT::FFIter f_it;
+								for(f_it = mesh->ff_iter(handle);f_it;++f_it)
+								{
+									mesh->add_sp_f(f_it.handle() , 
+										0.f, 0.f, 1.f );
+								}
+							}
+						 }
 					 }
 					 this->Refresh();
 				 }

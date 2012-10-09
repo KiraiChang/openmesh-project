@@ -212,12 +212,11 @@ namespace OMT
 		sp_f_list.push_back(input_data);
 	}
 
-	VHandle Model::findVertex(const Point &p)
+	double Model::findVertex(const Point &p, VHandle &handle)
 	{
-		float mDist=99999.f;
+		float mDist = INIT_DIST;
 		float dist;
 		OMT::VIter mV;
-		OMT::VHandle mvH;
 		for (OMT::VIter v_it = vertices_begin() ; v_it != vertices_end() ; ++v_it)
 		{	
 			//計算找到的點與vertex之間的距離
@@ -225,40 +224,41 @@ namespace OMT
 			if( dist < mDist )
 			{
 				//距離比較近的記錄下來,接著一一比較
-				mvH = v_it.handle();
+				handle = v_it.handle();
 				mDist = dist;
 			}
 		}
-		return mvH;
+		return mDist;
 	}
 
-	HEHandle	Model::findHalfEdge(const Point &p)
+	double Model::findHalfEdge(const Point &p, HEHandle &handle)
 	{
-		OMT::HEHandle heH;
-		OMT::FHandle fH = findFace(p);
-		//找到面了，接下來在面的三個邊中找最近的線, 從one ring edge開始找
-		float dist, mDist=99999.f;
-		OMT::FEIter e_it;
-		for(e_it = fe_iter(fH);e_it;++e_it)
+		float dist, mDist = INIT_DIST;
+		OMT::FHandle fH;
+		if( findFace(p, fH) < INIT_DIST)
 		{
-			OMT::HEHandle hedge = halfedge_handle(e_it.handle(),1);
-			Point from = point(from_vertex_handle(hedge));
-			Point to = point(to_vertex_handle(hedge));
-			dist = distanceL(p, from, to);
-			if(dist < mDist)
+			//找到面了，接下來在面的三個邊中找最近的線, 從one ring edge開始找
+			OMT::FEIter e_it;
+			for(e_it = fe_iter(fH);e_it;++e_it)
 			{
-				heH = hedge;
-				mDist = dist;
+				OMT::HEHandle hedge = halfedge_handle(e_it.handle(),1);
+				Point from = point(from_vertex_handle(hedge));
+				Point to = point(to_vertex_handle(hedge));
+				dist = distanceL(p, from, to);
+				if(dist < mDist)
+				{
+					handle = hedge;
+					mDist = dist;
+				}
 			}
 		}
-		return heH;
+		return mDist;
 	}
 
-	FHandle Model::findFace(const Point &p)
+	double Model::findFace(const Point &p, FHandle &handle)
 	{
-		float mDist=99999.f;
+		float mDist = INIT_DIST;
 		OMT::FIter mf;
-		OMT::FHandle mfH;
 		OMT::Point co, fv[3];
 		int i = 0;
 		for (OMT::FIter f_it = faces_begin() ; f_it != faces_end() ; ++f_it)
@@ -272,17 +272,17 @@ namespace OMT
 			}
 			co /= 3.0f;//重心位置
 			float	dist =	OMT::distance(co, p);		
-			if(dist < mDist)
+			if(dist < mDist || mDist == 99999.f)
 			{
 				//檢查是否在三角面內
 				if(OMT::pointInTrangle(p, fv[0], fv[1], fv[2]))
 				{
-					mfH = f_it.handle();
+					handle = f_it.handle();
 					mDist = dist;
 				}
 			}
 		}
-		return mfH;
+		return mDist;
 	}
 }
 /*======================================================================*/
