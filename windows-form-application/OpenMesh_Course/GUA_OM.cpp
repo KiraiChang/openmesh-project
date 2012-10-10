@@ -263,54 +263,54 @@ namespace OMT
 		OMT::FIter mf;
 		OMT::Point co, fv[3];
 		int i = 0;
-		//for (OMT::FIter f_it = faces_begin() ; f_it != faces_end() ; ++f_it)
-		//{
-		//	co[0] = co[1] = co[2] = 0.0;
-		//	i = 0;
-		//	for(OMT::FVIter fv_it = fv_iter(f_it.handle()); fv_it ; ++fv_it, ++i) 
-		//	{
-		//		fv[i] = point(fv_it.handle());
-		//		co += fv[i];
-		//	}
-		//	co /= 3.0f;//重心位置
-		//	float	dist =	OMT::distance(co, p);		
-		//	if(dist < mDist)
-		//	{
-		//		//檢查是否在三角面內
-		//		if(OMT::pointInTrangle(p, fv[0], fv[1], fv[2]))
-		//		{
-		//			handle = f_it.handle();
-		//			mDist = dist;
-		//		}
-		//	}
-		//}
-		//找出最接近的點
-		if(findVertex(p, vHandle) < INIT_DIST)
+		for (OMT::FIter f_it = faces_begin() ; f_it != faces_end() ; ++f_it)
 		{
-			VFIter vf_ite;
-			//尋找點的one ring
-			for(vf_ite = vf_iter(vHandle);vf_ite;++vf_ite)
+			co[0] = co[1] = co[2] = 0.0;
+			i = 0;
+			for(OMT::FVIter fv_it = fv_iter(f_it.handle()); fv_it ; ++fv_it, ++i) 
 			{
-				co[0] = co[1] = co[2] = 0.0;
-				i = 0;
-				for(OMT::FVIter fv_it = fv_iter(vf_ite.handle()); fv_it ; ++fv_it, ++i) 
-				{
-					fv[i] = point(fv_it.handle());
-					co += fv[i];
-				}
+				fv[i] = point(fv_it.handle());
+				co += fv[i];
+			}
+			co /= 3.0f;//重心位置
+			float	dist =	OMT::distance(co, p);		
+			if(dist < mDist)
+			{
 				//檢查是否在三角面內
-				co /= 3.0f;//重心位置
-				float	dist =	OMT::distance(co, p);
-				if(dist < mDist)
+				if(OMT::pointInTrangle(p, fv[0], fv[1], fv[2]))
 				{
-					if(OMT::pointInTrangle(p, fv[0], fv[1], fv[2]))
-					{
-						handle = vf_ite.handle();
-						mDist = dist;
-					}
+					handle = f_it.handle();
+					mDist = dist;
 				}
 			}
 		}
+		////找出最接近的點
+		//if(findVertex(p, vHandle) < INIT_DIST)
+		//{
+		//	VFIter vf_ite;
+		//	//尋找點的one ring
+		//	for(vf_ite = vf_iter(vHandle);vf_ite;++vf_ite)
+		//	{
+		//		co[0] = co[1] = co[2] = 0.0;
+		//		i = 0;
+		//		for(OMT::FVIter fv_it = fv_iter(vf_ite.handle()); fv_it ; ++fv_it, ++i) 
+		//		{
+		//			fv[i] = point(fv_it.handle());
+		//			co += fv[i];
+		//		}
+		//		//檢查是否在三角面內
+		//		co /= 3.0f;//重心位置
+		//		float	dist =	OMT::distance(co, p);
+		//		if(dist < mDist)
+		//		{
+		//			if(OMT::pointInTrangle(p, fv[0], fv[1], fv[2]))
+		//			{
+		//				handle = vf_ite.handle();
+		//				mDist = dist;
+		//			}
+		//		}
+		//	}
+		//}
 
 		return mDist;
 	}
