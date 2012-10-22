@@ -75,6 +75,17 @@ namespace OpenMesh_Course {
 
 	private: System::Windows::Forms::RadioButton^  rbOneRingVertex;
 	private: System::Windows::Forms::RadioButton^  rbOneRingNone;
+	private: System::Windows::Forms::CheckBox^  cbDeleteSelect;
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -106,6 +117,7 @@ namespace OpenMesh_Course {
 			this->hkoglPanelControl1 = (gcnew HKOGLPanel::HKOGLPanelControl());
 			this->gpCommand = (gcnew System::Windows::Forms::GroupBox());
 			this->gbOneRing = (gcnew System::Windows::Forms::GroupBox());
+			this->rbOneRingNone = (gcnew System::Windows::Forms::RadioButton());
 			this->rbOneRingFace = (gcnew System::Windows::Forms::RadioButton());
 			this->rbOneRingEdge = (gcnew System::Windows::Forms::RadioButton());
 			this->rbOneRingVertex = (gcnew System::Windows::Forms::RadioButton());
@@ -119,7 +131,7 @@ namespace OpenMesh_Course {
 			this->rbSelectVertex = (gcnew System::Windows::Forms::RadioButton());
 			this->btnLoadMesh = (gcnew System::Windows::Forms::Button());
 			this->openMeshFileDialog = (gcnew System::Windows::Forms::OpenFileDialog());
-			this->rbOneRingNone = (gcnew System::Windows::Forms::RadioButton());
+			this->cbDeleteSelect = (gcnew System::Windows::Forms::CheckBox());
 			this->gpCommand->SuspendLayout();
 			this->gbOneRing->SuspendLayout();
 			this->gbShowType->SuspendLayout();
@@ -195,12 +207,23 @@ namespace OpenMesh_Course {
 			this->gbOneRing->Controls->Add(this->rbOneRingFace);
 			this->gbOneRing->Controls->Add(this->rbOneRingEdge);
 			this->gbOneRing->Controls->Add(this->rbOneRingVertex);
-			this->gbOneRing->Location = System::Drawing::Point(19, 278);
+			this->gbOneRing->Location = System::Drawing::Point(19, 302);
 			this->gbOneRing->Name = L"gbOneRing";
 			this->gbOneRing->Size = System::Drawing::Size(153, 115);
 			this->gbOneRing->TabIndex = 5;
 			this->gbOneRing->TabStop = false;
 			this->gbOneRing->Text = L"One Ring Type";
+			// 
+			// rbOneRingNone
+			// 
+			this->rbOneRingNone->AutoSize = true;
+			this->rbOneRingNone->Location = System::Drawing::Point(6, 88);
+			this->rbOneRingNone->Name = L"rbOneRingNone";
+			this->rbOneRingNone->Size = System::Drawing::Size(96, 16);
+			this->rbOneRingNone->TabIndex = 3;
+			this->rbOneRingNone->TabStop = true;
+			this->rbOneRingNone->Text = L"One Ring None";
+			this->rbOneRingNone->UseVisualStyleBackColor = true;
 			// 
 			// rbOneRingFace
 			// 
@@ -279,12 +302,13 @@ namespace OpenMesh_Course {
 			// 
 			// gpSelectType
 			// 
+			this->gpSelectType->Controls->Add(this->cbDeleteSelect);
 			this->gpSelectType->Controls->Add(this->rbSelectFace);
 			this->gpSelectType->Controls->Add(this->rbSelectEdge);
 			this->gpSelectType->Controls->Add(this->rbSelectVertex);
 			this->gpSelectType->Location = System::Drawing::Point(19, 179);
 			this->gpSelectType->Name = L"gpSelectType";
-			this->gpSelectType->Size = System::Drawing::Size(153, 93);
+			this->gpSelectType->Size = System::Drawing::Size(153, 117);
 			this->gpSelectType->TabIndex = 1;
 			this->gpSelectType->TabStop = false;
 			this->gpSelectType->Text = L"Select Type";
@@ -303,7 +327,7 @@ namespace OpenMesh_Course {
 			// rbSelectEdge
 			// 
 			this->rbSelectEdge->AutoSize = true;
-			this->rbSelectEdge->Location = System::Drawing::Point(6, 44);
+			this->rbSelectEdge->Location = System::Drawing::Point(7, 44);
 			this->rbSelectEdge->Name = L"rbSelectEdge";
 			this->rbSelectEdge->Size = System::Drawing::Size(77, 16);
 			this->rbSelectEdge->TabIndex = 1;
@@ -340,16 +364,15 @@ namespace OpenMesh_Course {
 			this->openMeshFileDialog->Title = L"Open Mesh File";
 			this->openMeshFileDialog->FileOk += gcnew System::ComponentModel::CancelEventHandler(this, &Form1::openMeshFileDialog_FileOk);
 			// 
-			// rbOneRingNone
+			// cbDeleteSelect
 			// 
-			this->rbOneRingNone->AutoSize = true;
-			this->rbOneRingNone->Location = System::Drawing::Point(6, 88);
-			this->rbOneRingNone->Name = L"rbOneRingNone";
-			this->rbOneRingNone->Size = System::Drawing::Size(96, 16);
-			this->rbOneRingNone->TabIndex = 3;
-			this->rbOneRingNone->TabStop = true;
-			this->rbOneRingNone->Text = L"One Ring None";
-			this->rbOneRingNone->UseVisualStyleBackColor = true;
+			this->cbDeleteSelect->AutoSize = true;
+			this->cbDeleteSelect->Location = System::Drawing::Point(6, 88);
+			this->cbDeleteSelect->Name = L"cbDeleteSelect";
+			this->cbDeleteSelect->Size = System::Drawing::Size(83, 16);
+			this->cbDeleteSelect->TabIndex = 2;
+			this->cbDeleteSelect->Text = L"Delete Select";
+			this->cbDeleteSelect->UseVisualStyleBackColor = true;
 			// 
 			// Form1
 			// 
@@ -470,37 +493,44 @@ private: System::Void hkoglPanelControl1_MouseDown(System::Object^  sender, Syst
 						 OMT::VHandle handle;
 						 if( mesh->findVertex(mouse, handle) < INIT_DIST)
 						 {
-							mesh->add_sp_v(handle, 1.f,0.f,0.f);
-							//One Ring
-							if(rbOneRingVertex->Checked)
-							{
-								OMT::VVIter v_it;
-								for(v_it = mesh->vv_iter(handle);v_it;++v_it)
-								{
-									mesh->add_sp_v(v_it.handle() , 
-										0.f, 0.f, 1.f );
-								}
-							}
-							else if(rbOneRingEdge->Checked)
-							{
-								OMT::VEIter e_it;
-								for(e_it = mesh->ve_iter(handle);e_it;++e_it)
-								{
-									OMT::HEHandle hedge = mesh->halfedge_handle(e_it.handle(),1);
-									mesh->add_sp_e( (mesh->from_vertex_handle(hedge)), 
-										(mesh->to_vertex_handle(hedge)), 
-										0.f, 0.f, 1.f );
-								}
-							}
-							else if(rbOneRingFace->Checked)
-							{
-								OMT::VFIter f_it;
-								for(f_it = mesh->vf_iter(handle);f_it;++f_it)
-								{
-									mesh->add_sp_f(f_it.handle() , 
-										0.f, 0.f, 1.f );
-								}
-							}
+							 if(cbDeleteSelect->Checked)
+							 {
+								 mesh->deleteVertex(handle);
+							 }
+							 else
+							 {
+								 mesh->add_sp_v(handle, 1.f,0.f,0.f);
+								 //One Ring
+								 if(rbOneRingVertex->Checked)
+								 {
+									 OMT::VVIter v_it;
+									 for(v_it = mesh->vv_iter(handle);v_it;++v_it)
+									 {
+										 mesh->add_sp_v(v_it.handle() , 
+											 0.f, 0.f, 1.f );
+									 }
+								 }
+								 else if(rbOneRingEdge->Checked)
+								 {
+									 OMT::VEIter e_it;
+									 for(e_it = mesh->ve_iter(handle);e_it;++e_it)
+									 {
+										 OMT::HEHandle hedge = mesh->halfedge_handle(e_it.handle(),1);
+										 mesh->add_sp_e( (mesh->from_vertex_handle(hedge)), 
+											 (mesh->to_vertex_handle(hedge)), 
+											 0.f, 0.f, 1.f );
+									 }
+								 }
+								 else if(rbOneRingFace->Checked)
+								 {
+									 OMT::VFIter f_it;
+									 for(f_it = mesh->vf_iter(handle);f_it;++f_it)
+									 {
+										 mesh->add_sp_f(f_it.handle() , 
+											 0.f, 0.f, 1.f );
+									 }
+								 }
+							 }
 						 }
 					 }
 					 else if(rbSelectEdge->Checked)
@@ -508,35 +538,42 @@ private: System::Void hkoglPanelControl1_MouseDown(System::Object^  sender, Syst
 						 OMT::HEHandle handle;
 						 if(mesh->findHalfEdge(mouse, handle) < INIT_DIST)
 						 {
-							 mesh->add_sp_e( (mesh->from_vertex_handle(handle)), 
-							 (mesh->to_vertex_handle(handle)), 
-							 1.f, 0.f, 0.f );
-							 //One Ring
-							if(rbOneRingVertex->Checked)
-							{
-								mesh->add_sp_v((mesh->from_vertex_handle(handle)), 0.f, 0.f, 1.f);
-								mesh->add_sp_v((mesh->to_vertex_handle(handle)), 0.0, 0.0, 1.0);
-							}
-							else if(rbOneRingEdge->Checked)
-							{
-								//OMT::EEIter e_it;
-								//for(e_it = mesh->ee_iter(handle);e_it;++e_it)
-								//{
-								//	OMT::HEHandle hedge = mesh->halfedge_handle(e_it.handle(),1);
-								//	mesh->add_sp_e( (mesh->from_vertex_handle(hedge)), 
-								//		(mesh->to_vertex_handle(hedge)), 
-								//		0.f, 0.f, 1.f );
-								//}
-								OMT::VHandle vh = mesh->opposite_vh(handle);
-								mesh->add_sp_v(vh, 0.f, 0.f, 1.f);
-								vh = mesh->opposite_he_opposite_vh(handle);
-								mesh->add_sp_v(vh, 0.f, 0.f, 1.f);
-							}
-							else if(rbOneRingFace->Checked)
-							{
-								mesh->add_sp_f(mesh->face_handle(handle), 0.f, 0.f, 1.f );
-								mesh->add_sp_f(mesh->opposite_face_handle(handle), 0.f, 0.f, 1.f );
-							}
+							 if(cbDeleteSelect->Checked)
+							 {
+								 mesh->simplificationEdge(handle);
+							 }
+							 else
+							 {
+								 mesh->add_sp_e( (mesh->from_vertex_handle(handle)), 
+									 (mesh->to_vertex_handle(handle)), 
+									 1.f, 0.f, 0.f );
+								 //One Ring
+								 if(rbOneRingVertex->Checked)
+								 {
+									 mesh->add_sp_v((mesh->from_vertex_handle(handle)), 0.f, 0.f, 1.f);
+									 mesh->add_sp_v((mesh->to_vertex_handle(handle)), 0.0, 0.0, 1.0);
+								 }
+								 else if(rbOneRingEdge->Checked)
+								 {
+									 //OMT::EEIter e_it;
+									 //for(e_it = mesh->ee_iter(handle);e_it;++e_it)
+									 //{
+									 //	OMT::HEHandle hedge = mesh->halfedge_handle(e_it.handle(),1);
+									 //	mesh->add_sp_e( (mesh->from_vertex_handle(hedge)), 
+									 //		(mesh->to_vertex_handle(hedge)), 
+									 //		0.f, 0.f, 1.f );
+									 //}
+									 OMT::VHandle vh = mesh->opposite_vh(handle);
+									 mesh->add_sp_v(vh, 0.f, 0.f, 1.f);
+									 vh = mesh->opposite_he_opposite_vh(handle);
+									 mesh->add_sp_v(vh, 0.f, 0.f, 1.f);
+								 }
+								 else if(rbOneRingFace->Checked)
+								 {
+									 mesh->add_sp_f(mesh->face_handle(handle), 0.f, 0.f, 1.f );
+									 mesh->add_sp_f(mesh->opposite_face_handle(handle), 0.f, 0.f, 1.f );
+								 }
+							 }
 						 }
 					 }
 					 else if(rbSelectFace->Checked)
@@ -544,44 +581,53 @@ private: System::Void hkoglPanelControl1_MouseDown(System::Object^  sender, Syst
 						 OMT::FHandle handle;
 						 if(mesh->findFace(mouse, handle) < INIT_DIST)
 						 {
-							mesh->add_sp_f(handle, 1.f,0.f,0.f);
-							//self attribute
+							 if(cbDeleteSelect->Checked)
+							 {
+								 mesh->deleteFace(handle);
+							 }
+							 else
+							 {
+								 mesh->add_sp_f(handle, 1.f,0.f,0.f);
+								 //self attribute
 
-							//One Ring
-							if(rbOneRingVertex->Checked)
-							{
-								OMT::FVIter v_it;
-								for(v_it = mesh->fv_iter(handle);v_it;++v_it)
-								{
-									mesh->add_sp_v(v_it.handle() , 
-										0.f, 0.f, 1.f );
-								}
-							}
-							else if(rbOneRingEdge->Checked)
-							{
-								OMT::FEIter e_it;
-								for(e_it = mesh->fe_iter(handle);e_it;++e_it)
-								{
-									OMT::HEHandle hedge = mesh->halfedge_handle(e_it.handle(),1);
-									mesh->add_sp_e( (mesh->from_vertex_handle(hedge)), 
-										(mesh->to_vertex_handle(hedge)), 
-										0.f, 0.f, 1.f );
-								}
-							}
-							else if(rbOneRingFace->Checked)
-							{
-								OMT::FFIter f_it;
-								for(f_it = mesh->ff_iter(handle);f_it;++f_it)
-								{
-									mesh->add_sp_f(f_it.handle() , 
-										0.f, 0.f, 1.f );
-								}
-							}
+								 //One Ring
+								 if(rbOneRingVertex->Checked)
+								 {
+									 OMT::FVIter v_it;
+									 for(v_it = mesh->fv_iter(handle);v_it;++v_it)
+									 {
+										 mesh->add_sp_v(v_it.handle() , 
+											 0.f, 0.f, 1.f );
+									 }
+								 }
+								 else if(rbOneRingEdge->Checked)
+								 {
+									 OMT::FEIter e_it;
+									 for(e_it = mesh->fe_iter(handle);e_it;++e_it)
+									 {
+										 OMT::HEHandle hedge = mesh->halfedge_handle(e_it.handle(),1);
+										 mesh->add_sp_e( (mesh->from_vertex_handle(hedge)), 
+											 (mesh->to_vertex_handle(hedge)), 
+											 0.f, 0.f, 1.f );
+									 }
+								 }
+								 else if(rbOneRingFace->Checked)
+								 {
+									 OMT::FFIter f_it;
+									 for(f_it = mesh->ff_iter(handle);f_it;++f_it)
+									 {
+										 mesh->add_sp_f(f_it.handle() , 
+											 0.f, 0.f, 1.f );
+									 }
+								 }
+							 }
 						 }
 					 }
 					 this->Refresh();
 				 }
 			 }
+		 }
+private: System::Void checkBox1_CheckedChanged(System::Object^  sender, System::EventArgs^  e) {
 		 }
 };
 }
