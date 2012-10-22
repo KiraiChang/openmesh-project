@@ -314,6 +314,24 @@ namespace OMT
 
 		return mDist;
 	}
+
+	void Model::delete_vertex(VHandle &handle)
+	{
+		delete_vertex(handle);
+		garbage_collection();
+	}
+
+	void Model::delete_edge(EHandle &handle)
+	{
+		delete_edge(handle);
+		garbage_collection();
+	}
+
+	void Model::delete_face(FHandle &handle)
+	{
+		delete_face(handle);
+		garbage_collection();
+	}
 }
 /*======================================================================*/
 namespace OMP

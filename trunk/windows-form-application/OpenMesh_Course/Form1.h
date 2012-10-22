@@ -527,6 +527,10 @@ private: System::Void hkoglPanelControl1_MouseDown(System::Object^  sender, Syst
 								//		(mesh->to_vertex_handle(hedge)), 
 								//		0.f, 0.f, 1.f );
 								//}
+								OMT::VHandle vh = mesh->opposite_vh(handle);
+								mesh->add_sp_v(vh, 0.f, 0.f, 1.f);
+								vh = mesh->opposite_he_opposite_vh(handle);
+								mesh->add_sp_v(vh, 0.f, 0.f, 1.f);
 							}
 							else if(rbOneRingFace->Checked)
 							{
