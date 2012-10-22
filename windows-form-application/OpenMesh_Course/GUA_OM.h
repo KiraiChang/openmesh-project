@@ -138,6 +138,10 @@ namespace OMT//OpenMesh Triangle mesh
 		double							findVertex(const Point &p, VHandle &handle);
 		double							findHalfEdge(const Point &p, HEHandle &handle);
 		double							findFace(const Point &p, FHandle &handle);
+
+		void							delete_vertex(VHandle &handle);
+		void							delete_edge(EHandle &handle);
+		void							delete_face(FHandle &handle);
 	};
 }
 /*======================================================================*/
