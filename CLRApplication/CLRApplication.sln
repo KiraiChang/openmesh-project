@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CLRApplication", "CLRApplication\CLRApplication.vcxproj", "{004A45D9-D6FC-4B91-82B6-9C25B6B4C8D1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CC50E9D3-550B-45CB-8BC8-7893741DE088} = {CC50E9D3-550B-45CB-8BC8-7893741DE088}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenGLPanel", "OpenGLPanel\OpenGLPanel.vcxproj", "{CC50E9D3-550B-45CB-8BC8-7893741DE088}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{004A45D9-D6FC-4B91-82B6-9C25B6B4C8D1}.Debug|Win32.ActiveCfg = Debug|Win32
+		{004A45D9-D6FC-4B91-82B6-9C25B6B4C8D1}.Debug|Win32.Build.0 = Debug|Win32
+		{004A45D9-D6FC-4B91-82B6-9C25B6B4C8D1}.Release|Win32.ActiveCfg = Release|Win32
+		{004A45D9-D6FC-4B91-82B6-9C25B6B4C8D1}.Release|Win32.Build.0 = Release|Win32
+		{CC50E9D3-550B-45CB-8BC8-7893741DE088}.Debug|Win32.ActiveCfg = Debug|Win32
+		{CC50E9D3-550B-45CB-8BC8-7893741DE088}.Debug|Win32.Build.0 = Debug|Win32
+		{CC50E9D3-550B-45CB-8BC8-7893741DE088}.Release|Win32.ActiveCfg = Release|Win32
+		{CC50E9D3-550B-45CB-8BC8-7893741DE088}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
