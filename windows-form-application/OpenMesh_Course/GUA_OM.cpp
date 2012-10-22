@@ -315,22 +315,68 @@ namespace OMT
 		return mDist;
 	}
 
-	void Model::delete_vertex(VHandle &handle)
+	void Model::deleteVertex(VHandle &handle)
 	{
-		delete_vertex(handle);
+		delete_vertex(handle, false);
 		garbage_collection();
 	}
 
-	void Model::delete_edge(EHandle &handle)
+	void Model::deleteEdge(HEHandle &handle)
 	{
-		delete_edge(handle);
+		delete_vertex(from_vertex_handle(handle), false);
+		delete_vertex(to_vertex_handle(handle), false);
 		garbage_collection();
 	}
 
-	void Model::delete_face(FHandle &handle)
+	void Model::deleteFace(FHandle &handle)
 	{
-		delete_face(handle);
+		delete_face(handle, false);
 		garbage_collection();
+	}
+
+	void Model::simplificationEdge(HEHandle &handle)
+	{
+		vector<VHandle> face_vhandles;
+		vector<VHandle> vhandles;
+		vector<VHandle>::const_iterator ite;
+
+		VHandle fv = from_vertex_handle(handle);
+		VHandle tv = to_vertex_handle(handle);
+
+		OMT::VVIter v_it;
+		for(v_it = vv_iter(fv);v_it;++v_it)
+		{
+			if(v_it.handle() == tv)
+				continue;
+			vhandles.push_back(v_it.handle());
+		}
+
+		for(v_it = vv_iter(tv);v_it;++v_it)
+		{
+			if(v_it.handle() == fv)
+				continue;
+			vhandles.push_back(v_it.handle());
+		}
+
+		Point fp = point(fv);
+		Point tp = point(tv);
+
+		delete_vertex(fv);
+		delete_vertex(tv);
+		garbage_collection();
+
+		VHandle addHandle = add_vertex(fp);
+		for(ite = vhandles.begin(); ite != vhandles.end(); ++ite)
+		{
+			face_vhandles.push_back(*ite);
+			if(face_vhandles.size() == 2)
+			{
+				face_vhandles.push_back(addHandle);
+				add_face(face_vhandles);
+				face_vhandles.clear();
+				face_vhandles.push_back(*ite);
+			}
+		}
 	}
 }
 /*======================================================================*/
