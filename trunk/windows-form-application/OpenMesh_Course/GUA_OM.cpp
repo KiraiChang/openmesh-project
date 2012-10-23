@@ -337,7 +337,7 @@ namespace OMT
 
 	void Model::simplificationEdge(HEHandle &handle)
 	{ 
-		vector<VHandle> face_vhandles;
+		//vector<VHandle> face_vhandles;
 		vector<VHandle> record_from_vhandles;
 		vector<VHandle> record_to_vhandles;
 		int size = 0;
@@ -359,7 +359,10 @@ namespace OMT
 		for(vv_it = vv_iter(fv);vv_it;++vv_it, index++)
 		{
 			if(vv_it.handle() == tv)
+			{
 				offset_from = index + 1;
+				printf("Offset#%d ", offset_from);
+			}
 			record_from_vhandles.push_back(vv_it.handle());
 			printf("#%d ", vv_it.handle().idx());
 		}
@@ -368,8 +371,11 @@ namespace OMT
 		index = 0;
 		for(vv_it = vv_iter(tv);vv_it;++vv_it, index++)
 		{
-			if(vv_it.handle() == tv)
+			if(vv_it.handle() == fv)
+			{
 				offset_to = index + 1;
+				printf("Offset#%d ", offset_to);
+			}
 			record_to_vhandles.push_back(vv_it.handle());
 			printf("#%d ", vv_it.handle().idx());
 		}
@@ -399,8 +405,8 @@ namespace OMT
 		garbage_collection();
 
 
-
-		VHandle addHandle = add_vertex(fp);
+		Point add((fp[0] + tp[0])/2, (fp[1] + tp[1])/2, (fp[2] + tp[2])/2);
+		VHandle addHandle = add_vertex(add);
 		//for(ite = vhandles.begin(); ite != vhandles.end(); ++ite)
 		//{
 		//	face_vhandles.push_back(*ite);
@@ -413,34 +419,52 @@ namespace OMT
 		//	}
 		//}
 		size = record_from_vhandles.size();
-		printf("From Start#%d, size:%d\n", record_from_vhandles[offset_from], size);
-		for(int i = 0; i < size - 1; i++)
+		printf("From Start#%d, size:%d\n", record_from_vhandles[(offset_from)%size], size);
+		for(int i = 0; i < size - 2; i++)
 		{
-			face_vhandles.push_back(record_from_vhandles[(i+offset_from)%size]);
-			printf("#%d ", record_from_vhandles[(i+offset_from)%size].idx());
-			if(face_vhandles.size() == 2)
-			{
-				face_vhandles.push_back(addHandle);
-				add_face(face_vhandles);
-				face_vhandles.clear();
-				face_vhandles.push_back(record_from_vhandles[(i+offset_from)%size]);
-			}
+			//face_vhandles.push_back(record_from_vhandles[(i+offset_from)%size]);
+			//printf("#%d ", record_from_vhandles[(i+offset_from)%size].idx());
+			//if(face_vhandles.size() == 2)
+			//{
+			//	face_vhandles.push_back(addHandle);
+			//	add_face(face_vhandles);
+			//	face_vhandles.clear();
+			//	face_vhandles.push_back(record_from_vhandles[(i+offset_from)%size]);
+			//}
+			//face_vhandles.push_back(addHandle);
+			printf("#%d ", addHandle.idx());
+			//face_vhandles.push_back(record_from_vhandles[(i+1+offset_from)%size]);
+			printf("#%d ", record_from_vhandles[(i+1+offset_from)%size].idx());
+			//face_vhandles.push_back(record_from_vhandles[(i+offset_from)%size]);
+			printf("#%d \n", record_from_vhandles[(i+offset_from)%size].idx());
+			//add_face(face_vhandles);
+			add_face(addHandle, record_from_vhandles[(i+1+offset_from)%size], record_from_vhandles[(i+offset_from)%size]);
+			//face_vhandles.clear();
 		}
 		
-		face_vhandles.clear();
+		
 		size = record_to_vhandles.size();
-		printf("To Start#%d, size:%d\n", record_to_vhandles[offset_to], size);
-		for(int i = 0; i < size - 1; i++)
+		printf("To Start#%d, size:%d\n", record_to_vhandles[(offset_to)%size], size);
+		for(int i = 0; i < size - 2; i++)
 		{
-			face_vhandles.push_back(record_to_vhandles[(i+offset_to)%size]);
-			printf("#%d ", record_to_vhandles[(i+offset_to)%size].idx());
-			if(face_vhandles.size() == 2)
-			{
-				face_vhandles.push_back(addHandle);
-				add_face(face_vhandles);
-				face_vhandles.clear();
-				face_vhandles.push_back(record_to_vhandles[(i+offset_to)%size]);
-			}
+			//face_vhandles.push_back(record_to_vhandles[(i+offset_to)%size]);
+			//printf("#%d ", record_to_vhandles[(i+offset_to)%size].idx());
+			//if(face_vhandles.size() == 2)
+			//{
+			//	face_vhandles.push_back(addHandle);
+			//	add_face(face_vhandles);
+			//	face_vhandles.clear();
+			//	face_vhandles.push_back(record_to_vhandles[(i+offset_to)%size]);
+			//}
+			//face_vhandles.push_back(addHandle);
+			printf("#%d ", addHandle.idx());
+			//face_vhandles.push_back(record_to_vhandles[(i+1+offset_to)%size]);
+			printf("#%d ", record_to_vhandles[(i+1+offset_to)%size].idx());
+			//face_vhandles.push_back(record_to_vhandles[(i+offset_to)%size]);
+			printf("#%d \n", record_to_vhandles[(i+offset_to)%size].idx());
+			//add_face(face_vhandles);
+			add_face(addHandle, record_to_vhandles[(i+1+offset_to)%size], record_to_vhandles[(i+offset_to)%size]);
+			//face_vhandles.clear();
 		}
 		printf("\n");
 	}
