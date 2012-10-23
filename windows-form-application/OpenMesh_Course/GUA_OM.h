@@ -38,8 +38,9 @@ namespace OMT//OpenMesh Triangle mesh
 		typedef OpenMesh::Vec3d Normal;
 
 		// add normal property to vertices and faces
-		VertexAttributes(OpenMesh::Attributes::Normal);
-		FaceAttributes  (OpenMesh::Attributes::Normal);
+		VertexAttributes(OpenMesh::Attributes::Normal|OpenMesh::Attributes::Status);
+		FaceAttributes  (OpenMesh::Attributes::Normal|OpenMesh::Attributes::Status);
+		EdgeAttributes  (OpenMesh::Attributes::Status);
 
 		// Already defined in OpenMesh::DefaultTraits
 		// HalfedgeAttributes( OpenMesh::Attributes::PrevHalfedge );
