@@ -145,6 +145,7 @@ namespace OMT//OpenMesh Triangle mesh
 		void							deleteFace(FHandle &handle);
 
 		void							simplificationEdge(HEHandle &handle);
+		bool							isConvex(vector<VHandle> &polygon);
 	};
 }
 /*======================================================================*/
