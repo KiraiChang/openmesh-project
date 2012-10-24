@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "GUA_OM.h"
-
+#define PI 3.141592653589793
 
 
 
@@ -340,6 +340,7 @@ namespace OMT
 		//vector<VHandle> face_vhandles;
 		vector<VHandle> record_from_vhandles;
 		vector<VHandle> record_to_vhandles;
+		vector<VHandle> polygon;
 		int size = 0;
 		int index = 0;
 		int offset_from = 0;
@@ -350,11 +351,10 @@ namespace OMT
 		set<FHandle>::const_iterator ite;
 
 
-		VHandle opp = opposite_vh(handle);
 		VHandle fv = from_vertex_handle(handle);
 		VHandle tv = to_vertex_handle(handle);
 
-		printf("From#%d, To#%d\n", fv.idx(), tv.idx());
+		printf("\nFrom#%d, To#%d\n", fv.idx(), tv.idx());
 		//Record the vertex order of erase face
 		for(vv_it = vv_iter(fv);vv_it;++vv_it, index++)
 		{
@@ -468,7 +468,31 @@ namespace OMT
 		}
 		printf("\n");
 	}
+
+	bool Model::isConvex(vector<VHandle> &polygon)
+	{
+		float totalAngle = 0;
+		size_t size = polygon.size();
+		for(int i = 0; i < size; i++)
+		{
+			Point p1 = point(polygon[i]);
+			Point p2 = point(polygon[(i+1)%size]);
+			Point p3 = point(polygon[(i+2)%size]);
+			Point vec1 = p1 - p2;
+			Point vec2 = p2 - p3;
+			vec1.normalize();
+			vec2.normalize();
+			totalAngle +=  acos(dot(vec1,vec2)) * 2 * PI;
+		}
+
+
+		if(totalAngle <= 360 && totalAngle > 359)
+			return true;
+		return false;
+	}
 }
+
+
 /*======================================================================*/
 namespace OMP
 {
