@@ -381,6 +381,23 @@ namespace OMT
 		}
 		printf("\n");
 
+		size = record_from_vhandles.size();
+		for(int i = 0; i < size - 2; i++)
+		{
+			polygon.push_back(record_from_vhandles[(i+offset_from)%size]);
+			printf("#%d ", record_from_vhandles[(i+offset_from)%size].idx());
+		}
+
+		size = record_to_vhandles.size();
+		for(int i = 0; i < size - 2; i++)
+		{
+			polygon.push_back(record_to_vhandles[(i+offset_to)%size]);
+			printf("#%d ", record_to_vhandles[(i+offset_to)%size].idx());
+		}
+		printf("\n ");
+		if(!isConvex(polygon))
+			return;
+
 		//Record the face handle
 		for(vf_it = vf_iter(fv);vf_it;++vf_it)
 		{
@@ -482,11 +499,13 @@ namespace OMT
 			Point vec2 = p2 - p3;
 			vec1.normalize();
 			vec2.normalize();
-			totalAngle +=  acos(dot(vec1,vec2)) * 2 * PI;
+			float angle = acos(dot(vec1,vec2));
+			printf("%f ", angle);
+			totalAngle +=  angle;
 		}
 
-
-		if(totalAngle <= 360 && totalAngle > 359)
+		printf("Total:%f\n", totalAngle);
+		if(totalAngle <= 2 * PI + 0.5 && totalAngle >  2 * PI - 0.5)
 			return true;
 		return false;
 	}
