@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "GUA_OM.h"
 #define PI 3.141592653589793
-
+#define THRESHOLD 1.5
 
 
 
@@ -338,8 +338,9 @@ namespace OMT
 	void Model::simplificationEdge(HEHandle &handle)
 	{ 
 		//vector<VHandle> face_vhandles;
-		vector<VHandle> record_from_vhandles;
-		vector<VHandle> record_to_vhandles;
+		DELETE_HISTORY history;
+		//vector<VHandle> record_from_vhandles;
+		//vector<VHandle> record_to_vhandles;
 		vector<VHandle> polygon;
 		int size = 0;
 		int index = 0;
@@ -351,66 +352,66 @@ namespace OMT
 		set<FHandle>::const_iterator ite;
 
 
-		VHandle fv = from_vertex_handle(handle);
-		VHandle tv = to_vertex_handle(handle);
+		history.fromVertex = from_vertex_handle(handle);
+		history.toVertex = to_vertex_handle(handle);
 
-		printf("\nFrom#%d, To#%d\n", fv.idx(), tv.idx());
+		printf("\nFrom#%d, To#%d\n", history.fromVertex.idx(), history.toVertex.idx());
 		//Record the vertex order of erase face
-		for(vv_it = vv_iter(fv);vv_it;++vv_it, index++)
+		for(vv_it = vv_iter(history.fromVertex);vv_it;++vv_it, index++)
 		{
-			if(vv_it.handle() == tv)
+			if(vv_it.handle() == history.toVertex)
 			{
 				offset_from = index + 1;
 				printf("Offset#%d ", offset_from);
 			}
-			record_from_vhandles.push_back(vv_it.handle());
+			history.fromOnering.push_back(vv_it.handle());
 			printf("#%d ", vv_it.handle().idx());
 		}
 		printf("\n");
 
 		index = 0;
-		for(vv_it = vv_iter(tv);vv_it;++vv_it, index++)
+		for(vv_it = vv_iter(history.toVertex);vv_it;++vv_it, index++)
 		{
-			if(vv_it.handle() == fv)
+			if(vv_it.handle() == history.fromVertex)
 			{
 				offset_to = index + 1;
 				printf("Offset#%d ", offset_to);
 			}
-			record_to_vhandles.push_back(vv_it.handle());
+			history.toOnering.push_back(vv_it.handle());
 			printf("#%d ", vv_it.handle().idx());
 		}
 		printf("\n");
 
-		size = record_from_vhandles.size();
+		size = history.fromOnering.size();
 		for(int i = 0; i < size - 2; i++)
 		{
-			polygon.push_back(record_from_vhandles[(i+offset_from)%size]);
-			printf("#%d ", record_from_vhandles[(i+offset_from)%size].idx());
+			polygon.push_back(history.fromOnering[(i+offset_from)%size]);
+			printf("#%d ", history.fromOnering[(i+offset_from)%size].idx());
 		}
 
-		size = record_to_vhandles.size();
+		size = history.toOnering.size();
 		for(int i = 0; i < size - 2; i++)
 		{
-			polygon.push_back(record_to_vhandles[(i+offset_to)%size]);
-			printf("#%d ", record_to_vhandles[(i+offset_to)%size].idx());
+			polygon.push_back(history.toOnering[(i+offset_to)%size]);
+			printf("#%d ", history.toOnering[(i+offset_to)%size].idx());
 		}
 		printf("\n ");
 		if(!isConvex(polygon))
 			return;
 
 		//Record the face handle
-		for(vf_it = vf_iter(fv);vf_it;++vf_it)
+		for(vf_it = vf_iter(history.fromVertex);vf_it;++vf_it)
 		{
 			shandles.insert(vf_it.handle());
 		}
 
-		for(vf_it = vf_iter(tv);vf_it;++vf_it)
+		for(vf_it = vf_iter(history.toVertex);vf_it;++vf_it)
 		{
 			shandles.insert(vf_it.handle());
 		}
 
-		Point fp = point(fv);
-		Point tp = point(tv);
+		Point fp = point(history.fromVertex);
+		Point tp = point(history.toVertex);
 
 		//delete_vertex(fv);
 		//delete_vertex(tv);
@@ -423,7 +424,7 @@ namespace OMT
 
 
 		Point add((fp[0] + tp[0])/2, (fp[1] + tp[1])/2, (fp[2] + tp[2])/2);
-		VHandle addHandle = add_vertex(add);
+		history.newVertex = add_vertex(add);
 		//for(ite = vhandles.begin(); ite != vhandles.end(); ++ite)
 		//{
 		//	face_vhandles.push_back(*ite);
@@ -435,8 +436,8 @@ namespace OMT
 		//		face_vhandles.push_back(*ite);
 		//	}
 		//}
-		size = record_from_vhandles.size();
-		printf("From Start#%d, size:%d\n", record_from_vhandles[(offset_from)%size], size);
+		size = history.fromOnering.size();
+		printf("From Start#%d, size:%d\n", history.fromOnering[(offset_from)%size], size);
 		for(int i = 0; i < size - 2; i++)
 		{
 			//face_vhandles.push_back(record_from_vhandles[(i+offset_from)%size]);
@@ -449,19 +450,19 @@ namespace OMT
 			//	face_vhandles.push_back(record_from_vhandles[(i+offset_from)%size]);
 			//}
 			//face_vhandles.push_back(addHandle);
-			printf("#%d ", addHandle.idx());
+			printf("#%d ", history.newVertex.idx());
 			//face_vhandles.push_back(record_from_vhandles[(i+1+offset_from)%size]);
-			printf("#%d ", record_from_vhandles[(i+1+offset_from)%size].idx());
+			printf("#%d ", history.fromOnering[(i+1+offset_from)%size].idx());
 			//face_vhandles.push_back(record_from_vhandles[(i+offset_from)%size]);
-			printf("#%d \n", record_from_vhandles[(i+offset_from)%size].idx());
+			printf("#%d \n", history.fromOnering[(i+offset_from)%size].idx());
 			//add_face(face_vhandles);
-			add_face(addHandle, record_from_vhandles[(i+1+offset_from)%size], record_from_vhandles[(i+offset_from)%size]);
+			add_face(history.newVertex, history.fromOnering[(i+1+offset_from)%size], history.fromOnering[(i+offset_from)%size]);
 			//face_vhandles.clear();
 		}
 		
 		
-		size = record_to_vhandles.size();
-		printf("To Start#%d, size:%d\n", record_to_vhandles[(offset_to)%size], size);
+		size = history.toOnering.size();
+		printf("To Start#%d, size:%d\n", history.toOnering[(offset_to)%size], size);
 		for(int i = 0; i < size - 2; i++)
 		{
 			//face_vhandles.push_back(record_to_vhandles[(i+offset_to)%size]);
@@ -474,16 +475,51 @@ namespace OMT
 			//	face_vhandles.push_back(record_to_vhandles[(i+offset_to)%size]);
 			//}
 			//face_vhandles.push_back(addHandle);
-			printf("#%d ", addHandle.idx());
+			printf("#%d ", history.newVertex.idx());
 			//face_vhandles.push_back(record_to_vhandles[(i+1+offset_to)%size]);
-			printf("#%d ", record_to_vhandles[(i+1+offset_to)%size].idx());
+			printf("#%d ", history.toOnering[(i+1+offset_to)%size].idx());
 			//face_vhandles.push_back(record_to_vhandles[(i+offset_to)%size]);
-			printf("#%d \n", record_to_vhandles[(i+offset_to)%size].idx());
+			printf("#%d \n", history.toOnering[(i+offset_to)%size].idx());
 			//add_face(face_vhandles);
-			add_face(addHandle, record_to_vhandles[(i+1+offset_to)%size], record_to_vhandles[(i+offset_to)%size]);
+			add_face(history.newVertex, history.toOnering[(i+1+offset_to)%size], history.toOnering[(i+offset_to)%size]);
 			//face_vhandles.clear();
 		}
 		printf("\n");
+		vDeleteHistory.push_back(history);
+	}
+
+	void Model::undoDelete(void)
+	{
+		if(vDeleteHistory.size() > 0)
+		{
+			DELETE_HISTORY history = vDeleteHistory.back();
+			VFIter vf_ite;
+			size_t size;
+			delete_vertex(history.newVertex);
+			garbage_collection();
+			//for(vf_ite = vf_iter(history.newVertex); vf_ite;++vf_ite)
+			//{
+			//	delete_face(vf_ite.handle(), false);
+			//}
+
+			size = history.fromOnering.size();
+			for(int i = 0; i < size; i++)
+			{
+				printf("#%d ", history.fromVertex.idx());
+				printf("#%d ", history.fromOnering[(i+1)%size].idx());
+				printf("#%d \n", history.fromOnering[(i)%size].idx());
+				add_face(history.fromVertex, history.fromOnering[(i+1)%size], history.fromOnering[(i)%size]);
+			}
+			size = history.toOnering.size();
+			for(int i = 0; i < size; i++)
+			{
+				printf("#%d ", history.toVertex.idx());
+				printf("#%d ", history.toOnering[(i+1)%size].idx());
+				printf("#%d \n", history.toOnering[(i)%size].idx());
+				add_face(history.toVertex, history.toOnering[(i+1)%size], history.toOnering[(i)%size]);
+			}
+			vDeleteHistory.pop_back();
+		}
 	}
 
 	bool Model::isConvex(vector<VHandle> &polygon)
@@ -505,7 +541,7 @@ namespace OMT
 		}
 
 		printf("Total:%f\n", totalAngle);
-		if(totalAngle <= 2 * PI + 0.5 && totalAngle >  2 * PI - 0.5)
+		if(totalAngle <= 2 * PI + THRESHOLD && totalAngle >  2 * PI - THRESHOLD)
 			return true;
 		return false;
 	}
