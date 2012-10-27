@@ -99,6 +99,18 @@ namespace OMT//OpenMesh Triangle mesh
 		float r, g, b;
 	};
 
+	//
+	typedef std::vector<VHandle> V_ONE_RING_HANLDE;
+	struct DELETE_HISTORY
+	{
+		VHandle fromVertex;
+		V_ONE_RING_HANLDE fromOnering;
+		VHandle toVertex;
+		V_ONE_RING_HANLDE toOnering;
+		VHandle newVertex;
+	};
+	typedef std::vector<DELETE_HISTORY> V_DELETE_HISTORY;
+
 	typedef std::vector< sp_p >			SP_POINT_LIST;
 	typedef std::vector< sp_v >			SP_VERTEX_LIST;
 	typedef std::vector< sp_v >			SP_EDGE_LIST;
@@ -117,6 +129,7 @@ namespace OMT//OpenMesh Triangle mesh
 		SP_VERTEX_LIST					sp_v_list;
 		SP_EDGE_LIST					sp_e_list;
 		SP_FACE_LIST					sp_f_list;
+		V_DELETE_HISTORY				vDeleteHistory;
 	public:
 										Model();//constructor
 										~Model();//de-constructor
@@ -145,6 +158,7 @@ namespace OMT//OpenMesh Triangle mesh
 		void							deleteFace(FHandle &handle);
 
 		void							simplificationEdge(HEHandle &handle);
+		void							undoDelete(void);
 		bool							isConvex(vector<VHandle> &polygon);
 	};
 }
