@@ -889,6 +889,60 @@ namespace OMT
 					//iter = iter_back;
 				}
 				else
+					if (p.first == id_v1 && p.second != id_v2)
+					{
+						//erase
+						errors.erase(iter++);
+
+						if(new_id > p.second)
+						{
+							max_id = new_id;
+							min_id = p.second;
+						}
+						else
+						{
+							min_id = new_id;
+							max_id = p.second;
+						}
+
+						//insert
+						//duplicate is not possible in map
+						pr = errors.insert(ERRORS::value_type( PAIR(min_id, max_id), 0.0 ));
+#ifdef _DEBUG
+						if (pr.second == true)
+							printf("QUADRIC: insert  pair(%d, %d)\n", min_id, max_id);
+						else
+							printf("QUADRIC: insert  pair(%d, %d) FAIL..duplicate\n", min_id, max_id);
+#endif
+					}
+					else if (p.second == id_v1 && p.first != id_v2)
+					{
+						//erase
+						errors.erase(iter++);
+
+						if(new_id > p.first)
+						{
+							max_id = new_id;
+							min_id = p.first;
+						}
+						else
+						{
+							min_id = new_id;
+							max_id = p.first;
+						}
+
+						//insert
+						//duplicate is not possible in map
+						pr = errors.insert(ERRORS::value_type( PAIR(min_id, max_id), 0.0 ));
+#ifdef _DEBUG
+						if (pr.second == true)
+							printf("QUADRIC: insert  pair(%d, %d)\n", min_id, max_id);
+						else
+							printf("QUADRIC: insert  pair(%d, %d) FAIL..duplicate\n", min_id, max_id);
+#endif
+						//iter = iter_back;
+					}
+					else
 					iter++;
 			}
 

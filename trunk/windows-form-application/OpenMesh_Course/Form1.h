@@ -672,14 +672,20 @@ private: System::Void hkoglPanelControl1_MouseDown(System::Object^  sender, Syst
 
 private: System::Void btnDelUndo_Click(System::Object^  sender, System::EventArgs^  e) 
 		 {
-			 mesh->undoDelete();
-			 this->Refresh();
+			 if(mesh)
+			 {
+				 mesh->undoDelete();
+				 this->Refresh();
+			 }
 		 }
 private: System::Void btnSimplification_Click(System::Object^  sender, System::EventArgs^  e) 
 		 {
-			 double rate = (float)tbSimplification->Value / 100;
-			 mesh->simplification(rate);
-			 this->Refresh();
+			 if(mesh)
+			 {
+				 double rate = (float)tbSimplification->Value / 100;
+				 mesh->simplification(rate);
+				 this->Refresh();
+			 }
 		 }
 };
 }
