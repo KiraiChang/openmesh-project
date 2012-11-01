@@ -78,6 +78,8 @@ namespace OpenMesh_Course {
 	private: System::Windows::Forms::CheckBox^  cbDeleteSelect;
 	private: System::Windows::Forms::Button^  btnDelUndo;
 	private: System::Windows::Forms::Button^  btnSimplification;
+	private: System::Windows::Forms::TrackBar^  tbSimplification;
+
 
 
 
@@ -110,15 +112,17 @@ namespace OpenMesh_Course {
 		/// </summary>
 		void InitializeComponent(void)
 		{
-			HKOGLPanel::HKCCameraProp^  hkcCameraProp3 = (gcnew HKOGLPanel::HKCCameraProp());
-			HKOGLPanel::HKCDisplayProp^  hkcDisplayProp3 = (gcnew HKOGLPanel::HKCDisplayProp());
-			HKOGLPanel::HKCPixelFormat^  hkcPixelFormat3 = (gcnew HKOGLPanel::HKCPixelFormat());
-			HKOGLPanel::HKCTrackballProp^  hkcTrackballProp3 = (gcnew HKOGLPanel::HKCTrackballProp());
-			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig7 = (gcnew HKOGLPanel::HKCTrackballTrig());
-			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig8 = (gcnew HKOGLPanel::HKCTrackballTrig());
-			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig9 = (gcnew HKOGLPanel::HKCTrackballTrig());
+			HKOGLPanel::HKCCameraProp^  hkcCameraProp1 = (gcnew HKOGLPanel::HKCCameraProp());
+			HKOGLPanel::HKCDisplayProp^  hkcDisplayProp1 = (gcnew HKOGLPanel::HKCDisplayProp());
+			HKOGLPanel::HKCPixelFormat^  hkcPixelFormat1 = (gcnew HKOGLPanel::HKCPixelFormat());
+			HKOGLPanel::HKCTrackballProp^  hkcTrackballProp1 = (gcnew HKOGLPanel::HKCTrackballProp());
+			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig1 = (gcnew HKOGLPanel::HKCTrackballTrig());
+			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig2 = (gcnew HKOGLPanel::HKCTrackballTrig());
+			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig3 = (gcnew HKOGLPanel::HKCTrackballTrig());
 			this->hkoglPanelControl1 = (gcnew HKOGLPanel::HKOGLPanelControl());
 			this->gpCommand = (gcnew System::Windows::Forms::GroupBox());
+			this->tbSimplification = (gcnew System::Windows::Forms::TrackBar());
+			this->btnSimplification = (gcnew System::Windows::Forms::Button());
 			this->btnDelUndo = (gcnew System::Windows::Forms::Button());
 			this->gbOneRing = (gcnew System::Windows::Forms::GroupBox());
 			this->rbOneRingNone = (gcnew System::Windows::Forms::RadioButton());
@@ -136,8 +140,8 @@ namespace OpenMesh_Course {
 			this->rbSelectVertex = (gcnew System::Windows::Forms::RadioButton());
 			this->btnLoadMesh = (gcnew System::Windows::Forms::Button());
 			this->openMeshFileDialog = (gcnew System::Windows::Forms::OpenFileDialog());
-			this->btnSimplification = (gcnew System::Windows::Forms::Button());
 			this->gpCommand->SuspendLayout();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->tbSimplification))->BeginInit();
 			this->gbOneRing->SuspendLayout();
 			this->gbShowType->SuspendLayout();
 			this->gpSelectType->SuspendLayout();
@@ -145,54 +149,55 @@ namespace OpenMesh_Course {
 			// 
 			// hkoglPanelControl1
 			// 
-			hkcCameraProp3->Enabled = true;
-			hkcCameraProp3->Far = 1000;
-			hkcCameraProp3->Fov = 45;
-			hkcCameraProp3->Near = 0.001;
-			hkcCameraProp3->Type = HKOGLPanel::HKCCameraProp::CAMERATYPE::PERSPECTIVE;
-			hkcCameraProp3->Zoom = 1;
-			this->hkoglPanelControl1->Camera_Property = hkcCameraProp3;
-			hkcDisplayProp3->Back_Color = System::Drawing::Color::White;
-			hkcDisplayProp3->Grid_Axis = System::Drawing::Color::Black;
-			hkcDisplayProp3->Grid_Draw = true;
-			hkcDisplayProp3->Grid_Line = System::Drawing::Color::DimGray;
-			this->hkoglPanelControl1->Display_Property = hkcDisplayProp3;
+			hkcCameraProp1->Enabled = true;
+			hkcCameraProp1->Far = 1000;
+			hkcCameraProp1->Fov = 45;
+			hkcCameraProp1->Near = 0.001;
+			hkcCameraProp1->Type = HKOGLPanel::HKCCameraProp::CAMERATYPE::PERSPECTIVE;
+			hkcCameraProp1->Zoom = 1;
+			this->hkoglPanelControl1->Camera_Property = hkcCameraProp1;
+			hkcDisplayProp1->Back_Color = System::Drawing::Color::White;
+			hkcDisplayProp1->Grid_Axis = System::Drawing::Color::Black;
+			hkcDisplayProp1->Grid_Draw = true;
+			hkcDisplayProp1->Grid_Line = System::Drawing::Color::DimGray;
+			this->hkoglPanelControl1->Display_Property = hkcDisplayProp1;
 			this->hkoglPanelControl1->Dock = System::Windows::Forms::DockStyle::Left;
 			this->hkoglPanelControl1->Empty_Panel = false;
 			this->hkoglPanelControl1->Location = System::Drawing::Point(0, 0);
 			this->hkoglPanelControl1->Name = L"hkoglPanelControl1";
-			hkcPixelFormat3->Accumu_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
-			hkcPixelFormat3->Alpha_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
-			hkcPixelFormat3->Stencil_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
-			this->hkoglPanelControl1->Pixel_Format = hkcPixelFormat3;
+			hkcPixelFormat1->Accumu_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
+			hkcPixelFormat1->Alpha_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
+			hkcPixelFormat1->Stencil_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
+			this->hkoglPanelControl1->Pixel_Format = hkcPixelFormat1;
 			this->hkoglPanelControl1->Size = System::Drawing::Size(800, 835);
 			this->hkoglPanelControl1->TabIndex = 0;
-			hkcTrackballProp3->Const_Res = false;
-			hkcTrackballProp3->Delta_Res = 500;
-			hkcTrackballProp3->Enabled = true;
-			hkcTrackballProp3->Move_Res = 1000;
-			hkcTrackballTrig7->Key_Down = false;
-			hkcTrackballTrig7->Keyboard = System::Windows::Forms::Keys::None;
-			hkcTrackballTrig7->Mouse = System::Windows::Forms::MouseButtons::Right;
-			hkcTrackballTrig7->Mouse_Down = false;
-			hkcTrackballProp3->Move_Trigger = hkcTrackballTrig7;
-			hkcTrackballTrig8->Key_Down = false;
-			hkcTrackballTrig8->Keyboard = System::Windows::Forms::Keys::None;
-			hkcTrackballTrig8->Mouse = System::Windows::Forms::MouseButtons::Left;
-			hkcTrackballTrig8->Mouse_Down = false;
-			hkcTrackballProp3->Rotate_Trigger = hkcTrackballTrig8;
-			hkcTrackballProp3->Zoom_Res = 100;
-			hkcTrackballTrig9->Key_Down = false;
-			hkcTrackballTrig9->Keyboard = System::Windows::Forms::Keys::None;
-			hkcTrackballTrig9->Mouse = System::Windows::Forms::MouseButtons::Middle;
-			hkcTrackballTrig9->Mouse_Down = false;
-			hkcTrackballProp3->Zoom_Trigger = hkcTrackballTrig9;
-			this->hkoglPanelControl1->Trackball_Property = hkcTrackballProp3;
+			hkcTrackballProp1->Const_Res = false;
+			hkcTrackballProp1->Delta_Res = 500;
+			hkcTrackballProp1->Enabled = true;
+			hkcTrackballProp1->Move_Res = 1000;
+			hkcTrackballTrig1->Key_Down = false;
+			hkcTrackballTrig1->Keyboard = System::Windows::Forms::Keys::None;
+			hkcTrackballTrig1->Mouse = System::Windows::Forms::MouseButtons::Right;
+			hkcTrackballTrig1->Mouse_Down = false;
+			hkcTrackballProp1->Move_Trigger = hkcTrackballTrig1;
+			hkcTrackballTrig2->Key_Down = false;
+			hkcTrackballTrig2->Keyboard = System::Windows::Forms::Keys::None;
+			hkcTrackballTrig2->Mouse = System::Windows::Forms::MouseButtons::Left;
+			hkcTrackballTrig2->Mouse_Down = false;
+			hkcTrackballProp1->Rotate_Trigger = hkcTrackballTrig2;
+			hkcTrackballProp1->Zoom_Res = 100;
+			hkcTrackballTrig3->Key_Down = false;
+			hkcTrackballTrig3->Keyboard = System::Windows::Forms::Keys::None;
+			hkcTrackballTrig3->Mouse = System::Windows::Forms::MouseButtons::Middle;
+			hkcTrackballTrig3->Mouse_Down = false;
+			hkcTrackballProp1->Zoom_Trigger = hkcTrackballTrig3;
+			this->hkoglPanelControl1->Trackball_Property = hkcTrackballProp1;
 			this->hkoglPanelControl1->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &Form1::hkoglPanelControl1_Paint);
 			this->hkoglPanelControl1->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(this, &Form1::hkoglPanelControl1_MouseDown);
 			// 
 			// gpCommand
 			// 
+			this->gpCommand->Controls->Add(this->tbSimplification);
 			this->gpCommand->Controls->Add(this->btnSimplification);
 			this->gpCommand->Controls->Add(this->btnDelUndo);
 			this->gpCommand->Controls->Add(this->gbOneRing);
@@ -207,6 +212,25 @@ namespace OpenMesh_Course {
 			this->gpCommand->TabIndex = 2;
 			this->gpCommand->TabStop = false;
 			this->gpCommand->Text = L"Command";
+			// 
+			// tbSimplification
+			// 
+			this->tbSimplification->Location = System::Drawing::Point(26, 484);
+			this->tbSimplification->Maximum = 100;
+			this->tbSimplification->Name = L"tbSimplification";
+			this->tbSimplification->Size = System::Drawing::Size(146, 45);
+			this->tbSimplification->TabIndex = 8;
+			this->tbSimplification->Value = 100;
+			// 
+			// btnSimplification
+			// 
+			this->btnSimplification->Location = System::Drawing::Point(49, 535);
+			this->btnSimplification->Name = L"btnSimplification";
+			this->btnSimplification->Size = System::Drawing::Size(93, 23);
+			this->btnSimplification->TabIndex = 7;
+			this->btnSimplification->Text = L"Simplification";
+			this->btnSimplification->UseVisualStyleBackColor = true;
+			this->btnSimplification->Click += gcnew System::EventHandler(this, &Form1::btnSimplification_Click);
 			// 
 			// btnDelUndo
 			// 
@@ -391,16 +415,6 @@ namespace OpenMesh_Course {
 			this->openMeshFileDialog->Title = L"Open Mesh File";
 			this->openMeshFileDialog->FileOk += gcnew System::ComponentModel::CancelEventHandler(this, &Form1::openMeshFileDialog_FileOk);
 			// 
-			// btnSimplification
-			// 
-			this->btnSimplification->Location = System::Drawing::Point(25, 454);
-			this->btnSimplification->Name = L"btnSimplification";
-			this->btnSimplification->Size = System::Drawing::Size(75, 23);
-			this->btnSimplification->TabIndex = 7;
-			this->btnSimplification->Text = L"Simplification";
-			this->btnSimplification->UseVisualStyleBackColor = true;
-			this->btnSimplification->Click += gcnew System::EventHandler(this, &Form1::btnSimplification_Click);
-			// 
 			// Form1
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 12);
@@ -412,6 +426,7 @@ namespace OpenMesh_Course {
 			this->Text = L"Digital Mesh";
 			this->gpCommand->ResumeLayout(false);
 			this->gpCommand->PerformLayout();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->tbSimplification))->EndInit();
 			this->gbOneRing->ResumeLayout(false);
 			this->gbOneRing->PerformLayout();
 			this->gbShowType->ResumeLayout(false);
@@ -662,7 +677,8 @@ private: System::Void btnDelUndo_Click(System::Object^  sender, System::EventArg
 		 }
 private: System::Void btnSimplification_Click(System::Object^  sender, System::EventArgs^  e) 
 		 {
-			 mesh->simplification(0.80);
+			 double rate = (float)tbSimplification->Value / 100;
+			 mesh->simplification(rate);
 			 this->Refresh();
 		 }
 };
