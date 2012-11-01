@@ -119,12 +119,18 @@ namespace OMT//OpenMesh Triangle mesh
 
 	typedef std::map<size_t, 
 		OpenMesh::Geometry::Quadricd >	QUADRICES;
+	typedef std::pair<int, int>			PAIR;
+	typedef std::map<PAIR, double>		ERRORS;
 	/*----------------------------------------------------------------------*/
 	bool sameSide(const Point &p1, const Point &p2, const Point &p3, const Point &p4);
 	bool pointInTrangle(const Point &p1, const Point &tv1, const Point &tv2, const Point &tv3);
 	double distance(const Point &p1, const Point &p2);
 	double area(const Point &v1, const Point &v2);
 	double distanceL(const Point &p, const Point &from, const Point &to);
+	double det(OpenMesh::Geometry::Quadricd q, int a11, int a12, int a13,
+												int a21, int a22, int a23,
+												int a31, int a32, int a33);
+	double vertexError(OpenMesh::Geometry::Quadricd q, double x, double y, double z);
 	/*定義類別*/
 	class Model:public MyMesh
 	{
@@ -133,9 +139,8 @@ namespace OMT//OpenMesh Triangle mesh
 		SP_VERTEX_LIST					sp_v_list;
 		SP_EDGE_LIST					sp_e_list;
 		SP_FACE_LIST					sp_f_list;
-		QUADRICES						quadrices;
-		size_t							total_face_count;
-
+		QUADRICES						quadrics;
+		ERRORS							errors;
 		V_DELETE_HISTORY				vDeleteHistory;
 
 	public:
@@ -170,6 +175,11 @@ namespace OMT//OpenMesh Triangle mesh
 		void							simplificationEdge(HEHandle &handle);
 		void							undoDelete(void);
 		bool							isConvex(vector<VHandle> &polygon);
+		double							calculateError(int id_v1, int id_v2, double* vx = NULL, double* vy = NULL, double* vz = NULL);
+		void							selectPair();
+		void							simplification(double rate);
+		void							simplification(int target_num_faces);
+		int								simplification(int id_v1, int id_v2, double vx, double vy, double vz);
 	};
 }
 /*======================================================================*/

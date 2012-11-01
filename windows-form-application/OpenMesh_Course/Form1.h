@@ -77,6 +77,8 @@ namespace OpenMesh_Course {
 	private: System::Windows::Forms::RadioButton^  rbOneRingNone;
 	private: System::Windows::Forms::CheckBox^  cbDeleteSelect;
 	private: System::Windows::Forms::Button^  btnDelUndo;
+	private: System::Windows::Forms::Button^  btnSimplification;
+
 
 
 
@@ -108,15 +110,16 @@ namespace OpenMesh_Course {
 		/// </summary>
 		void InitializeComponent(void)
 		{
-			HKOGLPanel::HKCCameraProp^  hkcCameraProp2 = (gcnew HKOGLPanel::HKCCameraProp());
-			HKOGLPanel::HKCDisplayProp^  hkcDisplayProp2 = (gcnew HKOGLPanel::HKCDisplayProp());
-			HKOGLPanel::HKCPixelFormat^  hkcPixelFormat2 = (gcnew HKOGLPanel::HKCPixelFormat());
-			HKOGLPanel::HKCTrackballProp^  hkcTrackballProp2 = (gcnew HKOGLPanel::HKCTrackballProp());
-			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig4 = (gcnew HKOGLPanel::HKCTrackballTrig());
-			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig5 = (gcnew HKOGLPanel::HKCTrackballTrig());
-			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig6 = (gcnew HKOGLPanel::HKCTrackballTrig());
+			HKOGLPanel::HKCCameraProp^  hkcCameraProp3 = (gcnew HKOGLPanel::HKCCameraProp());
+			HKOGLPanel::HKCDisplayProp^  hkcDisplayProp3 = (gcnew HKOGLPanel::HKCDisplayProp());
+			HKOGLPanel::HKCPixelFormat^  hkcPixelFormat3 = (gcnew HKOGLPanel::HKCPixelFormat());
+			HKOGLPanel::HKCTrackballProp^  hkcTrackballProp3 = (gcnew HKOGLPanel::HKCTrackballProp());
+			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig7 = (gcnew HKOGLPanel::HKCTrackballTrig());
+			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig8 = (gcnew HKOGLPanel::HKCTrackballTrig());
+			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig9 = (gcnew HKOGLPanel::HKCTrackballTrig());
 			this->hkoglPanelControl1 = (gcnew HKOGLPanel::HKOGLPanelControl());
 			this->gpCommand = (gcnew System::Windows::Forms::GroupBox());
+			this->btnDelUndo = (gcnew System::Windows::Forms::Button());
 			this->gbOneRing = (gcnew System::Windows::Forms::GroupBox());
 			this->rbOneRingNone = (gcnew System::Windows::Forms::RadioButton());
 			this->rbOneRingFace = (gcnew System::Windows::Forms::RadioButton());
@@ -133,7 +136,7 @@ namespace OpenMesh_Course {
 			this->rbSelectVertex = (gcnew System::Windows::Forms::RadioButton());
 			this->btnLoadMesh = (gcnew System::Windows::Forms::Button());
 			this->openMeshFileDialog = (gcnew System::Windows::Forms::OpenFileDialog());
-			this->btnDelUndo = (gcnew System::Windows::Forms::Button());
+			this->btnSimplification = (gcnew System::Windows::Forms::Button());
 			this->gpCommand->SuspendLayout();
 			this->gbOneRing->SuspendLayout();
 			this->gbShowType->SuspendLayout();
@@ -142,54 +145,55 @@ namespace OpenMesh_Course {
 			// 
 			// hkoglPanelControl1
 			// 
-			hkcCameraProp2->Enabled = true;
-			hkcCameraProp2->Far = 1000;
-			hkcCameraProp2->Fov = 45;
-			hkcCameraProp2->Near = 0.001;
-			hkcCameraProp2->Type = HKOGLPanel::HKCCameraProp::CAMERATYPE::PERSPECTIVE;
-			hkcCameraProp2->Zoom = 1;
-			this->hkoglPanelControl1->Camera_Property = hkcCameraProp2;
-			hkcDisplayProp2->Back_Color = System::Drawing::Color::White;
-			hkcDisplayProp2->Grid_Axis = System::Drawing::Color::Black;
-			hkcDisplayProp2->Grid_Draw = true;
-			hkcDisplayProp2->Grid_Line = System::Drawing::Color::DimGray;
-			this->hkoglPanelControl1->Display_Property = hkcDisplayProp2;
+			hkcCameraProp3->Enabled = true;
+			hkcCameraProp3->Far = 1000;
+			hkcCameraProp3->Fov = 45;
+			hkcCameraProp3->Near = 0.001;
+			hkcCameraProp3->Type = HKOGLPanel::HKCCameraProp::CAMERATYPE::PERSPECTIVE;
+			hkcCameraProp3->Zoom = 1;
+			this->hkoglPanelControl1->Camera_Property = hkcCameraProp3;
+			hkcDisplayProp3->Back_Color = System::Drawing::Color::White;
+			hkcDisplayProp3->Grid_Axis = System::Drawing::Color::Black;
+			hkcDisplayProp3->Grid_Draw = true;
+			hkcDisplayProp3->Grid_Line = System::Drawing::Color::DimGray;
+			this->hkoglPanelControl1->Display_Property = hkcDisplayProp3;
 			this->hkoglPanelControl1->Dock = System::Windows::Forms::DockStyle::Left;
 			this->hkoglPanelControl1->Empty_Panel = false;
 			this->hkoglPanelControl1->Location = System::Drawing::Point(0, 0);
 			this->hkoglPanelControl1->Name = L"hkoglPanelControl1";
-			hkcPixelFormat2->Accumu_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
-			hkcPixelFormat2->Alpha_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
-			hkcPixelFormat2->Stencil_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
-			this->hkoglPanelControl1->Pixel_Format = hkcPixelFormat2;
+			hkcPixelFormat3->Accumu_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
+			hkcPixelFormat3->Alpha_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
+			hkcPixelFormat3->Stencil_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
+			this->hkoglPanelControl1->Pixel_Format = hkcPixelFormat3;
 			this->hkoglPanelControl1->Size = System::Drawing::Size(800, 835);
 			this->hkoglPanelControl1->TabIndex = 0;
-			hkcTrackballProp2->Const_Res = false;
-			hkcTrackballProp2->Delta_Res = 500;
-			hkcTrackballProp2->Enabled = true;
-			hkcTrackballProp2->Move_Res = 1000;
-			hkcTrackballTrig4->Key_Down = false;
-			hkcTrackballTrig4->Keyboard = System::Windows::Forms::Keys::None;
-			hkcTrackballTrig4->Mouse = System::Windows::Forms::MouseButtons::Right;
-			hkcTrackballTrig4->Mouse_Down = false;
-			hkcTrackballProp2->Move_Trigger = hkcTrackballTrig4;
-			hkcTrackballTrig5->Key_Down = false;
-			hkcTrackballTrig5->Keyboard = System::Windows::Forms::Keys::None;
-			hkcTrackballTrig5->Mouse = System::Windows::Forms::MouseButtons::Left;
-			hkcTrackballTrig5->Mouse_Down = false;
-			hkcTrackballProp2->Rotate_Trigger = hkcTrackballTrig5;
-			hkcTrackballProp2->Zoom_Res = 100;
-			hkcTrackballTrig6->Key_Down = false;
-			hkcTrackballTrig6->Keyboard = System::Windows::Forms::Keys::None;
-			hkcTrackballTrig6->Mouse = System::Windows::Forms::MouseButtons::Middle;
-			hkcTrackballTrig6->Mouse_Down = false;
-			hkcTrackballProp2->Zoom_Trigger = hkcTrackballTrig6;
-			this->hkoglPanelControl1->Trackball_Property = hkcTrackballProp2;
+			hkcTrackballProp3->Const_Res = false;
+			hkcTrackballProp3->Delta_Res = 500;
+			hkcTrackballProp3->Enabled = true;
+			hkcTrackballProp3->Move_Res = 1000;
+			hkcTrackballTrig7->Key_Down = false;
+			hkcTrackballTrig7->Keyboard = System::Windows::Forms::Keys::None;
+			hkcTrackballTrig7->Mouse = System::Windows::Forms::MouseButtons::Right;
+			hkcTrackballTrig7->Mouse_Down = false;
+			hkcTrackballProp3->Move_Trigger = hkcTrackballTrig7;
+			hkcTrackballTrig8->Key_Down = false;
+			hkcTrackballTrig8->Keyboard = System::Windows::Forms::Keys::None;
+			hkcTrackballTrig8->Mouse = System::Windows::Forms::MouseButtons::Left;
+			hkcTrackballTrig8->Mouse_Down = false;
+			hkcTrackballProp3->Rotate_Trigger = hkcTrackballTrig8;
+			hkcTrackballProp3->Zoom_Res = 100;
+			hkcTrackballTrig9->Key_Down = false;
+			hkcTrackballTrig9->Keyboard = System::Windows::Forms::Keys::None;
+			hkcTrackballTrig9->Mouse = System::Windows::Forms::MouseButtons::Middle;
+			hkcTrackballTrig9->Mouse_Down = false;
+			hkcTrackballProp3->Zoom_Trigger = hkcTrackballTrig9;
+			this->hkoglPanelControl1->Trackball_Property = hkcTrackballProp3;
 			this->hkoglPanelControl1->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &Form1::hkoglPanelControl1_Paint);
 			this->hkoglPanelControl1->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(this, &Form1::hkoglPanelControl1_MouseDown);
 			// 
 			// gpCommand
 			// 
+			this->gpCommand->Controls->Add(this->btnSimplification);
 			this->gpCommand->Controls->Add(this->btnDelUndo);
 			this->gpCommand->Controls->Add(this->gbOneRing);
 			this->gpCommand->Controls->Add(this->lOutput);
@@ -203,6 +207,16 @@ namespace OpenMesh_Course {
 			this->gpCommand->TabIndex = 2;
 			this->gpCommand->TabStop = false;
 			this->gpCommand->Text = L"Command";
+			// 
+			// btnDelUndo
+			// 
+			this->btnDelUndo->Location = System::Drawing::Point(26, 424);
+			this->btnDelUndo->Name = L"btnDelUndo";
+			this->btnDelUndo->Size = System::Drawing::Size(75, 23);
+			this->btnDelUndo->TabIndex = 6;
+			this->btnDelUndo->Text = L"Delete Undo";
+			this->btnDelUndo->UseVisualStyleBackColor = true;
+			this->btnDelUndo->Click += gcnew System::EventHandler(this, &Form1::btnDelUndo_Click);
 			// 
 			// gbOneRing
 			// 
@@ -377,15 +391,15 @@ namespace OpenMesh_Course {
 			this->openMeshFileDialog->Title = L"Open Mesh File";
 			this->openMeshFileDialog->FileOk += gcnew System::ComponentModel::CancelEventHandler(this, &Form1::openMeshFileDialog_FileOk);
 			// 
-			// btnDelUndo
+			// btnSimplification
 			// 
-			this->btnDelUndo->Location = System::Drawing::Point(26, 424);
-			this->btnDelUndo->Name = L"btnDelUndo";
-			this->btnDelUndo->Size = System::Drawing::Size(75, 23);
-			this->btnDelUndo->TabIndex = 6;
-			this->btnDelUndo->Text = L"Delete Undo";
-			this->btnDelUndo->UseVisualStyleBackColor = true;
-			this->btnDelUndo->Click += gcnew System::EventHandler(this, &Form1::btnDelUndo_Click);
+			this->btnSimplification->Location = System::Drawing::Point(25, 454);
+			this->btnSimplification->Name = L"btnSimplification";
+			this->btnSimplification->Size = System::Drawing::Size(75, 23);
+			this->btnSimplification->TabIndex = 7;
+			this->btnSimplification->Text = L"Simplification";
+			this->btnSimplification->UseVisualStyleBackColor = true;
+			this->btnSimplification->Click += gcnew System::EventHandler(this, &Form1::btnSimplification_Click);
 			// 
 			// Form1
 			// 
@@ -644,6 +658,11 @@ private: System::Void hkoglPanelControl1_MouseDown(System::Object^  sender, Syst
 private: System::Void btnDelUndo_Click(System::Object^  sender, System::EventArgs^  e) 
 		 {
 			 mesh->undoDelete();
+			 this->Refresh();
+		 }
+private: System::Void btnSimplification_Click(System::Object^  sender, System::EventArgs^  e) 
+		 {
+			 mesh->simplification(0.80);
 			 this->Refresh();
 		 }
 };
