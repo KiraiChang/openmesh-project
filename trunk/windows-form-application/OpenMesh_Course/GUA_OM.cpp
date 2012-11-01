@@ -50,13 +50,14 @@ namespace OMT
 		m[0] = q.a();
 		m[4] = m[1] = q.b();
 		m[8] = m[2] = q.c();
-		m[12] = m[3] = q.d();
+		m[3] = q.d();
 		m[5] = q.e();
 		m[9] = m[6] = q.f();
-		m[13] = m[7] = q.g();
+		m[7] = q.g();
 		m[10] = q.h();
-		m[14] = m[11] = q.i();
+		m[11] = q.i();
 		m[15] = q.j();
+		m[12] = m[13] = m[14] = 0;
 		double d = m[a11]*m[a22]*m[a33] + m[a13]*m[a21]*m[a32] + m[a12]*m[a23]*m[a31] 
 		- m[a13]*m[a22]*m[a31] - m[a11]*m[a23]*m[a32] - m[a12]*m[a21]*m[a33]; 
 		return d;
@@ -888,9 +889,8 @@ namespace OMT
 #endif
 					//iter = iter_back;
 				}
-				else
-					if (p.first == id_v1 && p.second != id_v2)
-					{
+				else if (p.first == id_v1 && p.second != id_v2)
+				{
 						//erase
 						errors.erase(iter++);
 
