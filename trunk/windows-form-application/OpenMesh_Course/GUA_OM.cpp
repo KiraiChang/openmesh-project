@@ -4,7 +4,6 @@
 #define THRESHOLD 1.5
 
 
-
 namespace OMT
 {
 	bool sameSide(const Point &p1, const Point &p2, const Point &p3, const Point &p4)
@@ -43,6 +42,32 @@ namespace OMT
 		return fabs(area(v1, v2))/v2.length();
 	}
 
+	double det(OpenMesh::Geometry::Quadricd q, int a11, int a12, int a13,
+		int a21, int a22, int a23,
+		int a31, int a32, int a33)
+	{
+		double m[16];
+		m[0] = q.a();
+		m[4] = m[1] = q.b();
+		m[8] = m[2] = q.c();
+		m[12] = m[3] = q.d();
+		m[5] = q.e();
+		m[9] = m[6] = q.f();
+		m[13] = m[7] = q.g();
+		m[10] = q.h();
+		m[14] = m[11] = q.i();
+		m[15] = q.j();
+		double d = m[a11]*m[a22]*m[a33] + m[a13]*m[a21]*m[a32] + m[a12]*m[a23]*m[a31] 
+		- m[a13]*m[a22]*m[a31] - m[a11]*m[a23]*m[a32] - m[a12]*m[a21]*m[a33]; 
+		return d;
+	}
+
+	double vertexError(OpenMesh::Geometry::Quadricd q, double x, double y, double z)
+	{
+		return q.a()*x*x + 2*q.b()*x*y + 2*q.c()*x*z + 2*q.d()*x + q.e()*y*y
+			+ 2*q.f()*y*z + 2*q.g()*y + q.h()*z*z + 2*q.i()*z + q.j();
+	}
+
 	/*======================================================================*/
 	Model::Model()
 	{
@@ -66,15 +91,13 @@ namespace OMT
 		Point p[3];
 		size_t vid[3];
 		int i;
-		total_face_count = 0;
 		for (v_ite = vertices_begin(); v_ite != vertices_end(); ++v_ite)
 		{
-			quadrices.insert(QUADRICES::value_type(v_ite.handle().idx(), OpenMesh::Geometry::Quadricd(0.0)));
+			quadrics.insert(QUADRICES::value_type(v_ite.handle().idx(), OpenMesh::Geometry::Quadricd(0.0)));
 		}
 
 		for (f_ite = faces_begin(); f_ite != faces_end(); ++f_ite)
 		{
-			total_face_count++;
 			for(fv_ite = fv_iter(f_ite.handle()), i = 0; fv_ite; ++fv_ite, ++i)
 			{
 				vid[i] = fv_ite.handle().idx();
@@ -90,7 +113,7 @@ namespace OMT
 			OpenMesh::Geometry::Quadricd q(a, b, c, -1*(a*p[0][0] + b*p[0][1] + c*p[0][2]));
 			for(i = 0; i < 3; i++)
 			{
-				quadrices[vid[i]] += q;
+				quadrics[vid[i]] += q;
 			}
 		}
 	}
@@ -392,20 +415,27 @@ namespace OMT
 
 		history.fromVertex = from_vertex_handle(handle);
 		history.toVertex = to_vertex_handle(handle);
-
+#ifdef _DEBUG
 		printf("\nFrom#%d, To#%d\n", history.fromVertex.idx(), history.toVertex.idx());
+#endif
 		//Record the vertex order of erase face
 		for(vv_it = vv_iter(history.fromVertex);vv_it;++vv_it, index++)
 		{
 			if(vv_it.handle() == history.toVertex)
 			{
 				offset_from = index + 1;
+#ifdef _DEBUG
 				printf("Offset#%d ", offset_from);
+#endif
 			}
 			history.fromOnering.push_back(vv_it.handle());
+#ifdef _DEBUG
 			printf("#%d ", vv_it.handle().idx());
+#endif
 		}
+#ifdef _DEBUG
 		printf("\n");
+#endif
 
 		index = 0;
 		for(vv_it = vv_iter(history.toVertex);vv_it;++vv_it, index++)
@@ -413,27 +443,39 @@ namespace OMT
 			if(vv_it.handle() == history.fromVertex)
 			{
 				offset_to = index + 1;
+#ifdef _DEBUG
 				printf("Offset#%d ", offset_to);
+#endif
 			}
 			history.toOnering.push_back(vv_it.handle());
+#ifdef _DEBUG
 			printf("#%d ", vv_it.handle().idx());
+#endif
 		}
+#ifdef _DEBUG
 		printf("\n");
+#endif
 
 		size = history.fromOnering.size();
 		for(int i = 0; i < size - 2; i++)
 		{
 			polygon.push_back(history.fromOnering[(i+offset_from)%size]);
+#ifdef _DEBUG
 			printf("#%d ", history.fromOnering[(i+offset_from)%size].idx());
+#endif
 		}
 
 		size = history.toOnering.size();
 		for(int i = 0; i < size - 2; i++)
 		{
 			polygon.push_back(history.toOnering[(i+offset_to)%size]);
+#ifdef _DEBUG
 			printf("#%d ", history.toOnering[(i+offset_to)%size].idx());
+#endif
 		}
+#ifdef _DEBUG
 		printf("\n ");
+#endif
 		if(!isConvex(polygon))
 			return;
 
@@ -488,14 +530,12 @@ namespace OMT
 			//	face_vhandles.push_back(record_from_vhandles[(i+offset_from)%size]);
 			//}
 			//face_vhandles.push_back(addHandle);
+#ifdef _DEBUG
 			printf("#%d ", history.newVertex.idx());
-			//face_vhandles.push_back(record_from_vhandles[(i+1+offset_from)%size]);
 			printf("#%d ", history.fromOnering[(i+1+offset_from)%size].idx());
-			//face_vhandles.push_back(record_from_vhandles[(i+offset_from)%size]);
 			printf("#%d \n", history.fromOnering[(i+offset_from)%size].idx());
-			//add_face(face_vhandles);
+#endif
 			add_face(history.newVertex, history.fromOnering[(i+1+offset_from)%size], history.fromOnering[(i+offset_from)%size]);
-			//face_vhandles.clear();
 		}
 		
 		
@@ -513,14 +553,12 @@ namespace OMT
 			//	face_vhandles.push_back(record_to_vhandles[(i+offset_to)%size]);
 			//}
 			//face_vhandles.push_back(addHandle);
+#ifdef _DEBUG
 			printf("#%d ", history.newVertex.idx());
-			//face_vhandles.push_back(record_to_vhandles[(i+1+offset_to)%size]);
 			printf("#%d ", history.toOnering[(i+1+offset_to)%size].idx());
-			//face_vhandles.push_back(record_to_vhandles[(i+offset_to)%size]);
 			printf("#%d \n", history.toOnering[(i+offset_to)%size].idx());
-			//add_face(face_vhandles);
+#endif
 			add_face(history.newVertex, history.toOnering[(i+1+offset_to)%size], history.toOnering[(i+offset_to)%size]);
-			//face_vhandles.clear();
 		}
 		printf("\n");
 		vDeleteHistory.push_back(history);
@@ -543,17 +581,21 @@ namespace OMT
 			size = history.fromOnering.size();
 			for(int i = 0; i < size; i++)
 			{
+#ifdef _DEBUG
 				printf("#%d ", history.fromVertex.idx());
 				printf("#%d ", history.fromOnering[(i+1)%size].idx());
 				printf("#%d \n", history.fromOnering[(i)%size].idx());
+#endif
 				add_face(history.fromVertex, history.fromOnering[(i+1)%size], history.fromOnering[(i)%size]);
 			}
 			size = history.toOnering.size();
 			for(int i = 0; i < size; i++)
 			{
+#ifdef _DEBUG
 				printf("#%d ", history.toVertex.idx());
 				printf("#%d ", history.toOnering[(i+1)%size].idx());
 				printf("#%d \n", history.toOnering[(i)%size].idx());
+#endif
 				add_face(history.toVertex, history.toOnering[(i+1)%size], history.toOnering[(i)%size]);
 			}
 			vDeleteHistory.pop_back();
@@ -574,14 +616,435 @@ namespace OMT
 			vec1.normalize();
 			vec2.normalize();
 			float angle = acos(dot(vec1,vec2));
+#ifdef _DEBUG
 			printf("%f ", angle);
+#endif
 			totalAngle +=  angle;
 		}
-
+#ifdef _DEBUG
 		printf("Total:%f\n", totalAngle);
+#endif
 		if(totalAngle <= 2 * PI + THRESHOLD && totalAngle >  2 * PI - THRESHOLD)
 			return true;
 		return false;
+	}
+
+	double Model::calculateError(int id_v1, int id_v2, double* vx, double* vy, double* vz)
+	{
+		double min_error;
+		OpenMesh::Geometry::Quadricd q_bar;
+		OpenMesh::Geometry::Quadricd q_delta;
+		bool isReturnVertex = true;
+		if (vx == NULL) { vx = new double; isReturnVertex = false; }
+		if (vy == NULL) { vy = new double; }
+		if (vz == NULL) { vz = new double; }
+
+		/* computer quadric of virtual vertex vf */
+		q_bar = quadrics[id_v1];
+		q_bar += quadrics[id_v2];
+
+		q_delta.set(q_bar.a(),q_bar.b(),q_bar.c(),q_bar.d(),q_bar.e(),q_bar.f(),q_bar.g(),q_bar.h(),q_bar.i(),1);
+
+		/* if q_delta is invertible */
+		if ( double d = det(q_delta, 0, 1, 2, 4, 5, 6, 8, 9, 10) )		/* note that det(q_delta) equals to M44 */
+		{
+			*vx = -1/d*det(q_delta, 1, 2, 3, 5, 6, 7, 9, 10, 11);	/* vx = A41/det(q_delta) */
+			*vy =  1/d*det(q_delta, 0, 2, 3, 4, 6, 7, 8, 10, 11);	/* vy = A42/det(q_delta) */
+			*vz = -1/d*det(q_delta, 0, 1, 3, 4, 5, 7, 8, 9, 11);		/* vz = A43/det(q_delta) */	
+		}
+
+		/*
+		* if q_delta is NOT invertible, select 
+		* vertex from v1, v2, and (v1+v2)/2 
+		*/
+		else
+		{
+			Point p1 = point(vertex_handle(id_v1));
+			Point p2 = point(vertex_handle(id_v2));
+			Point p3 = (p1+p1)/2;
+
+			double error1 = vertexError(q_bar, p1[0], p1[1], p1[2]);
+			double error2 = vertexError(q_bar, p2[0], p2[1], p2[2]);
+			double error3 = vertexError(q_bar, p3[0], p3[1], p3[2]);
+
+			if(error2 > error3)
+				min_error = error3;
+			else
+				min_error = error2;
+
+			if(min_error > error1)
+				min_error = error1;
+
+			if (error1 == min_error) { *vx = p1[0]; *vy = p1[1], *vz = p1[2]; }
+			if (error2 == min_error) { *vx = p2[0]; *vy = p2[1], *vz = p2[2]; }
+			if (error3 == min_error) { *vx = p3[0]; *vy = p3[1], *vz = p3[2]; }
+		}
+
+		min_error = vertexError(q_bar, *vx, *vy, *vz);
+
+		if (isReturnVertex == false) { delete vx; delete vy; delete vz; }
+		return min_error;
+	}
+
+	void Model::selectPair()
+	{
+		const double t = 0.12;
+		FIter f_ite;
+		FVIter fv_ite;
+		int max_vid;
+		int min_vid;
+		int i, j;
+		VHandle v1;
+		VHandle v2;
+
+		/* (v1, v2) is an edge */
+		/* id_v1 < id_v2*/
+		for(f_ite = faces_begin(); f_ite != faces_end();++f_ite)
+		{
+			fv_ite = fv_iter(f_ite.handle());
+			v1 = fv_ite.handle();
+			if(fv_ite)
+				++fv_ite;
+			else
+				continue;
+
+			for(; fv_ite; ++fv_ite)
+			{
+				v2 = fv_ite.handle();
+				if(v1.idx() > v2.idx())
+				{
+					max_vid = v1.idx();
+					min_vid = v2.idx();
+				}
+				else
+				{
+					min_vid = v1.idx();
+					max_vid = v2.idx();
+				}
+
+				if ( errors.find(PAIR(min_vid, max_vid)) == errors.end() )
+				{
+					/* (faces[i].id_vertex[0], faces[i].id_vertex[1]) is an edge */
+					errors.insert(ERRORS::value_type(PAIR(min_vid, max_vid), calculateError(min_vid, max_vid)));
+				}
+				v1 = v2;
+			}
+		}
+	}
+
+	void Model::simplification(double rate)
+	{
+		int target_num_faces = rate * n_faces();
+		simplification(target_num_faces);
+	}
+
+	void Model::simplification(int target_num_faces)
+	{
+		/* calculate initial error for each valid pair*/
+		selectPair();
+		int max_id, min_id;
+		int id_v1, id_v2, new_id;
+		double vx, vy, vz;
+
+		/* contract vertices and generate vsplits */
+		while (n_faces() > target_num_faces)
+		{
+			/* find least-error pair */
+			double min_error = INT_MAX;
+			ERRORS::iterator iter_min_error;
+			for (ERRORS::iterator iter = errors.begin(); iter != errors.end(); iter++)
+			{
+				if (iter -> second < min_error)
+				{
+					min_error = iter -> second;
+					iter_min_error = iter;
+				}
+				const PAIR &p = iter -> first;
+			}
+			PAIR pair_min_error = iter_min_error -> first;
+			id_v1 = pair_min_error.first;
+			id_v2 = pair_min_error.second;
+
+			/* add to vsplits; */
+			calculateError(id_v1, id_v2, &vx, &vy,&vz);	/* get coordinate of vf */
+			//v.v1.x = vertices[id_v1].x;
+			//v.v1.y = vertices[id_v1].y;
+			//v.v1.z = vertices[id_v1].z;
+			//v.v2.x = vertices[id_v2].x;
+			//v.v2.y = vertices[id_v2].y;
+			//v.v2.z = vertices[id_v2].z;
+			//v.vf.x = vx;
+			//v.vf.y = vy;
+			//v.vf.z = vz;
+			//vsplits.push_back(v);
+
+			///* update coordinate of v1 */
+			//vertices[id_v1].x = vx;
+			//vertices[id_v1].y = vy;
+			//vertices[id_v1].z = vz;
+
+			/* update quadric of v1 */
+			//quadrics[id_v1] += quadrics[id_v2];
+			new_id = simplification(id_v1, id_v2, vx, vy, vz);
+			if(new_id == -1)
+				break;
+			quadrics.insert(QUADRICES::value_type(new_id, OpenMesh::Geometry::Quadricd(0.0)));
+			quadrics[new_id] = quadrics[id_v1];
+			quadrics[new_id] += quadrics[id_v2];
+			///////////////////////////////////////////////////////////////////////////////////////////////
+			//                                                                                           //
+			//                                        WARNING:                                           //
+			// Removing faces and edges contaning v2 can be more efficient. Major performance issue here //
+			///////////////////////////////////////////////////////////////////////////////////////////////
+
+
+			///* replace v2 with v1 in faces */
+			///* remove faces that has an edge of (v1, v2) */
+			//for (Faces::iterator iter = faces.begin(); iter != faces.end(); )
+			//{
+			//	for (int j = 0; j < 3; j++)
+			//	{
+			//		if (iter->id_vertex[j] == id_v2)
+			//		{
+			//			if (iter->id_vertex[0] == id_v1 || iter->id_vertex[1] == id_v1 || iter->id_vertex[2] == id_v1)
+			//			{
+			//				iter = faces.erase(iter);
+			//			}
+			//			else
+			//			{
+			//				iter->id_vertex[j] = id_v1;
+			//				iter++;
+			//			}
+			//			break;
+			//		}
+			//		else if(j == 2)
+			//			iter++;
+			//	}
+			//}
+
+			///* remove v2 in vertices */
+			//vertices.erase(id_v2);
+
+			/* merge pairs of v2 to v1 */
+			PAIR p;
+			std::pair<ERRORS::iterator, bool> pr;
+			for (ERRORS::iterator iter = errors.begin(); iter != errors.end(); )
+			{
+				//printf("%d\n", errors.size());
+				//Errors::iterator iter_back = iter;
+				p = iter -> first;
+				if (p.first == id_v2 && p.second != id_v1)
+				{
+					//erase
+					errors.erase(iter++);
+
+					if(new_id > p.second)
+					{
+						max_id = new_id;
+						min_id = p.second;
+					}
+					else
+					{
+						min_id = new_id;
+						max_id = p.second;
+					}
+					
+					//insert
+					//duplicate is not possible in map
+					pr = errors.insert(ERRORS::value_type( PAIR(min_id, max_id), 0.0 ));
+#ifdef _DEBUG
+					if (pr.second == true)
+						printf("QUADRIC: insert  pair(%d, %d)\n", min_id, max_id);
+					else
+						printf("QUADRIC: insert  pair(%d, %d) FAIL..duplicate\n", min_id, max_id);
+#endif
+				}
+				else if (p.second == id_v2 && p.first != id_v1)
+				{
+					//erase
+					errors.erase(iter++);
+
+					if(new_id > p.second)
+					{
+						max_id = new_id;
+						min_id = p.first;
+					}
+					else
+					{
+						min_id = new_id;
+						max_id = p.first;
+					}
+
+					//insert
+					//duplicate is not possible in map
+					pr = errors.insert(ERRORS::value_type( PAIR(min_id, max_id), 0.0 ));
+#ifdef _DEBUG
+					if (pr.second == true)
+						printf("QUADRIC: insert  pair(%d, %d)\n", min_id, max_id);
+					else
+						printf("QUADRIC: insert  pair(%d, %d) FAIL..duplicate\n", min_id, max_id);
+#endif
+					//iter = iter_back;
+				}
+				else
+					iter++;
+			}
+
+
+			///////////////////////////////////////////////////////////////////////////////////////////////
+			//                                                                                           //
+			//                                        END WARNING                                        //
+			///////////////////////////////////////////////////////////////////////////////////////////////
+
+			/* remove pair (v1, v2) */
+			errors.erase(iter_min_error);
+
+			/* update error of pairs involving v1 */
+			for (ERRORS::iterator iter = errors.begin(); iter != errors.end(); iter++)
+			{
+				p = iter -> first;
+				if (p.first == new_id)
+				{
+					iter -> second = calculateError(id_v1, p.second);
+				}
+				if (p.second == new_id)
+				{
+					iter -> second = calculateError(id_v1, p.first);
+				}
+			}
+		}
+	}
+
+	int Model::simplification(int id_v1, int id_v2, double vx, double vy, double vz)
+	{
+		DELETE_HISTORY history;
+
+		vector<VHandle> polygon;
+		int size = 0;
+		int index = 0;
+		int offset_from = 0;
+		int offset_to = 0;
+		OMT::VFIter vf_it;
+		OMT::VVIter vv_it;
+		set<FHandle> shandles;
+		set<FHandle>::const_iterator ite;
+		int new_id;
+
+
+		history.fromVertex = vertex_handle(id_v1);
+		history.toVertex = vertex_handle(id_v2);
+#ifdef _DEBUG
+		printf("\nFrom#%d, To#%d\n", history.fromVertex.idx(), history.toVertex.idx());
+#endif
+		//Record the vertex order of erase face
+		for(vv_it = vv_iter(history.fromVertex);vv_it;++vv_it, index++)
+		{
+			if(vv_it.handle() == history.toVertex)
+			{
+				offset_from = index + 1;
+#ifdef _DEBUG
+				printf("Offset#%d ", offset_from);
+#endif
+			}
+			history.fromOnering.push_back(vv_it.handle());
+#ifdef _DEBUG
+			printf("#%d ", vv_it.handle().idx());
+#endif
+		}
+#ifdef _DEBUG
+		printf("\n");
+#endif
+
+		index = 0;
+		for(vv_it = vv_iter(history.toVertex);vv_it;++vv_it, index++)
+		{
+			if(vv_it.handle() == history.fromVertex)
+			{
+				offset_to = index + 1;
+#ifdef _DEBUG
+				printf("Offset#%d ", offset_to);
+#endif
+			}
+			history.toOnering.push_back(vv_it.handle());
+#ifdef _DEBUG
+			printf("#%d ", vv_it.handle().idx());
+#endif
+		}
+#ifdef _DEBUG
+		printf("\n");
+#endif
+
+		size = history.fromOnering.size();
+		for(int i = 0; i < size - 2; i++)
+		{
+			polygon.push_back(history.fromOnering[(i+offset_from)%size]);
+#ifdef _DEBUG
+			printf("#%d ", history.fromOnering[(i+offset_from)%size].idx());
+#endif
+		}
+
+		size = history.toOnering.size();
+		for(int i = 0; i < size - 2; i++)
+		{
+			polygon.push_back(history.toOnering[(i+offset_to)%size]);
+#ifdef _DEBUG
+			printf("#%d ", history.toOnering[(i+offset_to)%size].idx());
+#endif
+		}
+#ifdef _DEBUG
+		printf("\n ");
+#endif
+		//if(!isConvex(polygon))
+		//	return -1;
+
+		//Record the face handle
+		for(vf_it = vf_iter(history.fromVertex);vf_it;++vf_it)
+		{
+			shandles.insert(vf_it.handle());
+		}
+
+		for(vf_it = vf_iter(history.toVertex);vf_it;++vf_it)
+		{
+			shandles.insert(vf_it.handle());
+		}
+
+		for(ite = shandles.begin();ite != shandles.end();++ite)
+		{
+			delete_face(*ite, false);
+		}
+		garbage_collection();
+
+
+		Point add(vx, vy, vz);
+		history.newVertex = add_vertex(add);
+		new_id = history.newVertex.idx();
+		size = history.fromOnering.size();
+		printf("From Start#%d, size:%d\n", history.fromOnering[(offset_from)%size], size);
+		for(int i = 0; i < size - 2; i++)
+		{
+#ifdef _DEBUG
+			printf("#%d ", history.newVertex.idx());
+			printf("#%d ", history.fromOnering[(i+1+offset_from)%size].idx());
+			printf("#%d \n", history.fromOnering[(i+offset_from)%size].idx());
+#endif
+			add_face(history.newVertex, history.fromOnering[(i+1+offset_from)%size], history.fromOnering[(i+offset_from)%size]);
+		}
+
+
+		size = history.toOnering.size();
+		printf("To Start#%d, size:%d\n", history.toOnering[(offset_to)%size], size);
+		for(int i = 0; i < size - 2; i++)
+		{
+#ifdef _DEBUG
+			printf("#%d ", history.newVertex.idx());
+			printf("#%d ", history.toOnering[(i+1+offset_to)%size].idx());
+			printf("#%d \n", history.toOnering[(i+offset_to)%size].idx());
+#endif
+			add_face(history.newVertex, history.toOnering[(i+1+offset_to)%size], history.toOnering[(i+offset_to)%size]);
+		}
+		printf("\n");
+		vDeleteHistory.push_back(history);
+		return new_id;
 	}
 }
 
