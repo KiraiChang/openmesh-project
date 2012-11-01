@@ -6,6 +6,7 @@
 #include <OpenMesh/Core/Mesh/TriMesh_ArrayKernelT.hh>
 #include <OpenMesh/Core/Mesh/PolyMesh_ArrayKernelT.hh>
 #include <OpenMesh/Tools/Utils/getopt.h>
+#include <OpenMesh/Core/Geometry/QuadricT.hh>
 
 #include <windows.h>
 #include <gl/gl.h>
@@ -115,6 +116,9 @@ namespace OMT//OpenMesh Triangle mesh
 	typedef std::vector< sp_v >			SP_VERTEX_LIST;
 	typedef std::vector< sp_v >			SP_EDGE_LIST;
 	typedef std::vector< sp_f >			SP_FACE_LIST;
+
+	typedef std::map<size_t, 
+		OpenMesh::Geometry::Quadricd >	QUADRICES;
 	/*----------------------------------------------------------------------*/
 	bool sameSide(const Point &p1, const Point &p2, const Point &p3, const Point &p4);
 	bool pointInTrangle(const Point &p1, const Point &tv1, const Point &tv2, const Point &tv3);
@@ -129,10 +133,16 @@ namespace OMT//OpenMesh Triangle mesh
 		SP_VERTEX_LIST					sp_v_list;
 		SP_EDGE_LIST					sp_e_list;
 		SP_FACE_LIST					sp_f_list;
+		QUADRICES						quadrices;
+		size_t							total_face_count;
+
 		V_DELETE_HISTORY				vDeleteHistory;
+
 	public:
 										Model();//constructor
 										~Model();//de-constructor
+
+		void							initQuadrices();//初始化QuadricMatrix.
 
 		void							RenderSpecifiedPoint();//畫出指定位置的點
 		void							RenderSpecifiedVertex();	//畫出指定的頂點

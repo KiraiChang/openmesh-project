@@ -57,6 +57,44 @@ namespace OMT
 		release_face_status();
 	}
 
+	void Model::initQuadrices()
+	{
+		VIter v_ite;
+		FIter f_ite;
+		FVIter fv_ite;
+		double a, b, c, d, M;
+		Point p[3];
+		size_t vid[3];
+		int i;
+		total_face_count = 0;
+		for (v_ite = vertices_begin(); v_ite != vertices_end(); ++v_ite)
+		{
+			quadrices.insert(QUADRICES::value_type(v_ite.handle().idx(), OpenMesh::Geometry::Quadricd(0.0)));
+		}
+
+		for (f_ite = faces_begin(); f_ite != faces_end(); ++f_ite)
+		{
+			total_face_count++;
+			for(fv_ite = fv_iter(f_ite.handle()), i = 0; fv_ite; ++fv_ite, ++i)
+			{
+				vid[i] = fv_ite.handle().idx();
+				p[i] = point(fv_ite);
+			}
+			a = (p[1][1]-p[0][1])*(p[2][2]-p[0][2]) - (p[1][2]-p[0][2])*(p[2][1]-p[0][1]);   /* a1*b2 - a2*b1;        */
+			b = (p[1][2]-p[0][2])*(p[2][0]-p[0][0]) - (p[1][0]-p[0][0])*(p[2][2]-p[0][2]);   /* a2*b0 - a0*b2;        */
+			c = (p[1][0]-p[0][0])*(p[2][1]-p[0][1]) - (p[1][1]-p[0][1])*(p[2][0]-p[0][0]);   /* a0*b1 - a1*b0;        */
+			M = sqrt(a*a + b*b + c*c);
+			a = a/M;
+			b = b/M;
+			c = c/M;
+			OpenMesh::Geometry::Quadricd q(a, b, c, -1*(a*p[0][0] + b*p[0][1] + c*p[0][2]));
+			for(i = 0; i < 3; i++)
+			{
+				quadrices[vid[i]] += q;
+			}
+		}
+	}
+
 	void Model::RenderSpecifiedPoint()
 	{
 		glPushAttrib(GL_LIGHTING_BIT);
@@ -1127,6 +1165,7 @@ bool ReadFile(std::string _fileName,Tri_Mesh *_mesh)
 		{
 				_mesh->update_normals();
 		}
+		_mesh->initQuadrices();
 	}
 	return isRead;
 }
