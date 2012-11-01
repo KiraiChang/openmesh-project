@@ -791,6 +791,8 @@ namespace OMT
 			quadrics.insert(QUADRICES::value_type(new_id, OpenMesh::Geometry::Quadricd(0.0)));
 			quadrics[new_id] = quadrics[id_v1];
 			quadrics[new_id] += quadrics[id_v2];
+			quadrics[id_v1].clear();
+			quadrics[id_v2].clear();
 			///////////////////////////////////////////////////////////////////////////////////////////////
 			//                                                                                           //
 			//                                        WARNING:                                           //
@@ -864,7 +866,7 @@ namespace OMT
 					//erase
 					errors.erase(iter++);
 
-					if(new_id > p.second)
+					if(new_id > p.first)
 					{
 						max_id = new_id;
 						min_id = p.first;
