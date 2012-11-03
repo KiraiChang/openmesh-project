@@ -652,7 +652,7 @@ namespace OMT
 			//quadrics[id_v1] += quadrics[id_v2];
 			new_id = simplification(id_v1, id_v2, vx, vy, vz);
 			if(new_id == -1)
-				break;
+				return;
 			quadrics.insert(QUADRICES::value_type(new_id, OpenMesh::Geometry::Quadricd(0.0)));
 			quadrics[new_id] = quadrics[id_v1];
 			quadrics[new_id] += quadrics[id_v2];
@@ -901,8 +901,8 @@ namespace OMT
 #ifdef _DEBUG
 		printf("\n ");
 #endif
-		//if(!isConvex(polygon))
-		//	return -1;
+		if(!isConvex(polygon))
+			return -1;
 
 		//Record the face handle
 		for(vf_it = vf_iter(history.fromVertex);vf_it;++vf_it)
