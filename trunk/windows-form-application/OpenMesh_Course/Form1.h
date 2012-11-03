@@ -66,7 +66,8 @@ namespace OpenMesh_Course {
 	private: System::Windows::Forms::GroupBox^  gbShowType;
 
 	private: System::Windows::Forms::CheckBox^  cbWireframe;
-	private: System::Windows::Forms::CheckBox^  cbModel;
+	private: System::Windows::Forms::CheckBox^  cbLightingModel;
+
 	private: System::Windows::Forms::Label^  lOutput;
 	private: System::Windows::Forms::GroupBox^  gbOneRing;
 	private: System::Windows::Forms::RadioButton^  rbOneRingFace;
@@ -75,10 +76,13 @@ namespace OpenMesh_Course {
 
 	private: System::Windows::Forms::RadioButton^  rbOneRingVertex;
 	private: System::Windows::Forms::RadioButton^  rbOneRingNone;
-	private: System::Windows::Forms::CheckBox^  cbDeleteSelect;
+
 	private: System::Windows::Forms::Button^  btnDelUndo;
-	private: System::Windows::Forms::Button^  btnSimplification;
+
 	private: System::Windows::Forms::TrackBar^  tbSimplification;
+	private: System::Windows::Forms::GroupBox^  gbSimplification;
+	private: System::Windows::Forms::TextBox^  tbSimpleRate;
+
 
 
 
@@ -112,17 +116,15 @@ namespace OpenMesh_Course {
 		/// </summary>
 		void InitializeComponent(void)
 		{
-			HKOGLPanel::HKCCameraProp^  hkcCameraProp1 = (gcnew HKOGLPanel::HKCCameraProp());
-			HKOGLPanel::HKCDisplayProp^  hkcDisplayProp1 = (gcnew HKOGLPanel::HKCDisplayProp());
-			HKOGLPanel::HKCPixelFormat^  hkcPixelFormat1 = (gcnew HKOGLPanel::HKCPixelFormat());
-			HKOGLPanel::HKCTrackballProp^  hkcTrackballProp1 = (gcnew HKOGLPanel::HKCTrackballProp());
-			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig1 = (gcnew HKOGLPanel::HKCTrackballTrig());
-			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig2 = (gcnew HKOGLPanel::HKCTrackballTrig());
-			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig3 = (gcnew HKOGLPanel::HKCTrackballTrig());
+			HKOGLPanel::HKCCameraProp^  hkcCameraProp2 = (gcnew HKOGLPanel::HKCCameraProp());
+			HKOGLPanel::HKCDisplayProp^  hkcDisplayProp2 = (gcnew HKOGLPanel::HKCDisplayProp());
+			HKOGLPanel::HKCPixelFormat^  hkcPixelFormat2 = (gcnew HKOGLPanel::HKCPixelFormat());
+			HKOGLPanel::HKCTrackballProp^  hkcTrackballProp2 = (gcnew HKOGLPanel::HKCTrackballProp());
+			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig4 = (gcnew HKOGLPanel::HKCTrackballTrig());
+			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig5 = (gcnew HKOGLPanel::HKCTrackballTrig());
+			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig6 = (gcnew HKOGLPanel::HKCTrackballTrig());
 			this->hkoglPanelControl1 = (gcnew HKOGLPanel::HKOGLPanelControl());
 			this->gpCommand = (gcnew System::Windows::Forms::GroupBox());
-			this->tbSimplification = (gcnew System::Windows::Forms::TrackBar());
-			this->btnSimplification = (gcnew System::Windows::Forms::Button());
 			this->btnDelUndo = (gcnew System::Windows::Forms::Button());
 			this->gbOneRing = (gcnew System::Windows::Forms::GroupBox());
 			this->rbOneRingNone = (gcnew System::Windows::Forms::RadioButton());
@@ -132,109 +134,91 @@ namespace OpenMesh_Course {
 			this->lOutput = (gcnew System::Windows::Forms::Label());
 			this->gbShowType = (gcnew System::Windows::Forms::GroupBox());
 			this->cbWireframe = (gcnew System::Windows::Forms::CheckBox());
-			this->cbModel = (gcnew System::Windows::Forms::CheckBox());
+			this->cbLightingModel = (gcnew System::Windows::Forms::CheckBox());
 			this->gpSelectType = (gcnew System::Windows::Forms::GroupBox());
-			this->cbDeleteSelect = (gcnew System::Windows::Forms::CheckBox());
 			this->rbSelectFace = (gcnew System::Windows::Forms::RadioButton());
 			this->rbSelectEdge = (gcnew System::Windows::Forms::RadioButton());
 			this->rbSelectVertex = (gcnew System::Windows::Forms::RadioButton());
 			this->btnLoadMesh = (gcnew System::Windows::Forms::Button());
+			this->tbSimplification = (gcnew System::Windows::Forms::TrackBar());
 			this->openMeshFileDialog = (gcnew System::Windows::Forms::OpenFileDialog());
+			this->gbSimplification = (gcnew System::Windows::Forms::GroupBox());
+			this->tbSimpleRate = (gcnew System::Windows::Forms::TextBox());
 			this->gpCommand->SuspendLayout();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->tbSimplification))->BeginInit();
 			this->gbOneRing->SuspendLayout();
 			this->gbShowType->SuspendLayout();
 			this->gpSelectType->SuspendLayout();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->tbSimplification))->BeginInit();
+			this->gbSimplification->SuspendLayout();
 			this->SuspendLayout();
 			// 
 			// hkoglPanelControl1
 			// 
-			hkcCameraProp1->Enabled = true;
-			hkcCameraProp1->Far = 1000;
-			hkcCameraProp1->Fov = 45;
-			hkcCameraProp1->Near = 0.001;
-			hkcCameraProp1->Type = HKOGLPanel::HKCCameraProp::CAMERATYPE::PERSPECTIVE;
-			hkcCameraProp1->Zoom = 1;
-			this->hkoglPanelControl1->Camera_Property = hkcCameraProp1;
-			hkcDisplayProp1->Back_Color = System::Drawing::Color::White;
-			hkcDisplayProp1->Grid_Axis = System::Drawing::Color::Black;
-			hkcDisplayProp1->Grid_Draw = true;
-			hkcDisplayProp1->Grid_Line = System::Drawing::Color::DimGray;
-			this->hkoglPanelControl1->Display_Property = hkcDisplayProp1;
+			hkcCameraProp2->Enabled = true;
+			hkcCameraProp2->Far = 1000;
+			hkcCameraProp2->Fov = 45;
+			hkcCameraProp2->Near = 0.001;
+			hkcCameraProp2->Type = HKOGLPanel::HKCCameraProp::CAMERATYPE::PERSPECTIVE;
+			hkcCameraProp2->Zoom = 1;
+			this->hkoglPanelControl1->Camera_Property = hkcCameraProp2;
+			hkcDisplayProp2->Back_Color = System::Drawing::Color::White;
+			hkcDisplayProp2->Grid_Axis = System::Drawing::Color::Black;
+			hkcDisplayProp2->Grid_Draw = true;
+			hkcDisplayProp2->Grid_Line = System::Drawing::Color::DimGray;
+			this->hkoglPanelControl1->Display_Property = hkcDisplayProp2;
 			this->hkoglPanelControl1->Dock = System::Windows::Forms::DockStyle::Left;
 			this->hkoglPanelControl1->Empty_Panel = false;
 			this->hkoglPanelControl1->Location = System::Drawing::Point(0, 0);
 			this->hkoglPanelControl1->Name = L"hkoglPanelControl1";
-			hkcPixelFormat1->Accumu_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
-			hkcPixelFormat1->Alpha_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
-			hkcPixelFormat1->Stencil_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
-			this->hkoglPanelControl1->Pixel_Format = hkcPixelFormat1;
-			this->hkoglPanelControl1->Size = System::Drawing::Size(800, 835);
+			hkcPixelFormat2->Accumu_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
+			hkcPixelFormat2->Alpha_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
+			hkcPixelFormat2->Stencil_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
+			this->hkoglPanelControl1->Pixel_Format = hkcPixelFormat2;
+			this->hkoglPanelControl1->Size = System::Drawing::Size(800, 782);
 			this->hkoglPanelControl1->TabIndex = 0;
-			hkcTrackballProp1->Const_Res = false;
-			hkcTrackballProp1->Delta_Res = 500;
-			hkcTrackballProp1->Enabled = true;
-			hkcTrackballProp1->Move_Res = 1000;
-			hkcTrackballTrig1->Key_Down = false;
-			hkcTrackballTrig1->Keyboard = System::Windows::Forms::Keys::None;
-			hkcTrackballTrig1->Mouse = System::Windows::Forms::MouseButtons::Right;
-			hkcTrackballTrig1->Mouse_Down = false;
-			hkcTrackballProp1->Move_Trigger = hkcTrackballTrig1;
-			hkcTrackballTrig2->Key_Down = false;
-			hkcTrackballTrig2->Keyboard = System::Windows::Forms::Keys::None;
-			hkcTrackballTrig2->Mouse = System::Windows::Forms::MouseButtons::Left;
-			hkcTrackballTrig2->Mouse_Down = false;
-			hkcTrackballProp1->Rotate_Trigger = hkcTrackballTrig2;
-			hkcTrackballProp1->Zoom_Res = 100;
-			hkcTrackballTrig3->Key_Down = false;
-			hkcTrackballTrig3->Keyboard = System::Windows::Forms::Keys::None;
-			hkcTrackballTrig3->Mouse = System::Windows::Forms::MouseButtons::Middle;
-			hkcTrackballTrig3->Mouse_Down = false;
-			hkcTrackballProp1->Zoom_Trigger = hkcTrackballTrig3;
-			this->hkoglPanelControl1->Trackball_Property = hkcTrackballProp1;
+			hkcTrackballProp2->Const_Res = false;
+			hkcTrackballProp2->Delta_Res = 500;
+			hkcTrackballProp2->Enabled = true;
+			hkcTrackballProp2->Move_Res = 1000;
+			hkcTrackballTrig4->Key_Down = false;
+			hkcTrackballTrig4->Keyboard = System::Windows::Forms::Keys::None;
+			hkcTrackballTrig4->Mouse = System::Windows::Forms::MouseButtons::Right;
+			hkcTrackballTrig4->Mouse_Down = false;
+			hkcTrackballProp2->Move_Trigger = hkcTrackballTrig4;
+			hkcTrackballTrig5->Key_Down = false;
+			hkcTrackballTrig5->Keyboard = System::Windows::Forms::Keys::None;
+			hkcTrackballTrig5->Mouse = System::Windows::Forms::MouseButtons::Left;
+			hkcTrackballTrig5->Mouse_Down = false;
+			hkcTrackballProp2->Rotate_Trigger = hkcTrackballTrig5;
+			hkcTrackballProp2->Zoom_Res = 100;
+			hkcTrackballTrig6->Key_Down = false;
+			hkcTrackballTrig6->Keyboard = System::Windows::Forms::Keys::None;
+			hkcTrackballTrig6->Mouse = System::Windows::Forms::MouseButtons::Middle;
+			hkcTrackballTrig6->Mouse_Down = false;
+			hkcTrackballProp2->Zoom_Trigger = hkcTrackballTrig6;
+			this->hkoglPanelControl1->Trackball_Property = hkcTrackballProp2;
 			this->hkoglPanelControl1->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &Form1::hkoglPanelControl1_Paint);
 			this->hkoglPanelControl1->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(this, &Form1::hkoglPanelControl1_MouseDown);
 			// 
 			// gpCommand
 			// 
-			this->gpCommand->Controls->Add(this->tbSimplification);
-			this->gpCommand->Controls->Add(this->btnSimplification);
 			this->gpCommand->Controls->Add(this->btnDelUndo);
 			this->gpCommand->Controls->Add(this->gbOneRing);
 			this->gpCommand->Controls->Add(this->lOutput);
 			this->gpCommand->Controls->Add(this->gbShowType);
 			this->gpCommand->Controls->Add(this->gpSelectType);
 			this->gpCommand->Controls->Add(this->btnLoadMesh);
-			this->gpCommand->Dock = System::Windows::Forms::DockStyle::Top;
+			this->gpCommand->Dock = System::Windows::Forms::DockStyle::Right;
 			this->gpCommand->Location = System::Drawing::Point(800, 0);
 			this->gpCommand->Name = L"gpCommand";
-			this->gpCommand->Size = System::Drawing::Size(184, 835);
+			this->gpCommand->Size = System::Drawing::Size(184, 782);
 			this->gpCommand->TabIndex = 2;
 			this->gpCommand->TabStop = false;
 			this->gpCommand->Text = L"Command";
 			// 
-			// tbSimplification
-			// 
-			this->tbSimplification->Location = System::Drawing::Point(26, 484);
-			this->tbSimplification->Maximum = 100;
-			this->tbSimplification->Name = L"tbSimplification";
-			this->tbSimplification->Size = System::Drawing::Size(146, 45);
-			this->tbSimplification->TabIndex = 8;
-			this->tbSimplification->Value = 100;
-			// 
-			// btnSimplification
-			// 
-			this->btnSimplification->Location = System::Drawing::Point(49, 535);
-			this->btnSimplification->Name = L"btnSimplification";
-			this->btnSimplification->Size = System::Drawing::Size(93, 23);
-			this->btnSimplification->TabIndex = 7;
-			this->btnSimplification->Text = L"Simplification";
-			this->btnSimplification->UseVisualStyleBackColor = true;
-			this->btnSimplification->Click += gcnew System::EventHandler(this, &Form1::btnSimplification_Click);
-			// 
 			// btnDelUndo
 			// 
-			this->btnDelUndo->Location = System::Drawing::Point(26, 424);
+			this->btnDelUndo->Location = System::Drawing::Point(19, 399);
 			this->btnDelUndo->Name = L"btnDelUndo";
 			this->btnDelUndo->Size = System::Drawing::Size(75, 23);
 			this->btnDelUndo->TabIndex = 6;
@@ -248,7 +232,7 @@ namespace OpenMesh_Course {
 			this->gbOneRing->Controls->Add(this->rbOneRingFace);
 			this->gbOneRing->Controls->Add(this->rbOneRingEdge);
 			this->gbOneRing->Controls->Add(this->rbOneRingVertex);
-			this->gbOneRing->Location = System::Drawing::Point(19, 302);
+			this->gbOneRing->Location = System::Drawing::Point(19, 278);
 			this->gbOneRing->Name = L"gbOneRing";
 			this->gbOneRing->Size = System::Drawing::Size(153, 115);
 			this->gbOneRing->TabIndex = 5;
@@ -302,7 +286,7 @@ namespace OpenMesh_Course {
 			// lOutput
 			// 
 			this->lOutput->AutoSize = true;
-			this->lOutput->Location = System::Drawing::Point(17, 802);
+			this->lOutput->Location = System::Drawing::Point(17, 436);
 			this->lOutput->Name = L"lOutput";
 			this->lOutput->Size = System::Drawing::Size(24, 12);
 			this->lOutput->TabIndex = 4;
@@ -311,7 +295,7 @@ namespace OpenMesh_Course {
 			// gbShowType
 			// 
 			this->gbShowType->Controls->Add(this->cbWireframe);
-			this->gbShowType->Controls->Add(this->cbModel);
+			this->gbShowType->Controls->Add(this->cbLightingModel);
 			this->gbShowType->Location = System::Drawing::Point(19, 102);
 			this->gbShowType->Name = L"gbShowType";
 			this->gbShowType->Size = System::Drawing::Size(153, 71);
@@ -322,6 +306,8 @@ namespace OpenMesh_Course {
 			// cbWireframe
 			// 
 			this->cbWireframe->AutoSize = true;
+			this->cbWireframe->Checked = true;
+			this->cbWireframe->CheckState = System::Windows::Forms::CheckState::Checked;
 			this->cbWireframe->Location = System::Drawing::Point(6, 43);
 			this->cbWireframe->Name = L"cbWireframe";
 			this->cbWireframe->Size = System::Drawing::Size(103, 16);
@@ -330,39 +316,28 @@ namespace OpenMesh_Course {
 			this->cbWireframe->UseVisualStyleBackColor = true;
 			this->cbWireframe->CheckedChanged += gcnew System::EventHandler(this, &Form1::cbWireframe_CheckedChanged);
 			// 
-			// cbModel
+			// cbLightingModel
 			// 
-			this->cbModel->AutoSize = true;
-			this->cbModel->Location = System::Drawing::Point(6, 21);
-			this->cbModel->Name = L"cbModel";
-			this->cbModel->Size = System::Drawing::Size(83, 16);
-			this->cbModel->TabIndex = 0;
-			this->cbModel->Text = L"Show Model";
-			this->cbModel->UseVisualStyleBackColor = true;
-			this->cbModel->CheckedChanged += gcnew System::EventHandler(this, &Form1::cbModel_CheckedChanged);
+			this->cbLightingModel->AutoSize = true;
+			this->cbLightingModel->Location = System::Drawing::Point(6, 21);
+			this->cbLightingModel->Name = L"cbLightingModel";
+			this->cbLightingModel->Size = System::Drawing::Size(126, 16);
+			this->cbLightingModel->TabIndex = 0;
+			this->cbLightingModel->Text = L"Show Lighting Model";
+			this->cbLightingModel->UseVisualStyleBackColor = true;
+			this->cbLightingModel->CheckedChanged += gcnew System::EventHandler(this, &Form1::cbModel_CheckedChanged);
 			// 
 			// gpSelectType
 			// 
-			this->gpSelectType->Controls->Add(this->cbDeleteSelect);
 			this->gpSelectType->Controls->Add(this->rbSelectFace);
 			this->gpSelectType->Controls->Add(this->rbSelectEdge);
 			this->gpSelectType->Controls->Add(this->rbSelectVertex);
 			this->gpSelectType->Location = System::Drawing::Point(19, 179);
 			this->gpSelectType->Name = L"gpSelectType";
-			this->gpSelectType->Size = System::Drawing::Size(153, 117);
+			this->gpSelectType->Size = System::Drawing::Size(153, 93);
 			this->gpSelectType->TabIndex = 1;
 			this->gpSelectType->TabStop = false;
 			this->gpSelectType->Text = L"Select Type";
-			// 
-			// cbDeleteSelect
-			// 
-			this->cbDeleteSelect->AutoSize = true;
-			this->cbDeleteSelect->Location = System::Drawing::Point(6, 88);
-			this->cbDeleteSelect->Name = L"cbDeleteSelect";
-			this->cbDeleteSelect->Size = System::Drawing::Size(83, 16);
-			this->cbDeleteSelect->TabIndex = 2;
-			this->cbDeleteSelect->Text = L"Delete Select";
-			this->cbDeleteSelect->UseVisualStyleBackColor = true;
 			// 
 			// rbSelectFace
 			// 
@@ -408,6 +383,18 @@ namespace OpenMesh_Course {
 			this->btnLoadMesh->UseVisualStyleBackColor = true;
 			this->btnLoadMesh->Click += gcnew System::EventHandler(this, &Form1::btnLoadMesh_Click);
 			// 
+			// tbSimplification
+			// 
+			this->tbSimplification->Dock = System::Windows::Forms::DockStyle::Top;
+			this->tbSimplification->Location = System::Drawing::Point(36, 18);
+			this->tbSimplification->Maximum = 100;
+			this->tbSimplification->Minimum = 1;
+			this->tbSimplification->Name = L"tbSimplification";
+			this->tbSimplification->Size = System::Drawing::Size(945, 45);
+			this->tbSimplification->TabIndex = 8;
+			this->tbSimplification->Value = 100;
+			this->tbSimplification->MouseMove += gcnew System::Windows::Forms::MouseEventHandler(this, &Form1::tbSimplification_MouseMove);
+			// 
 			// openMeshFileDialog
 			// 
 			this->openMeshFileDialog->DefaultExt = L"obj";
@@ -415,32 +402,59 @@ namespace OpenMesh_Course {
 			this->openMeshFileDialog->Title = L"Open Mesh File";
 			this->openMeshFileDialog->FileOk += gcnew System::ComponentModel::CancelEventHandler(this, &Form1::openMeshFileDialog_FileOk);
 			// 
+			// gbSimplification
+			// 
+			this->gbSimplification->Controls->Add(this->tbSimplification);
+			this->gbSimplification->Controls->Add(this->tbSimpleRate);
+			this->gbSimplification->Dock = System::Windows::Forms::DockStyle::Bottom;
+			this->gbSimplification->Location = System::Drawing::Point(0, 782);
+			this->gbSimplification->Name = L"gbSimplification";
+			this->gbSimplification->Size = System::Drawing::Size(984, 55);
+			this->gbSimplification->TabIndex = 9;
+			this->gbSimplification->TabStop = false;
+			this->gbSimplification->Text = L"Simplification";
+			// 
+			// tbSimpleRate
+			// 
+			this->tbSimpleRate->Dock = System::Windows::Forms::DockStyle::Left;
+			this->tbSimpleRate->Location = System::Drawing::Point(3, 18);
+			this->tbSimpleRate->Name = L"tbSimpleRate";
+			this->tbSimpleRate->Size = System::Drawing::Size(33, 22);
+			this->tbSimpleRate->TabIndex = 9;
+			this->tbSimpleRate->Text = L"1.0";
+			this->tbSimpleRate->TextAlign = System::Windows::Forms::HorizontalAlignment::Center;
+			// 
 			// Form1
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 12);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(984, 835);
-			this->Controls->Add(this->gpCommand);
+			this->ClientSize = System::Drawing::Size(984, 837);
 			this->Controls->Add(this->hkoglPanelControl1);
+			this->Controls->Add(this->gpCommand);
+			this->Controls->Add(this->gbSimplification);
 			this->Name = L"Form1";
 			this->Text = L"Digital Mesh";
 			this->gpCommand->ResumeLayout(false);
 			this->gpCommand->PerformLayout();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->tbSimplification))->EndInit();
 			this->gbOneRing->ResumeLayout(false);
 			this->gbOneRing->PerformLayout();
 			this->gbShowType->ResumeLayout(false);
 			this->gbShowType->PerformLayout();
 			this->gpSelectType->ResumeLayout(false);
 			this->gpSelectType->PerformLayout();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->tbSimplification))->EndInit();
+			this->gbSimplification->ResumeLayout(false);
+			this->gbSimplification->PerformLayout();
 			this->ResumeLayout(false);
 
 		}
 #pragma endregion
 private: System::Void hkoglPanelControl1_Paint(System::Object^  sender, System::Windows::Forms::PaintEventArgs^  e) 
 		 {
-			 if ( mesh != NULL && cbModel->Checked)
+			 if ( mesh != NULL && cbLightingModel->Checked)
 				 mesh->Render_Solid();
+			 else
+				 mesh->Render_No_Lighting_Solid();
 			 if ( mesh != NULL && cbWireframe->Checked)
 				 mesh->Render_Wireframe();
 			 if(mesh)
@@ -535,42 +549,35 @@ private: System::Void hkoglPanelControl1_MouseDown(System::Object^  sender, Syst
 						 OMT::VHandle handle;
 						 if( mesh->findVertex(mouse, handle) < INIT_DIST)
 						 {
-							 if(cbDeleteSelect->Checked)
+							 mesh->add_sp_v(handle, 1.f,0.f,0.f);
+							 //One Ring
+							 if(rbOneRingVertex->Checked)
 							 {
-								 mesh->deleteVertex(handle);
+								 OMT::VVIter v_it;
+								 for(v_it = mesh->vv_iter(handle);v_it;++v_it)
+								 {
+									 mesh->add_sp_v(v_it.handle() , 
+										 0.f, 0.f, 1.f );
+								 }
 							 }
-							 else
+							 else if(rbOneRingEdge->Checked)
 							 {
-								 mesh->add_sp_v(handle, 1.f,0.f,0.f);
-								 //One Ring
-								 if(rbOneRingVertex->Checked)
+								 OMT::VEIter e_it;
+								 for(e_it = mesh->ve_iter(handle);e_it;++e_it)
 								 {
-									 OMT::VVIter v_it;
-									 for(v_it = mesh->vv_iter(handle);v_it;++v_it)
-									 {
-										 mesh->add_sp_v(v_it.handle() , 
-											 0.f, 0.f, 1.f );
-									 }
+									 OMT::HEHandle hedge = mesh->halfedge_handle(e_it.handle(),1);
+									 mesh->add_sp_e( (mesh->from_vertex_handle(hedge)), 
+										 (mesh->to_vertex_handle(hedge)), 
+										 0.f, 0.f, 1.f );
 								 }
-								 else if(rbOneRingEdge->Checked)
+							 }
+							 else if(rbOneRingFace->Checked)
+							 {
+								 OMT::VFIter f_it;
+								 for(f_it = mesh->vf_iter(handle);f_it;++f_it)
 								 {
-									 OMT::VEIter e_it;
-									 for(e_it = mesh->ve_iter(handle);e_it;++e_it)
-									 {
-										 OMT::HEHandle hedge = mesh->halfedge_handle(e_it.handle(),1);
-										 mesh->add_sp_e( (mesh->from_vertex_handle(hedge)), 
-											 (mesh->to_vertex_handle(hedge)), 
-											 0.f, 0.f, 1.f );
-									 }
-								 }
-								 else if(rbOneRingFace->Checked)
-								 {
-									 OMT::VFIter f_it;
-									 for(f_it = mesh->vf_iter(handle);f_it;++f_it)
-									 {
-										 mesh->add_sp_f(f_it.handle() , 
-											 0.f, 0.f, 1.f );
-									 }
+									 mesh->add_sp_f(f_it.handle() , 
+										 0.f, 0.f, 1.f );
 								 }
 							 }
 						 }
@@ -580,41 +587,34 @@ private: System::Void hkoglPanelControl1_MouseDown(System::Object^  sender, Syst
 						 OMT::HEHandle handle;
 						 if(mesh->findHalfEdge(mouse, handle) < INIT_DIST)
 						 {
-							 if(cbDeleteSelect->Checked)
+							 mesh->add_sp_e( (mesh->from_vertex_handle(handle)), 
+								 (mesh->to_vertex_handle(handle)), 
+								 1.f, 0.f, 0.f );
+							 //One Ring
+							 if(rbOneRingVertex->Checked)
 							 {
-								 mesh->simplificationEdge(handle);
+								 mesh->add_sp_v((mesh->from_vertex_handle(handle)), 0.f, 0.f, 1.f);
+								 mesh->add_sp_v((mesh->to_vertex_handle(handle)), 0.0, 0.0, 1.0);
 							 }
-							 else
+							 else if(rbOneRingEdge->Checked)
 							 {
-								 mesh->add_sp_e( (mesh->from_vertex_handle(handle)), 
-									 (mesh->to_vertex_handle(handle)), 
-									 1.f, 0.f, 0.f );
-								 //One Ring
-								 if(rbOneRingVertex->Checked)
-								 {
-									 mesh->add_sp_v((mesh->from_vertex_handle(handle)), 0.f, 0.f, 1.f);
-									 mesh->add_sp_v((mesh->to_vertex_handle(handle)), 0.0, 0.0, 1.0);
-								 }
-								 else if(rbOneRingEdge->Checked)
-								 {
-									 //OMT::EEIter e_it;
-									 //for(e_it = mesh->ee_iter(handle);e_it;++e_it)
-									 //{
-									 //	OMT::HEHandle hedge = mesh->halfedge_handle(e_it.handle(),1);
-									 //	mesh->add_sp_e( (mesh->from_vertex_handle(hedge)), 
-									 //		(mesh->to_vertex_handle(hedge)), 
-									 //		0.f, 0.f, 1.f );
-									 //}
-									 OMT::VHandle vh = mesh->opposite_vh(handle);
-									 mesh->add_sp_v(vh, 0.f, 0.f, 1.f);
-									 vh = mesh->opposite_he_opposite_vh(handle);
-									 mesh->add_sp_v(vh, 0.f, 0.f, 1.f);
-								 }
-								 else if(rbOneRingFace->Checked)
-								 {
-									 mesh->add_sp_f(mesh->face_handle(handle), 0.f, 0.f, 1.f );
-									 mesh->add_sp_f(mesh->opposite_face_handle(handle), 0.f, 0.f, 1.f );
-								 }
+								 //OMT::EEIter e_it;
+								 //for(e_it = mesh->ee_iter(handle);e_it;++e_it)
+								 //{
+								 //	OMT::HEHandle hedge = mesh->halfedge_handle(e_it.handle(),1);
+								 //	mesh->add_sp_e( (mesh->from_vertex_handle(hedge)), 
+								 //		(mesh->to_vertex_handle(hedge)), 
+								 //		0.f, 0.f, 1.f );
+								 //}
+								 OMT::VHandle vh = mesh->opposite_vh(handle);
+								 mesh->add_sp_v(vh, 0.f, 0.f, 1.f);
+								 vh = mesh->opposite_he_opposite_vh(handle);
+								 mesh->add_sp_v(vh, 0.f, 0.f, 1.f);
+							 }
+							 else if(rbOneRingFace->Checked)
+							 {
+								 mesh->add_sp_f(mesh->face_handle(handle), 0.f, 0.f, 1.f );
+								 mesh->add_sp_f(mesh->opposite_face_handle(handle), 0.f, 0.f, 1.f );
 							 }
 						 }
 					 }
@@ -623,44 +623,38 @@ private: System::Void hkoglPanelControl1_MouseDown(System::Object^  sender, Syst
 						 OMT::FHandle handle;
 						 if(mesh->findFace(mouse, handle) < INIT_DIST)
 						 {
-							 if(cbDeleteSelect->Checked)
-							 {
-								 mesh->deleteFace(handle);
-							 }
-							 else
-							 {
-								 mesh->add_sp_f(handle, 1.f,0.f,0.f);
-								 //self attribute
 
-								 //One Ring
-								 if(rbOneRingVertex->Checked)
+							 mesh->add_sp_f(handle, 1.f,0.f,0.f);
+							 //self attribute
+
+							 //One Ring
+							 if(rbOneRingVertex->Checked)
+							 {
+								 OMT::FVIter v_it;
+								 for(v_it = mesh->fv_iter(handle);v_it;++v_it)
 								 {
-									 OMT::FVIter v_it;
-									 for(v_it = mesh->fv_iter(handle);v_it;++v_it)
-									 {
-										 mesh->add_sp_v(v_it.handle() , 
-											 0.f, 0.f, 1.f );
-									 }
+									 mesh->add_sp_v(v_it.handle() , 
+										 0.f, 0.f, 1.f );
 								 }
-								 else if(rbOneRingEdge->Checked)
+							 }
+							 else if(rbOneRingEdge->Checked)
+							 {
+								 OMT::FEIter e_it;
+								 for(e_it = mesh->fe_iter(handle);e_it;++e_it)
 								 {
-									 OMT::FEIter e_it;
-									 for(e_it = mesh->fe_iter(handle);e_it;++e_it)
-									 {
-										 OMT::HEHandle hedge = mesh->halfedge_handle(e_it.handle(),1);
-										 mesh->add_sp_e( (mesh->from_vertex_handle(hedge)), 
-											 (mesh->to_vertex_handle(hedge)), 
-											 0.f, 0.f, 1.f );
-									 }
+									 OMT::HEHandle hedge = mesh->halfedge_handle(e_it.handle(),1);
+									 mesh->add_sp_e( (mesh->from_vertex_handle(hedge)), 
+										 (mesh->to_vertex_handle(hedge)), 
+										 0.f, 0.f, 1.f );
 								 }
-								 else if(rbOneRingFace->Checked)
+							 }
+							 else if(rbOneRingFace->Checked)
+							 {
+								 OMT::FFIter f_it;
+								 for(f_it = mesh->ff_iter(handle);f_it;++f_it)
 								 {
-									 OMT::FFIter f_it;
-									 for(f_it = mesh->ff_iter(handle);f_it;++f_it)
-									 {
-										 mesh->add_sp_f(f_it.handle() , 
-											 0.f, 0.f, 1.f );
-									 }
+									 mesh->add_sp_f(f_it.handle() , 
+										 0.f, 0.f, 1.f );
 								 }
 							 }
 						 }
@@ -674,7 +668,7 @@ private: System::Void btnDelUndo_Click(System::Object^  sender, System::EventArg
 		 {
 			 if(mesh)
 			 {
-				 mesh->undoDelete();
+				 mesh->undoSimplification();
 				 this->Refresh();
 			 }
 		 }
@@ -682,9 +676,28 @@ private: System::Void btnSimplification_Click(System::Object^  sender, System::E
 		 {
 			 if(mesh)
 			 {
+				 lOutput->Text = "BUSY...";
 				 double rate = (float)tbSimplification->Value / 100;
 				 mesh->simplification(rate);
 				 this->Refresh();
+				 lOutput->Text = "READY";
+			 }
+		 }
+
+private: System::Void tbSimplification_MouseMove(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) 
+		 {
+			 if(e->Button == System::Windows::Forms::MouseButtons::Left)
+			 {
+				 double rate = (float)tbSimplification->Value / 100;
+				 tbSimpleRate->Text = "" + rate;
+				 if(mesh)
+				 {
+					 lOutput->Text = "BUSY...";
+					 double rate = (float)tbSimplification->Value / 100;
+					 mesh->simplification(rate);
+					 this->Refresh();
+					 lOutput->Text = "READY";
+				 }
 			 }
 		 }
 };
