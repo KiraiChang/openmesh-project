@@ -116,13 +116,13 @@ namespace OpenMesh_Course {
 		/// </summary>
 		void InitializeComponent(void)
 		{
-			HKOGLPanel::HKCCameraProp^  hkcCameraProp2 = (gcnew HKOGLPanel::HKCCameraProp());
-			HKOGLPanel::HKCDisplayProp^  hkcDisplayProp2 = (gcnew HKOGLPanel::HKCDisplayProp());
-			HKOGLPanel::HKCPixelFormat^  hkcPixelFormat2 = (gcnew HKOGLPanel::HKCPixelFormat());
-			HKOGLPanel::HKCTrackballProp^  hkcTrackballProp2 = (gcnew HKOGLPanel::HKCTrackballProp());
-			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig4 = (gcnew HKOGLPanel::HKCTrackballTrig());
-			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig5 = (gcnew HKOGLPanel::HKCTrackballTrig());
-			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig6 = (gcnew HKOGLPanel::HKCTrackballTrig());
+			HKOGLPanel::HKCCameraProp^  hkcCameraProp1 = (gcnew HKOGLPanel::HKCCameraProp());
+			HKOGLPanel::HKCDisplayProp^  hkcDisplayProp1 = (gcnew HKOGLPanel::HKCDisplayProp());
+			HKOGLPanel::HKCPixelFormat^  hkcPixelFormat1 = (gcnew HKOGLPanel::HKCPixelFormat());
+			HKOGLPanel::HKCTrackballProp^  hkcTrackballProp1 = (gcnew HKOGLPanel::HKCTrackballProp());
+			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig1 = (gcnew HKOGLPanel::HKCTrackballTrig());
+			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig2 = (gcnew HKOGLPanel::HKCTrackballTrig());
+			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig3 = (gcnew HKOGLPanel::HKCTrackballTrig());
 			this->hkoglPanelControl1 = (gcnew HKOGLPanel::HKOGLPanelControl());
 			this->gpCommand = (gcnew System::Windows::Forms::GroupBox());
 			this->btnDelUndo = (gcnew System::Windows::Forms::Button());
@@ -154,49 +154,49 @@ namespace OpenMesh_Course {
 			// 
 			// hkoglPanelControl1
 			// 
-			hkcCameraProp2->Enabled = true;
-			hkcCameraProp2->Far = 1000;
-			hkcCameraProp2->Fov = 45;
-			hkcCameraProp2->Near = 0.001;
-			hkcCameraProp2->Type = HKOGLPanel::HKCCameraProp::CAMERATYPE::PERSPECTIVE;
-			hkcCameraProp2->Zoom = 1;
-			this->hkoglPanelControl1->Camera_Property = hkcCameraProp2;
-			hkcDisplayProp2->Back_Color = System::Drawing::Color::White;
-			hkcDisplayProp2->Grid_Axis = System::Drawing::Color::Black;
-			hkcDisplayProp2->Grid_Draw = true;
-			hkcDisplayProp2->Grid_Line = System::Drawing::Color::DimGray;
-			this->hkoglPanelControl1->Display_Property = hkcDisplayProp2;
+			hkcCameraProp1->Enabled = true;
+			hkcCameraProp1->Far = 1000;
+			hkcCameraProp1->Fov = 45;
+			hkcCameraProp1->Near = 0.001;
+			hkcCameraProp1->Type = HKOGLPanel::HKCCameraProp::CAMERATYPE::PERSPECTIVE;
+			hkcCameraProp1->Zoom = 1;
+			this->hkoglPanelControl1->Camera_Property = hkcCameraProp1;
+			hkcDisplayProp1->Back_Color = System::Drawing::Color::White;
+			hkcDisplayProp1->Grid_Axis = System::Drawing::Color::Black;
+			hkcDisplayProp1->Grid_Draw = true;
+			hkcDisplayProp1->Grid_Line = System::Drawing::Color::DimGray;
+			this->hkoglPanelControl1->Display_Property = hkcDisplayProp1;
 			this->hkoglPanelControl1->Dock = System::Windows::Forms::DockStyle::Left;
 			this->hkoglPanelControl1->Empty_Panel = false;
 			this->hkoglPanelControl1->Location = System::Drawing::Point(0, 0);
 			this->hkoglPanelControl1->Name = L"hkoglPanelControl1";
-			hkcPixelFormat2->Accumu_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
-			hkcPixelFormat2->Alpha_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
-			hkcPixelFormat2->Stencil_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
-			this->hkoglPanelControl1->Pixel_Format = hkcPixelFormat2;
+			hkcPixelFormat1->Accumu_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
+			hkcPixelFormat1->Alpha_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
+			hkcPixelFormat1->Stencil_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
+			this->hkoglPanelControl1->Pixel_Format = hkcPixelFormat1;
 			this->hkoglPanelControl1->Size = System::Drawing::Size(800, 782);
 			this->hkoglPanelControl1->TabIndex = 0;
-			hkcTrackballProp2->Const_Res = false;
-			hkcTrackballProp2->Delta_Res = 500;
-			hkcTrackballProp2->Enabled = true;
-			hkcTrackballProp2->Move_Res = 1000;
-			hkcTrackballTrig4->Key_Down = false;
-			hkcTrackballTrig4->Keyboard = System::Windows::Forms::Keys::None;
-			hkcTrackballTrig4->Mouse = System::Windows::Forms::MouseButtons::Right;
-			hkcTrackballTrig4->Mouse_Down = false;
-			hkcTrackballProp2->Move_Trigger = hkcTrackballTrig4;
-			hkcTrackballTrig5->Key_Down = false;
-			hkcTrackballTrig5->Keyboard = System::Windows::Forms::Keys::None;
-			hkcTrackballTrig5->Mouse = System::Windows::Forms::MouseButtons::Left;
-			hkcTrackballTrig5->Mouse_Down = false;
-			hkcTrackballProp2->Rotate_Trigger = hkcTrackballTrig5;
-			hkcTrackballProp2->Zoom_Res = 100;
-			hkcTrackballTrig6->Key_Down = false;
-			hkcTrackballTrig6->Keyboard = System::Windows::Forms::Keys::None;
-			hkcTrackballTrig6->Mouse = System::Windows::Forms::MouseButtons::Middle;
-			hkcTrackballTrig6->Mouse_Down = false;
-			hkcTrackballProp2->Zoom_Trigger = hkcTrackballTrig6;
-			this->hkoglPanelControl1->Trackball_Property = hkcTrackballProp2;
+			hkcTrackballProp1->Const_Res = false;
+			hkcTrackballProp1->Delta_Res = 500;
+			hkcTrackballProp1->Enabled = true;
+			hkcTrackballProp1->Move_Res = 1000;
+			hkcTrackballTrig1->Key_Down = false;
+			hkcTrackballTrig1->Keyboard = System::Windows::Forms::Keys::None;
+			hkcTrackballTrig1->Mouse = System::Windows::Forms::MouseButtons::Right;
+			hkcTrackballTrig1->Mouse_Down = false;
+			hkcTrackballProp1->Move_Trigger = hkcTrackballTrig1;
+			hkcTrackballTrig2->Key_Down = false;
+			hkcTrackballTrig2->Keyboard = System::Windows::Forms::Keys::None;
+			hkcTrackballTrig2->Mouse = System::Windows::Forms::MouseButtons::Left;
+			hkcTrackballTrig2->Mouse_Down = false;
+			hkcTrackballProp1->Rotate_Trigger = hkcTrackballTrig2;
+			hkcTrackballProp1->Zoom_Res = 100;
+			hkcTrackballTrig3->Key_Down = false;
+			hkcTrackballTrig3->Keyboard = System::Windows::Forms::Keys::None;
+			hkcTrackballTrig3->Mouse = System::Windows::Forms::MouseButtons::Middle;
+			hkcTrackballTrig3->Mouse_Down = false;
+			hkcTrackballProp1->Zoom_Trigger = hkcTrackballTrig3;
+			this->hkoglPanelControl1->Trackball_Property = hkcTrackballProp1;
 			this->hkoglPanelControl1->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &Form1::hkoglPanelControl1_Paint);
 			this->hkoglPanelControl1->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(this, &Form1::hkoglPanelControl1_MouseDown);
 			// 
@@ -387,13 +387,13 @@ namespace OpenMesh_Course {
 			// 
 			this->tbSimplification->Dock = System::Windows::Forms::DockStyle::Top;
 			this->tbSimplification->Location = System::Drawing::Point(36, 18);
-			this->tbSimplification->Maximum = 100;
+			this->tbSimplification->Maximum = 1000;
 			this->tbSimplification->Minimum = 1;
 			this->tbSimplification->Name = L"tbSimplification";
 			this->tbSimplification->Size = System::Drawing::Size(945, 45);
 			this->tbSimplification->TabIndex = 8;
-			this->tbSimplification->Value = 100;
-			this->tbSimplification->MouseMove += gcnew System::Windows::Forms::MouseEventHandler(this, &Form1::tbSimplification_MouseMove);
+			this->tbSimplification->Value = 1000;
+			this->tbSimplification->ValueChanged += gcnew System::EventHandler(this, &Form1::tbSimplification_ValueChanged);
 			// 
 			// openMeshFileDialog
 			// 
@@ -672,32 +672,17 @@ private: System::Void btnDelUndo_Click(System::Object^  sender, System::EventArg
 				 this->Refresh();
 			 }
 		 }
-private: System::Void btnSimplification_Click(System::Object^  sender, System::EventArgs^  e) 
+private: System::Void tbSimplification_ValueChanged(System::Object^  sender, System::EventArgs^  e) 
 		 {
+			 double rate = (float)tbSimplification->Value / tbSimplification->Maximum;
+			 tbSimpleRate->Text = "" + rate;
 			 if(mesh)
 			 {
 				 lOutput->Text = "BUSY...";
-				 double rate = (float)tbSimplification->Value / 100;
-				 mesh->simplification(rate);
 				 this->Refresh();
+				 mesh->simplification(rate);
 				 lOutput->Text = "READY";
-			 }
-		 }
-
-private: System::Void tbSimplification_MouseMove(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) 
-		 {
-			 if(e->Button == System::Windows::Forms::MouseButtons::Left)
-			 {
-				 double rate = (float)tbSimplification->Value / 100;
-				 tbSimpleRate->Text = "" + rate;
-				 if(mesh)
-				 {
-					 lOutput->Text = "BUSY...";
-					 double rate = (float)tbSimplification->Value / 100;
-					 mesh->simplification(rate);
-					 this->Refresh();
-					 lOutput->Text = "READY";
-				 }
+				 this->Refresh();
 			 }
 		 }
 };
