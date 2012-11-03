@@ -142,6 +142,7 @@ namespace OMT//OpenMesh Triangle mesh
 		QUADRICES						quadrics;
 		ERRORS							errors;
 		V_DELETE_HISTORY				vDeleteHistory;
+		size_t							number_of_face;
 
 	public:
 										Model();//constructor
@@ -168,18 +169,15 @@ namespace OMT//OpenMesh Triangle mesh
 		double							findHalfEdge(const Point &p, HEHandle &handle);
 		double							findFace(const Point &p, FHandle &handle);
 
-		void							deleteVertex(VHandle &handle);
-		void							deleteEdge(HEHandle &handle);
-		void							deleteFace(FHandle &handle);
-
-		void							simplificationEdge(HEHandle &handle);
-		void							undoDelete(void);
 		bool							isConvex(vector<VHandle> &polygon);
 		double							calculateError(int id_v1, int id_v2, double* vx = NULL, double* vy = NULL, double* vz = NULL);
 		void							selectPair();
+		DELETE_HISTORY					undoSimplification(void);
+		void							undoSimplification(int target_num_faces);
 		void							simplification(double rate);
 		void							simplification(int target_num_faces);
 		int								simplification(int id_v1, int id_v2, double vx, double vy, double vz);
+		void							updateErrors(int idx);
 	};
 }
 /*======================================================================*/
@@ -332,6 +330,7 @@ public:
 
 
 	void Render_Solid();
+	void Render_No_Lighting_Solid();
 	void Render_SolidWireframe();
 	void Render_Wireframe();
 	void Render_Point();

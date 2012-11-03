@@ -92,6 +92,9 @@ namespace OMT
 		Point p[3];
 		size_t vid[3];
 		int i;
+		number_of_face = n_faces();
+		quadrics.clear();
+		errors.clear();
 		for (v_ite = vertices_begin(); v_ite != vertices_end(); ++v_ite)
 		{
 			quadrics.insert(QUADRICES::value_type(v_ite.handle().idx(), OpenMesh::Geometry::Quadricd(0.0)));
@@ -347,260 +350,7 @@ namespace OMT
 				}
 			}
 		}
-		////找出最接近的點
-		//if(findVertex(p, vHandle) < INIT_DIST)
-		//{
-		//	VFIter vf_ite;
-		//	//尋找點的one ring
-		//	for(vf_ite = vf_iter(vHandle);vf_ite;++vf_ite)
-		//	{
-		//		co[0] = co[1] = co[2] = 0.0;
-		//		i = 0;
-		//		for(OMT::FVIter fv_it = fv_iter(vf_ite.handle()); fv_it ; ++fv_it, ++i) 
-		//		{
-		//			fv[i] = point(fv_it.handle());
-		//			co += fv[i];
-		//		}
-		//		//檢查是否在三角面內
-		//		co /= 3.0f;//重心位置
-		//		float	dist =	OMT::distance(co, p);
-		//		if(dist < mDist)
-		//		{
-		//			if(OMT::pointInTrangle(p, fv[0], fv[1], fv[2]))
-		//			{
-		//				handle = vf_ite.handle();
-		//				mDist = dist;
-		//			}
-		//		}
-		//	}
-		//}
-
 		return mDist;
-	}
-
-	void Model::deleteVertex(VHandle &handle)
-	{
-		delete_vertex(handle, false);
-		garbage_collection();
-	}
-
-	void Model::deleteEdge(HEHandle &handle)
-	{
-		delete_vertex(from_vertex_handle(handle), false);
-		delete_vertex(to_vertex_handle(handle), false);
-		garbage_collection();
-	}
-
-	void Model::deleteFace(FHandle &handle)
-	{
-		delete_face(handle, false);
-		garbage_collection();
-	}
-
-	void Model::simplificationEdge(HEHandle &handle)
-	{ 
-		//vector<VHandle> face_vhandles;
-		DELETE_HISTORY history;
-		//vector<VHandle> record_from_vhandles;
-		//vector<VHandle> record_to_vhandles;
-		vector<VHandle> polygon;
-		int size = 0;
-		int index = 0;
-		int offset_from = 0;
-		int offset_to = 0;
-		OMT::VFIter vf_it;
-		OMT::VVIter vv_it;
-		set<FHandle> shandles;
-		set<FHandle>::const_iterator ite;
-
-
-		history.fromVertex = from_vertex_handle(handle);
-		history.toVertex = to_vertex_handle(handle);
-#ifdef _DEBUG
-		printf("\nFrom#%d, To#%d\n", history.fromVertex.idx(), history.toVertex.idx());
-#endif
-		//Record the vertex order of erase face
-		for(vv_it = vv_iter(history.fromVertex);vv_it;++vv_it, index++)
-		{
-			if(vv_it.handle() == history.toVertex)
-			{
-				offset_from = index + 1;
-#ifdef _DEBUG
-				printf("Offset#%d ", offset_from);
-#endif
-			}
-			history.fromOnering.push_back(vv_it.handle());
-#ifdef _DEBUG
-			printf("#%d ", vv_it.handle().idx());
-#endif
-		}
-#ifdef _DEBUG
-		printf("\n");
-#endif
-
-		index = 0;
-		for(vv_it = vv_iter(history.toVertex);vv_it;++vv_it, index++)
-		{
-			if(vv_it.handle() == history.fromVertex)
-			{
-				offset_to = index + 1;
-#ifdef _DEBUG
-				printf("Offset#%d ", offset_to);
-#endif
-			}
-			history.toOnering.push_back(vv_it.handle());
-#ifdef _DEBUG
-			printf("#%d ", vv_it.handle().idx());
-#endif
-		}
-#ifdef _DEBUG
-		printf("\n");
-#endif
-
-		size = history.fromOnering.size();
-		for(int i = 0; i < size - 2; i++)
-		{
-			polygon.push_back(history.fromOnering[(i+offset_from)%size]);
-#ifdef _DEBUG
-			printf("#%d ", history.fromOnering[(i+offset_from)%size].idx());
-#endif
-		}
-
-		size = history.toOnering.size();
-		for(int i = 0; i < size - 2; i++)
-		{
-			polygon.push_back(history.toOnering[(i+offset_to)%size]);
-#ifdef _DEBUG
-			printf("#%d ", history.toOnering[(i+offset_to)%size].idx());
-#endif
-		}
-#ifdef _DEBUG
-		printf("\n ");
-#endif
-		if(!isConvex(polygon))
-			return;
-
-		//Record the face handle
-		for(vf_it = vf_iter(history.fromVertex);vf_it;++vf_it)
-		{
-			shandles.insert(vf_it.handle());
-		}
-
-		for(vf_it = vf_iter(history.toVertex);vf_it;++vf_it)
-		{
-			shandles.insert(vf_it.handle());
-		}
-
-		Point fp = point(history.fromVertex);
-		Point tp = point(history.toVertex);
-
-		//delete_vertex(fv);
-		//delete_vertex(tv);
-		//garbage_collection();
-		for(ite = shandles.begin();ite != shandles.end();++ite)
-		{
-			delete_face(*ite, false);
-		}
-		garbage_collection();
-
-
-		Point add((fp[0] + tp[0])/2, (fp[1] + tp[1])/2, (fp[2] + tp[2])/2);
-		history.newVertex = add_vertex(add);
-		//for(ite = vhandles.begin(); ite != vhandles.end(); ++ite)
-		//{
-		//	face_vhandles.push_back(*ite);
-		//	if(face_vhandles.size() == 2)
-		//	{
-		//		face_vhandles.push_back(addHandle);
-		//		add_face(face_vhandles);
-		//		face_vhandles.clear();
-		//		face_vhandles.push_back(*ite);
-		//	}
-		//}
-		size = history.fromOnering.size();
-		printf("From Start#%d, size:%d\n", history.fromOnering[(offset_from)%size], size);
-		for(int i = 0; i < size - 2; i++)
-		{
-			//face_vhandles.push_back(record_from_vhandles[(i+offset_from)%size]);
-			//printf("#%d ", record_from_vhandles[(i+offset_from)%size].idx());
-			//if(face_vhandles.size() == 2)
-			//{
-			//	face_vhandles.push_back(addHandle);
-			//	add_face(face_vhandles);
-			//	face_vhandles.clear();
-			//	face_vhandles.push_back(record_from_vhandles[(i+offset_from)%size]);
-			//}
-			//face_vhandles.push_back(addHandle);
-#ifdef _DEBUG
-			printf("#%d ", history.newVertex.idx());
-			printf("#%d ", history.fromOnering[(i+1+offset_from)%size].idx());
-			printf("#%d \n", history.fromOnering[(i+offset_from)%size].idx());
-#endif
-			add_face(history.newVertex, history.fromOnering[(i+1+offset_from)%size], history.fromOnering[(i+offset_from)%size]);
-		}
-		
-		
-		size = history.toOnering.size();
-		printf("To Start#%d, size:%d\n", history.toOnering[(offset_to)%size], size);
-		for(int i = 0; i < size - 2; i++)
-		{
-			//face_vhandles.push_back(record_to_vhandles[(i+offset_to)%size]);
-			//printf("#%d ", record_to_vhandles[(i+offset_to)%size].idx());
-			//if(face_vhandles.size() == 2)
-			//{
-			//	face_vhandles.push_back(addHandle);
-			//	add_face(face_vhandles);
-			//	face_vhandles.clear();
-			//	face_vhandles.push_back(record_to_vhandles[(i+offset_to)%size]);
-			//}
-			//face_vhandles.push_back(addHandle);
-#ifdef _DEBUG
-			printf("#%d ", history.newVertex.idx());
-			printf("#%d ", history.toOnering[(i+1+offset_to)%size].idx());
-			printf("#%d \n", history.toOnering[(i+offset_to)%size].idx());
-#endif
-			add_face(history.newVertex, history.toOnering[(i+1+offset_to)%size], history.toOnering[(i+offset_to)%size]);
-		}
-		printf("\n");
-		vDeleteHistory.push_back(history);
-	}
-
-	void Model::undoDelete(void)
-	{
-		if(vDeleteHistory.size() > 0)
-		{
-			DELETE_HISTORY history = vDeleteHistory.back();
-			VFIter vf_ite;
-			size_t size;
-			delete_vertex(history.newVertex);
-			garbage_collection();
-			//for(vf_ite = vf_iter(history.newVertex); vf_ite;++vf_ite)
-			//{
-			//	delete_face(vf_ite.handle(), false);
-			//}
-
-			size = history.fromOnering.size();
-			for(int i = 0; i < size; i++)
-			{
-#ifdef _DEBUG
-				printf("#%d ", history.fromVertex.idx());
-				printf("#%d ", history.fromOnering[(i+1)%size].idx());
-				printf("#%d \n", history.fromOnering[(i)%size].idx());
-#endif
-				add_face(history.fromVertex, history.fromOnering[(i+1)%size], history.fromOnering[(i)%size]);
-			}
-			size = history.toOnering.size();
-			for(int i = 0; i < size; i++)
-			{
-#ifdef _DEBUG
-				printf("#%d ", history.toVertex.idx());
-				printf("#%d ", history.toOnering[(i+1)%size].idx());
-				printf("#%d \n", history.toOnering[(i)%size].idx());
-#endif
-				add_face(history.toVertex, history.toOnering[(i+1)%size], history.toOnering[(i)%size]);
-			}
-			vDeleteHistory.pop_back();
-		}
 	}
 
 	bool Model::isConvex(vector<VHandle> &polygon)
@@ -733,10 +483,124 @@ namespace OMT
 		}
 	}
 
+	DELETE_HISTORY Model::undoSimplification(void)
+	{
+		DELETE_HISTORY history;
+		if(vDeleteHistory.size() > 0)
+		{
+			history = vDeleteHistory.back();
+			VFIter vf_ite;
+			size_t size;
+			delete_vertex(history.newVertex);
+			garbage_collection();
+			//for(vf_ite = vf_iter(history.newVertex); vf_ite;++vf_ite)
+			//{
+			//	delete_face(vf_ite.handle(), false);
+			//}
+
+			size = history.fromOnering.size();
+			for(int i = 0; i < size; i++)
+			{
+#ifdef _DEBUG
+				printf("#%d ", history.fromVertex.idx());
+				printf("#%d ", history.fromOnering[(i+1)%size].idx());
+				printf("#%d \n", history.fromOnering[(i)%size].idx());
+#endif
+				add_face(history.fromVertex, history.fromOnering[(i+1)%size], history.fromOnering[(i)%size]);
+			}
+			size = history.toOnering.size();
+			for(int i = 0; i < size; i++)
+			{
+#ifdef _DEBUG
+				printf("#%d ", history.toVertex.idx());
+				printf("#%d ", history.toOnering[(i+1)%size].idx());
+				printf("#%d \n", history.toOnering[(i)%size].idx());
+#endif
+				add_face(history.toVertex, history.toOnering[(i+1)%size], history.toOnering[(i)%size]);
+			}
+			vDeleteHistory.pop_back();
+		}
+		return history;
+	}
+
+	void Model::undoSimplification(int target_num_faces)
+	{
+		int delete_id;
+		PAIR p;
+		std::pair<ERRORS::iterator, bool> pr;
+		ERRORS::iterator e_ite;
+		OMT::VVIter vv_it;
+		int max_id, min_id;
+		int id_v1, id_v2;
+		while(n_faces() < target_num_faces)
+		{
+			if(vDeleteHistory.empty())
+				return;
+			DELETE_HISTORY history = undoSimplification();
+			delete_id = history.newVertex.idx();
+			id_v1 = history.fromVertex.idx();
+			id_v2 = history.toVertex.idx();
+			//delete error have delete_id
+			for (e_ite = errors.begin(); e_ite != errors.end();)
+			{
+				p = e_ite->first;
+				if (p.first == delete_id || p.second == delete_id)
+				{
+					errors.erase(e_ite++);
+				}
+				else
+					++e_ite;
+			}
+			quadrics.erase(quadrics.find(delete_id));
+
+			//recover the vertex error
+			for(vv_it = vv_iter(history.fromVertex);vv_it;++vv_it)
+			{
+				if(vv_it.handle().idx() == id_v2)
+					continue;
+				if(history.fromVertex.idx() > vv_it.handle().idx())
+				{
+					max_id = history.fromVertex.idx();
+					min_id = vv_it.handle().idx();
+				}
+				else
+				{
+					min_id = history.fromVertex.idx();
+					max_id = vv_it.handle().idx();
+				}
+				pr = errors.insert(ERRORS::value_type( PAIR(min_id, max_id), 0.0 ));
+			}
+
+			for(vv_it = vv_iter(history.toVertex);vv_it;++vv_it)
+			{
+				if(history.fromVertex.idx() > vv_it.handle().idx())
+				{
+					max_id = history.fromVertex.idx();
+					min_id = vv_it.handle().idx();
+				}
+				else
+				{
+					min_id = history.fromVertex.idx();
+					max_id = vv_it.handle().idx();
+				}
+				pr = errors.insert(ERRORS::value_type( PAIR(min_id, max_id), 0.0 ));
+			}
+			updateErrors(id_v1);
+			updateErrors(id_v2);
+		}
+	}
+
 	void Model::simplification(double rate)
 	{
-		int target_num_faces = rate * n_faces();
-		simplification(target_num_faces);
+		int target_num_faces = rate * number_of_face;
+		if(n_faces() > target_num_faces)
+		{
+			simplification(target_num_faces);
+		}
+		else
+		{
+			undoSimplification(target_num_faces);
+		}
 	}
 
 	void Model::simplification(int target_num_faces)
@@ -954,18 +818,7 @@ namespace OMT
 			errors.erase(iter_min_error);
 
 			/* update error of pairs involving v1 */
-			for (ERRORS::iterator iter = errors.begin(); iter != errors.end(); iter++)
-			{
-				p = iter -> first;
-				if (p.first == new_id)
-				{
-					iter -> second = calculateError(id_v1, p.second);
-				}
-				if (p.second == new_id)
-				{
-					iter -> second = calculateError(id_v1, p.first);
-				}
-			}
+			updateErrors(new_id);
 		}
 	}
 
@@ -1099,6 +952,24 @@ namespace OMT
 		printf("\n");
 		vDeleteHistory.push_back(history);
 		return new_id;
+	}
+
+	void Model::updateErrors(int idx)
+	{
+		PAIR p;
+		ERRORS::iterator ite;
+		for (ite = errors.begin(); ite != errors.end(); ite++)
+		{
+			p = ite -> first;
+			if (p.first == idx)
+			{
+				ite -> second = calculateError(idx, p.second);
+			}
+			if (p.second == idx)
+			{
+				ite -> second = calculateError(idx, p.first);
+			}
+		}
 	}
 }
 
@@ -1579,6 +1450,31 @@ void Tri_Mesh::Render_Solid()
 		glEnd();	
 		
 		glDisable(GL_POLYGON_OFFSET_FILL);
+}
+
+void Tri_Mesh::Render_No_Lighting_Solid()
+{
+	FIter f_it;
+	FVIter	fv_it;
+	//glPushAttrib(GL_LIGHTING_BIT);
+	glEnable(GL_POLYGON_OFFSET_FILL);
+	glEnable(GL_DEPTH_TEST);
+	glDisable(GL_LIGHTING);
+	glPolygonOffset(2.0, 2.0);
+	glBegin(GL_TRIANGLES);
+	glColor4f(0.81, 0.74, 0.33, 0.5);
+	for (f_it = faces_begin(); f_it != faces_end(); ++f_it) 
+	{
+		for (fv_it = fv_iter( f_it ); fv_it; ++fv_it)
+		{						
+			glNormal3dv(&normal(fv_it.handle())[0]);
+			glVertex3dv(&point(fv_it.handle())[0]);
+		}
+	}
+	glEnd();	
+
+	glDisable(GL_POLYGON_OFFSET_FILL);
+	glEnable(GL_LIGHTING);
 }
 
 void Tri_Mesh::Render_SolidWireframe()
