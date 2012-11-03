@@ -355,6 +355,7 @@ namespace OMT
 
 	bool Model::isConvex(vector<VHandle> &polygon)
 	{
+		return true;
 		float totalAngle = 0;
 		size_t size = polygon.size();
 		for(int i = 0; i < size; i++)
