@@ -570,21 +570,33 @@ namespace OMT
 					max_id = vv_it.handle().idx();
 				}
 				pr = errors.insert(ERRORS::value_type( PAIR(min_id, max_id), 0.0 ));
+#ifdef _DEBUG
+				if (pr.second == true)
+					printf("QUADRIC: insert  pair(%d, %d)\n", min_id, max_id);
+				else
+					printf("QUADRIC: insert  pair(%d, %d) FAIL..duplicate\n", min_id, max_id);
+#endif
 			}
 
 			for(vv_it = vv_iter(history.toVertex);vv_it;++vv_it)
 			{
-				if(history.fromVertex.idx() > vv_it.handle().idx())
+				if(history.toVertex.idx() > vv_it.handle().idx())
 				{
-					max_id = history.fromVertex.idx();
+					max_id = history.toVertex.idx();
 					min_id = vv_it.handle().idx();
 				}
 				else
 				{
-					min_id = history.fromVertex.idx();
+					min_id = history.toVertex.idx();
 					max_id = vv_it.handle().idx();
 				}
 				pr = errors.insert(ERRORS::value_type( PAIR(min_id, max_id), 0.0 ));
+#ifdef _DEBUG
+				if (pr.second == true)
+					printf("QUADRIC: insert  pair(%d, %d)\n", min_id, max_id);
+				else
+					printf("QUADRIC: insert  pair(%d, %d) FAIL..duplicate\n", min_id, max_id);
+#endif
 			}
 			updateErrors(id_v1);
 			updateErrors(id_v2);
@@ -630,6 +642,8 @@ namespace OMT
 			PAIR pair_min_error = iter_min_error -> first;
 			id_v1 = pair_min_error.first;
 			id_v2 = pair_min_error.second;
+			if(id_v1 == id_v2)
+				int i = 0;
 
 			/* add to vsplits; */
 			calculateError(id_v1, id_v2, &vx, &vy,&vz);	/* get coordinate of vf */
