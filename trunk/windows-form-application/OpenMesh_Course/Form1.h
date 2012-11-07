@@ -388,7 +388,7 @@ namespace OpenMesh_Course {
 			this->tbSimplification->Dock = System::Windows::Forms::DockStyle::Top;
 			this->tbSimplification->Location = System::Drawing::Point(36, 18);
 			this->tbSimplification->Maximum = 1000;
-			this->tbSimplification->Minimum = 1;
+			this->tbSimplification->Minimum = 100;
 			this->tbSimplification->Name = L"tbSimplification";
 			this->tbSimplification->Size = System::Drawing::Size(945, 45);
 			this->tbSimplification->TabIndex = 8;
