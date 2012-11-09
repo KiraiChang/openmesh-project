@@ -42,7 +42,10 @@ glm::vec3 g_eye(0.0f, 3.0f, 3.0f);
 // `鏡頭對準的點`
 glm::vec3 g_lookat(0.0f, 0.0f, 0.0f); 
 // `鏡頭正上方的方向`
-glm::vec3 g_up(0.0f, -1.0f, 1.0f); 
+glm::vec3 g_up(0.0f, -1.0f, 1.0f);
+
+//Grid size(left, bottom, right, up)
+glm::vec4 g_gridSize( -50.0f, -50.0f, 50.0f, 50.0);
 
 MOpenGL::MOpenGL():m_rc(NULL),
 	m_near(-1.0),
@@ -195,6 +198,21 @@ void MOpenGL::renderScene()
 
 	// -------------------- 停用光源設定
 	glDisable(GL_LIGHTING);
+
+	/* Render grid over 0..rows, 0..columns. */
+	glColor3f(0.0, 0.0, 0.0);
+	glBegin(GL_LINES);
+	/* Horizontal lines. */
+	for (int i=g_gridSize.x; i<=g_gridSize.z; i++) {
+		glVertex2f(g_gridSize.y, i);
+		glVertex2f(g_gridSize.w, i);
+	}
+	/* Vertical lines. */
+	for (int i=g_gridSize.y; i<=g_gridSize.w; i++) {
+		glVertex2f(i, g_gridSize.x);
+		glVertex2f(i, g_gridSize.z);
+	}
+	glEnd();
 }
 
 void MOpenGL::swapBuffers(void)
