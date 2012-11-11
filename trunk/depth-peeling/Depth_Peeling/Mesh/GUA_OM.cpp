@@ -25,7 +25,7 @@ namespace OMT
 	{
 		glPushAttrib(GL_LIGHTING_BIT);
 		glDisable(GL_LIGHTING);
-		glEnable(GL_DEPTH_TEST);
+		//glEnable(GL_DEPTH_TEST);
 		glPointSize(5.0f);
 		glBegin(GL_POINTS);
 		vector<sp_p>::iterator p_itr = sp_p_list.begin();
