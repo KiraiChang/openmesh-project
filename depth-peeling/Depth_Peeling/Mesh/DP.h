@@ -32,7 +32,7 @@ public:
 	void Peeling_layer(  int, int, int,  Tri_Mesh*, GLCamera, xform) ;
 	void Check_Layers(int x, int y);
 	size_t Get_Layer_Count();
-	float Get_Depth(int selectLayer);
+	void Get_Depth(int selectLayer, float &in, float &out);
 	void Get_Pixel_Position(float &x, float &y);
 
 protected:

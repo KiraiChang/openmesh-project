@@ -218,14 +218,16 @@ void DP_COM::Check_Layers(int x, int y)
 	printf("Input x:%d, y:%d\n",m_curPixelX, m_curPixelY);
 	m_vLayer.clear();
 	int layer;
-	bool bPeeling = false;
 	for(layer = 0; layer < MAX_LAYERS; layer++)
 	{
 		if(m_pZBuffer[m_sceneWidth * m_sceneHeight * layer + y * m_sceneWidth + x] < 1.0)
 		{
 			m_vLayer.push_back(layer);
 			printf("Peeling Layer:%d, Depth:%f\n", layer, m_pZBuffer[m_sceneWidth * m_sceneHeight * layer + y * m_sceneWidth + x]);
-			bPeeling = true;
+		}
+		else
+		{
+			printf("Peeling Layer:%d, Depth:%f\n", layer, m_pZBuffer[m_sceneWidth * m_sceneHeight * layer + y * m_sceneWidth + x]);
 		}
 	}
 }
@@ -235,17 +237,18 @@ size_t DP_COM::Get_Layer_Count()
 	return m_vLayer.size();
 }
 
-float DP_COM::Get_Depth(int selectLayer)
+void DP_COM::Get_Depth(int selectLayer, float &in, float &out)
 {
 	printf("Input Index:%d\n", selectLayer);
 
-	int index = (selectLayer + 1) * 2 - 1;
-	if(m_vLayer.size() <= index)
-		return 1.0;
+	int index = selectLayer * 2;
+	if(m_vLayer.size() < index + 1)
+		return;
 	printf("Select Index:%d\n", index);
-	int layer1 = m_vLayer[index - 1];
-	int layer2 = m_vLayer[index];
-	return (m_pZBuffer[m_sceneWidth * m_sceneHeight * layer1 + m_curPixelY * m_sceneWidth + m_curPixelX] + m_pZBuffer[m_sceneWidth * m_sceneHeight * layer2 + m_curPixelY * m_sceneWidth + m_curPixelX]) / 2;
+	int layer1 = m_vLayer[index];
+	int layer2 = m_vLayer[index + 1];
+	in = m_pZBuffer[m_sceneWidth * m_sceneHeight * layer1 + m_curPixelY * m_sceneWidth + m_curPixelX];
+	out = m_pZBuffer[m_sceneWidth * m_sceneHeight * layer2 + m_curPixelY * m_sceneWidth + m_curPixelX];
 }
 
 void DP_COM::Get_Pixel_Position(float &x, float &y)
