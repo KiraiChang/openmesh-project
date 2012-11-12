@@ -429,8 +429,10 @@ private: System::Void listSelectLayer_Click(System::Object^  sender, System::Eve
 		 {
 			 this->listSelectLayer->Visible = false;
 			 int index = this->listSelectLayer->SelectedIndex;
-			 float depth = dp_com->Get_Depth(index);
-			 printf("Depth:%f\n", depth);
+			 float in, out;
+			 dp_com->Get_Depth(index, in, out);
+			 float depth =  (in + out)/2;
+			 printf("In:%f, Out:%f, Depth:%f\n", in, out, depth);
 			 if(depth < 1.0)
 			 {
 				 GLint viewport[4];
@@ -472,8 +474,28 @@ private: System::Void listSelectLayer_Click(System::Object^  sender, System::Eve
 				 {
 					 return;
 				 }
-				 mesh->add_sp_p( OMT::MyMesh::Point(drawX,drawY,drawZ), 1.0f, 0.0f, 0.0f);
+				 mesh->add_sp_p( OMT::MyMesh::Point(drawX,drawY,drawZ), 0.0f, 0.0f, 1.0f);
 				 printf("Point.x:%f,Point.y:%f,Point.z:%f\n", drawX, drawY, drawZ);
+
+				 printf("in : x:%f,y:%f,depth:%f\n", winX, winY, in);
+				 gluUnProject( winX, winY, in, modelview, projection, viewport, &drawX, &drawY, &drawZ);
+
+				 if(drawZ == -1.f)
+				 {
+					 return;
+				 }
+				 mesh->add_sp_p( OMT::MyMesh::Point(drawX,drawY,drawZ), 1.0f, 0.0f, 0.0f);
+				 printf("In : Point.x:%f,Point.y:%f,Point.z:%f\n", drawX, drawY, drawZ);
+
+				 printf("Out : x:%f,y:%f,depth:%f\n", winX, winY, out);
+				 gluUnProject( winX, winY, out, modelview, projection, viewport, &drawX, &drawY, &drawZ);
+
+				 if(drawZ == -1.f)
+				 {
+					 return;
+				 }
+				 mesh->add_sp_p( OMT::MyMesh::Point(drawX,drawY,drawZ), 1.0f, 0.0f, 0.0f);
+				 printf("Out : Point.x:%f,Point.y:%f,Point.z:%f\n", drawX, drawY, drawZ);
 			 }
 		 }
 };
