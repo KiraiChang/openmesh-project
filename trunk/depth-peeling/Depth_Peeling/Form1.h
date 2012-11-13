@@ -477,25 +477,25 @@ private: System::Void listSelectLayer_Click(System::Object^  sender, System::Eve
 				 mesh->add_sp_p( OMT::MyMesh::Point(drawX,drawY,drawZ), 0.0f, 0.0f, 1.0f);
 				 printf("Point.x:%f,Point.y:%f,Point.z:%f\n", drawX, drawY, drawZ);
 
-				 printf("in : x:%f,y:%f,depth:%f\n", winX, winY, in);
-				 gluUnProject( winX, winY, in, modelview, projection, viewport, &drawX, &drawY, &drawZ);
+				 //printf("in : x:%f,y:%f,depth:%f\n", winX, winY, in);
+				 //gluUnProject( winX, winY, in, modelview, projection, viewport, &drawX, &drawY, &drawZ);
 
-				 if(drawZ == -1.f)
-				 {
-					 return;
-				 }
-				 mesh->add_sp_p( OMT::MyMesh::Point(drawX,drawY,drawZ), 1.0f, 0.0f, 0.0f);
-				 printf("In : Point.x:%f,Point.y:%f,Point.z:%f\n", drawX, drawY, drawZ);
+				 //if(drawZ == -1.f)
+				 //{
+					// return;
+				 //}
+				 //mesh->add_sp_p( OMT::MyMesh::Point(drawX,drawY,drawZ), 1.0f, 0.0f, 0.0f);
+				 //printf("In : Point.x:%f,Point.y:%f,Point.z:%f\n", drawX, drawY, drawZ);
 
-				 printf("Out : x:%f,y:%f,depth:%f\n", winX, winY, out);
-				 gluUnProject( winX, winY, out, modelview, projection, viewport, &drawX, &drawY, &drawZ);
+				 //printf("Out : x:%f,y:%f,depth:%f\n", winX, winY, out);
+				 //gluUnProject( winX, winY, out, modelview, projection, viewport, &drawX, &drawY, &drawZ);
 
-				 if(drawZ == -1.f)
-				 {
-					 return;
-				 }
-				 mesh->add_sp_p( OMT::MyMesh::Point(drawX,drawY,drawZ), 1.0f, 0.0f, 0.0f);
-				 printf("Out : Point.x:%f,Point.y:%f,Point.z:%f\n", drawX, drawY, drawZ);
+				 //if(drawZ == -1.f)
+				 //{
+					// return;
+				 //}
+				 //mesh->add_sp_p( OMT::MyMesh::Point(drawX,drawY,drawZ), 1.0f, 0.0f, 0.0f);
+				 //printf("Out : Point.x:%f,Point.y:%f,Point.z:%f\n", drawX, drawY, drawZ);
 			 }
 		 }
 };
