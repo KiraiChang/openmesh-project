@@ -421,8 +421,8 @@ private: System::Void DepthPeel_button_Click(System::Object^  sender, System::Ev
 				 mesh->clear_sp_p();
 			 }
 
-			 glPolygonMode(  GL_FRONT, GL_FILL ) ;
-			 glPolygonMode(  GL_BACK, GL_POINT ) ;
+			 //glPolygonMode(  GL_FRONT, GL_FILL ) ;
+			 //glPolygonMode(  GL_BACK, GL_POINT ) ;
 			 hkoglPanelControl1->Invalidate( );
 		 }
 private: System::Void listSelectLayer_Click(System::Object^  sender, System::EventArgs^  e) 
