@@ -35,6 +35,14 @@ namespace OMT
 			glVertex3dv(&p_itr->pt[0]);
 		}
 		glEnd();
+		glBegin(GL_LINE_STRIP);
+		p_itr = sp_p_list.begin();
+		for (p_itr; p_itr != sp_p_list.end(); ++p_itr)
+		{
+			glColor3f(p_itr->r, p_itr->g, p_itr->b);
+			glVertex3dv(&p_itr->pt[0]);
+		}
+		glEnd();
 		glEnable(GL_LIGHTING);
 		glDisable(GL_POLYGON_OFFSET_FILL);
 	}
