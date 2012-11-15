@@ -132,6 +132,11 @@ namespace OMT//OpenMesh Triangle mesh
 												int a21, int a22, int a23,
 												int a31, int a32, int a33);
 	double vertexError(OpenMesh::Geometry::Quadricd q, double x, double y, double z);
+	enum SELECT_CONTROL_POINT_TYPE
+	{
+		eRandom,
+		eQuadricd,
+	};
 	/*定義類別*/
 	class Model:public MyMesh
 	{
@@ -184,7 +189,8 @@ namespace OMT//OpenMesh Triangle mesh
 		//------------------------------LEAST_SQUARE_MESH--------------------------------------------//
 		void							clearBuffer(void);
 		void							randomIndex(int control_number);
-		void							leastSquareMeshRand(int control_number);
+		void							quadricdIndex(int control_number);
+		void							leastSquareMesh(int control_number, SELECT_CONTROL_POINT_TYPE type);
 	};
 }
 /*======================================================================*/
