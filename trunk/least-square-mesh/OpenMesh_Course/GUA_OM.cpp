@@ -1012,22 +1012,61 @@ namespace OMT
 		}
 	}
 
-	void Model::leastSquareMeshRand(int m)
+	void Model::quadricdIndex(int control_number)
+	{
+		control_point_idx.clear();
+		selectPair();
+		std::map< double, PAIR> errorQueue;
+		std::map< double, PAIR>::reverse_iterator reve_ite;
+		PAIR pair;
+		for (ERRORS::iterator iter = errors.begin(); iter != errors.end(); iter++)
+		{
+			errorQueue.insert(std::map< double, PAIR>::value_type(iter->second, iter->first));
+		}
+
+		for (reve_ite = errorQueue.rbegin(); reve_ite != errorQueue.rend(); reve_ite++)
+		{
+			//printf("Error:%f\n", reve_ite->first);
+			pair = reve_ite->second;
+			//printf("min idx:%d, max idx:%d\n", pair.first, pair.second);
+			control_point_idx.insert(pair.first);
+			if(control_point_idx.size() >= control_number)
+				return;
+			control_point_idx.insert(pair.second);
+			if(control_point_idx.size() >= control_number)
+				return;
+		}
+	}
+
+	void Model::leastSquareMesh(int m, SELECT_CONTROL_POINT_TYPE type)
 	{
 		int i, cp_count, one_ring_count, cp_index;
 		Point p;
 		size_t n = n_vertices();
-		if(m > n)
+		if(m > n || m <= 0)
 		{
 			printf("Control Point(%d) less than all vertices size(%d)...\n", m, n);
 			return ;
 		}
-		printf("Begin process Least Square Mesh (Random) ...\n");
-		LinearSystemLib::GeneralSparseMatrix GA;
+
+		if(type == eQuadricd)
+		{
+			quadricdIndex(m);
+			printf("Begin process Least Square Mesh (Quadricd) ...\n");
+		}
+		else
+		{
+			randomIndex(m);
+			printf("Begin process Least Square Mesh (Random) ...\n");
+		}
+		LinearSystemLib::GeneralSparseMatrix GA;//Ax=B;
 		VIter v_ite;
 		VVIter vv_ite;
 		cp_count = 0;
-		randomIndex(m);
+
+
+
+
 		GA.Create(n + m, n);
 		int dim = 3;
 		double **B = new double * [dim];

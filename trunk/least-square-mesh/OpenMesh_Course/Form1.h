@@ -84,6 +84,12 @@ namespace OpenMesh_Course {
 	private: System::Windows::Forms::TextBox^  tbSimpleRate;
 	private: System::Windows::Forms::Button^  btnLSM;
 	private: System::Windows::Forms::TextBox^  tbLSMCount;
+	private: System::Windows::Forms::GroupBox^  gbLSSelectType;
+	private: System::Windows::Forms::RadioButton^  rbSelectQuadricd;
+
+	private: System::Windows::Forms::RadioButton^  rbSelectRandom;
+
+
 
 
 
@@ -127,13 +133,13 @@ namespace OpenMesh_Course {
 			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig3 = (gcnew HKOGLPanel::HKCTrackballTrig());
 			this->hkoglPanelControl1 = (gcnew HKOGLPanel::HKOGLPanelControl());
 			this->gpCommand = (gcnew System::Windows::Forms::GroupBox());
+			this->lOutput = (gcnew System::Windows::Forms::Label());
 			this->btnDelUndo = (gcnew System::Windows::Forms::Button());
 			this->gbOneRing = (gcnew System::Windows::Forms::GroupBox());
 			this->rbOneRingNone = (gcnew System::Windows::Forms::RadioButton());
 			this->rbOneRingFace = (gcnew System::Windows::Forms::RadioButton());
 			this->rbOneRingEdge = (gcnew System::Windows::Forms::RadioButton());
 			this->rbOneRingVertex = (gcnew System::Windows::Forms::RadioButton());
-			this->lOutput = (gcnew System::Windows::Forms::Label());
 			this->gbShowType = (gcnew System::Windows::Forms::GroupBox());
 			this->cbWireframe = (gcnew System::Windows::Forms::CheckBox());
 			this->cbLightingModel = (gcnew System::Windows::Forms::CheckBox());
@@ -141,17 +147,21 @@ namespace OpenMesh_Course {
 			this->rbSelectFace = (gcnew System::Windows::Forms::RadioButton());
 			this->rbSelectEdge = (gcnew System::Windows::Forms::RadioButton());
 			this->rbSelectVertex = (gcnew System::Windows::Forms::RadioButton());
+			this->tbLSMCount = (gcnew System::Windows::Forms::TextBox());
+			this->gbLSSelectType = (gcnew System::Windows::Forms::GroupBox());
+			this->rbSelectQuadricd = (gcnew System::Windows::Forms::RadioButton());
+			this->rbSelectRandom = (gcnew System::Windows::Forms::RadioButton());
 			this->btnLSM = (gcnew System::Windows::Forms::Button());
 			this->btnLoadMesh = (gcnew System::Windows::Forms::Button());
 			this->tbSimplification = (gcnew System::Windows::Forms::TrackBar());
 			this->openMeshFileDialog = (gcnew System::Windows::Forms::OpenFileDialog());
 			this->gbSimplification = (gcnew System::Windows::Forms::GroupBox());
 			this->tbSimpleRate = (gcnew System::Windows::Forms::TextBox());
-			this->tbLSMCount = (gcnew System::Windows::Forms::TextBox());
 			this->gpCommand->SuspendLayout();
 			this->gbOneRing->SuspendLayout();
 			this->gbShowType->SuspendLayout();
 			this->gpSelectType->SuspendLayout();
+			this->gbLSSelectType->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->tbSimplification))->BeginInit();
 			this->gbSimplification->SuspendLayout();
 			this->SuspendLayout();
@@ -206,14 +216,15 @@ namespace OpenMesh_Course {
 			// 
 			// gpCommand
 			// 
+			this->gpCommand->Controls->Add(this->lOutput);
 			this->gpCommand->Controls->Add(this->btnDelUndo);
 			this->gpCommand->Controls->Add(this->gbOneRing);
-			this->gpCommand->Controls->Add(this->lOutput);
 			this->gpCommand->Controls->Add(this->gbShowType);
 			this->gpCommand->Controls->Add(this->gpSelectType);
 			this->gpCommand->Controls->Add(this->tbLSMCount);
-			this->gpCommand->Controls->Add(this->btnLoadMesh);
+			this->gpCommand->Controls->Add(this->gbLSSelectType);
 			this->gpCommand->Controls->Add(this->btnLSM);
+			this->gpCommand->Controls->Add(this->btnLoadMesh);
 			this->gpCommand->Dock = System::Windows::Forms::DockStyle::Right;
 			this->gpCommand->Location = System::Drawing::Point(800, 0);
 			this->gpCommand->Name = L"gpCommand";
@@ -222,9 +233,19 @@ namespace OpenMesh_Course {
 			this->gpCommand->TabStop = false;
 			this->gpCommand->Text = L"Command";
 			// 
+			// lOutput
+			// 
+			this->lOutput->AutoSize = true;
+			this->lOutput->Dock = System::Windows::Forms::DockStyle::Top;
+			this->lOutput->Location = System::Drawing::Point(3, 532);
+			this->lOutput->Name = L"lOutput";
+			this->lOutput->Size = System::Drawing::Size(24, 12);
+			this->lOutput->TabIndex = 4;
+			this->lOutput->Text = L"Log";
+			// 
 			// btnDelUndo
 			// 
-			this->btnDelUndo->Location = System::Drawing::Point(0, 474);
+			this->btnDelUndo->Location = System::Drawing::Point(6, 599);
 			this->btnDelUndo->Name = L"btnDelUndo";
 			this->btnDelUndo->Size = System::Drawing::Size(75, 23);
 			this->btnDelUndo->TabIndex = 6;
@@ -239,7 +260,7 @@ namespace OpenMesh_Course {
 			this->gbOneRing->Controls->Add(this->rbOneRingEdge);
 			this->gbOneRing->Controls->Add(this->rbOneRingVertex);
 			this->gbOneRing->Dock = System::Windows::Forms::DockStyle::Top;
-			this->gbOneRing->Location = System::Drawing::Point(3, 353);
+			this->gbOneRing->Location = System::Drawing::Point(3, 417);
 			this->gbOneRing->Name = L"gbOneRing";
 			this->gbOneRing->Size = System::Drawing::Size(178, 115);
 			this->gbOneRing->TabIndex = 5;
@@ -290,21 +311,12 @@ namespace OpenMesh_Course {
 			this->rbOneRingVertex->Text = L"One Ring Vertex";
 			this->rbOneRingVertex->UseVisualStyleBackColor = true;
 			// 
-			// lOutput
-			// 
-			this->lOutput->AutoSize = true;
-			this->lOutput->Location = System::Drawing::Point(1, 500);
-			this->lOutput->Name = L"lOutput";
-			this->lOutput->Size = System::Drawing::Size(24, 12);
-			this->lOutput->TabIndex = 4;
-			this->lOutput->Text = L"Log";
-			// 
 			// gbShowType
 			// 
 			this->gbShowType->Controls->Add(this->cbWireframe);
 			this->gbShowType->Controls->Add(this->cbLightingModel);
 			this->gbShowType->Dock = System::Windows::Forms::DockStyle::Top;
-			this->gbShowType->Location = System::Drawing::Point(3, 282);
+			this->gbShowType->Location = System::Drawing::Point(3, 346);
 			this->gbShowType->Name = L"gbShowType";
 			this->gbShowType->Size = System::Drawing::Size(178, 71);
 			this->gbShowType->TabIndex = 3;
@@ -341,7 +353,7 @@ namespace OpenMesh_Course {
 			this->gpSelectType->Controls->Add(this->rbSelectEdge);
 			this->gpSelectType->Controls->Add(this->rbSelectVertex);
 			this->gpSelectType->Dock = System::Windows::Forms::DockStyle::Top;
-			this->gpSelectType->Location = System::Drawing::Point(3, 189);
+			this->gpSelectType->Location = System::Drawing::Point(3, 253);
 			this->gpSelectType->Name = L"gpSelectType";
 			this->gpSelectType->Size = System::Drawing::Size(178, 93);
 			this->gpSelectType->TabIndex = 1;
@@ -381,10 +393,53 @@ namespace OpenMesh_Course {
 			this->rbSelectVertex->Text = L"Select Vertex";
 			this->rbSelectVertex->UseVisualStyleBackColor = true;
 			// 
+			// tbLSMCount
+			// 
+			this->tbLSMCount->Dock = System::Windows::Forms::DockStyle::Top;
+			this->tbLSMCount->Location = System::Drawing::Point(3, 231);
+			this->tbLSMCount->Name = L"tbLSMCount";
+			this->tbLSMCount->Size = System::Drawing::Size(178, 22);
+			this->tbLSMCount->TabIndex = 8;
+			// 
+			// gbLSSelectType
+			// 
+			this->gbLSSelectType->Controls->Add(this->rbSelectQuadricd);
+			this->gbLSSelectType->Controls->Add(this->rbSelectRandom);
+			this->gbLSSelectType->Dock = System::Windows::Forms::DockStyle::Top;
+			this->gbLSSelectType->Location = System::Drawing::Point(3, 167);
+			this->gbLSSelectType->Name = L"gbLSSelectType";
+			this->gbLSSelectType->Size = System::Drawing::Size(178, 64);
+			this->gbLSSelectType->TabIndex = 9;
+			this->gbLSSelectType->TabStop = false;
+			this->gbLSSelectType->Text = L"LSSelect Type";
+			// 
+			// rbSelectQuadricd
+			// 
+			this->rbSelectQuadricd->AutoSize = true;
+			this->rbSelectQuadricd->Location = System::Drawing::Point(7, 44);
+			this->rbSelectQuadricd->Name = L"rbSelectQuadricd";
+			this->rbSelectQuadricd->Size = System::Drawing::Size(96, 16);
+			this->rbSelectQuadricd->TabIndex = 1;
+			this->rbSelectQuadricd->TabStop = true;
+			this->rbSelectQuadricd->Text = L"Select Quadricd";
+			this->rbSelectQuadricd->UseVisualStyleBackColor = true;
+			// 
+			// rbSelectRandom
+			// 
+			this->rbSelectRandom->AutoSize = true;
+			this->rbSelectRandom->Checked = true;
+			this->rbSelectRandom->Location = System::Drawing::Point(7, 22);
+			this->rbSelectRandom->Name = L"rbSelectRandom";
+			this->rbSelectRandom->Size = System::Drawing::Size(93, 16);
+			this->rbSelectRandom->TabIndex = 0;
+			this->rbSelectRandom->TabStop = true;
+			this->rbSelectRandom->Text = L"Select Random";
+			this->rbSelectRandom->UseVisualStyleBackColor = true;
+			// 
 			// btnLSM
 			// 
 			this->btnLSM->Dock = System::Windows::Forms::DockStyle::Top;
-			this->btnLSM->Location = System::Drawing::Point(3, 18);
+			this->btnLSM->Location = System::Drawing::Point(3, 96);
 			this->btnLSM->Name = L"btnLSM";
 			this->btnLSM->Size = System::Drawing::Size(178, 71);
 			this->btnLSM->TabIndex = 7;
@@ -395,7 +450,7 @@ namespace OpenMesh_Course {
 			// btnLoadMesh
 			// 
 			this->btnLoadMesh->Dock = System::Windows::Forms::DockStyle::Top;
-			this->btnLoadMesh->Location = System::Drawing::Point(3, 89);
+			this->btnLoadMesh->Location = System::Drawing::Point(3, 18);
 			this->btnLoadMesh->Name = L"btnLoadMesh";
 			this->btnLoadMesh->Size = System::Drawing::Size(178, 78);
 			this->btnLoadMesh->TabIndex = 0;
@@ -444,14 +499,6 @@ namespace OpenMesh_Course {
 			this->tbSimpleRate->Text = L"1.0";
 			this->tbSimpleRate->TextAlign = System::Windows::Forms::HorizontalAlignment::Center;
 			// 
-			// tbLSMCount
-			// 
-			this->tbLSMCount->Dock = System::Windows::Forms::DockStyle::Top;
-			this->tbLSMCount->Location = System::Drawing::Point(3, 167);
-			this->tbLSMCount->Name = L"tbLSMCount";
-			this->tbLSMCount->Size = System::Drawing::Size(178, 22);
-			this->tbLSMCount->TabIndex = 8;
-			// 
 			// Form1
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 12);
@@ -470,6 +517,8 @@ namespace OpenMesh_Course {
 			this->gbShowType->PerformLayout();
 			this->gpSelectType->ResumeLayout(false);
 			this->gpSelectType->PerformLayout();
+			this->gbLSSelectType->ResumeLayout(false);
+			this->gbLSSelectType->PerformLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->tbSimplification))->EndInit();
 			this->gbSimplification->ResumeLayout(false);
 			this->gbSimplification->PerformLayout();
@@ -717,7 +766,10 @@ private: System::Void btnLSM_Click(System::Object^  sender, System::EventArgs^  
 		 {
 			 if(mesh != NULL)
 			 {
-				 mesh->leastSquareMeshRand( int::Parse(this->tbLSMCount->Text) );
+				 OMT::SELECT_CONTROL_POINT_TYPE type = OMT::eRandom;
+				 if(this->rbSelectQuadricd->Checked)
+					 type = OMT::eQuadricd;
+				 mesh->leastSquareMesh(System::Convert::ToInt32(this->tbLSMCount->Text), type);
 			 }
 			 this->Refresh();
 		 }
