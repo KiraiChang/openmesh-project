@@ -122,6 +122,7 @@ namespace OMT//OpenMesh Triangle mesh
 		OpenMesh::Geometry::Quadricd >	QUADRICES;
 	typedef std::pair<int, int>			PAIR;
 	typedef std::map<PAIR, double>		ERRORS;
+	typedef std::map<size_t, Point>		LEAST_SQUARE_MESH;
 	/*----------------------------------------------------------------------*/
 	bool sameSide(const Point &p1, const Point &p2, const Point &p3, const Point &p4);
 	bool pointInTrangle(const Point &p1, const Point &tv1, const Point &tv2, const Point &tv3);
@@ -150,6 +151,8 @@ namespace OMT//OpenMesh Triangle mesh
 		V_DELETE_HISTORY				vDeleteHistory;
 		size_t							number_of_face;
 		std::set<int>					control_point_idx;
+		LEAST_SQUARE_MESH				least_square_random;
+		LEAST_SQUARE_MESH				least_square_quadrics;
 
 	public:
 										Model();//constructor
@@ -161,6 +164,9 @@ namespace OMT//OpenMesh Triangle mesh
 		void							RenderSpecifiedVertex();	//畫出指定的頂點
 		void							RenderSpecifiedEdge();	//畫出指定的頂點
 		void							RenderSpecifiedFace();		//畫出指定的面
+
+		void							Render_Least_Square_Solid(SELECT_CONTROL_POINT_TYPE type);
+		void							Render_Least_Square_No_Lighting_Solid(SELECT_CONTROL_POINT_TYPE type);
 
 		void							clear_sp_p();//清空額外畫出的點
 		void							clear_sp_v();//清空額外畫出的頂點

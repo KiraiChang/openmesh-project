@@ -216,6 +216,93 @@ namespace OMT
 		glEnable(GL_CULL_FACE);
 	}
 
+	void Model::Render_Least_Square_Solid(SELECT_CONTROL_POINT_TYPE type)
+	{
+		FIter f_it;
+		FVIter	fv_it;
+		glPushMatrix();
+		float t = 1;
+		if(type == eQuadricd)
+			t = 2;
+		//glPushAttrib(GL_LIGHTING_BIT);
+		glTranslatef(t,0.0f, 0.0f);
+		glEnable(GL_POLYGON_OFFSET_FILL);
+		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_LIGHTING);
+		glPolygonOffset(2.0, 2.0);
+		glBegin(GL_TRIANGLES);
+		glColor4f(0.81, 0.74, 0.33, 0.5);
+		for (f_it = faces_begin(); f_it != faces_end(); ++f_it) 
+		{
+			for (fv_it = fv_iter( f_it ); fv_it; ++fv_it)
+			{						
+				if(type == eQuadricd)
+				{
+					if(least_square_quadrics.count(fv_it.handle().idx()) > 0)
+					{
+						glNormal3dv(&normal(fv_it.handle())[0]);
+						glVertex3dv(&least_square_quadrics[fv_it.handle().idx()][0]);
+					}
+				}
+				else
+				{
+					if(least_square_random.count(fv_it.handle().idx()) > 0)
+					{
+						glNormal3dv(&normal(fv_it.handle())[0]);
+						glVertex3dv(&least_square_random[fv_it.handle().idx()][0]);
+					}
+				}
+			}
+		}
+		glEnd();	
+		glPopMatrix();
+		glDisable(GL_POLYGON_OFFSET_FILL);
+	}
+
+	void Model::Render_Least_Square_No_Lighting_Solid(SELECT_CONTROL_POINT_TYPE type)
+	{
+		FIter f_it;
+		FVIter	fv_it;
+		glPushMatrix();
+		//glPushAttrib(GL_LIGHTING_BIT);
+		float t = 1;
+		if(type == eQuadricd)
+			t = 2;
+		glTranslatef(t, 0.0f, 0.0f);
+		glEnable(GL_POLYGON_OFFSET_FILL);
+		glEnable(GL_DEPTH_TEST);
+		glDisable(GL_LIGHTING);
+		glPolygonOffset(2.0, 2.0);
+		glBegin(GL_TRIANGLES);
+		glColor4f(0.81, 0.74, 0.33, 0.5);
+		for (f_it = faces_begin(); f_it != faces_end(); ++f_it) 
+		{
+			for (fv_it = fv_iter( f_it ); fv_it; ++fv_it)
+			{						
+				if(type == eQuadricd)
+				{
+					if(least_square_quadrics.count(fv_it.handle().idx()) > 0)
+					{
+						glNormal3dv(&normal(fv_it.handle())[0]);
+						glVertex3dv(&least_square_quadrics[fv_it.handle().idx()][0]);
+					}
+				}
+				else
+				{
+					if(least_square_random.count(fv_it.handle().idx()) > 0)
+					{
+						glNormal3dv(&normal(fv_it.handle())[0]);
+						glVertex3dv(&least_square_random[fv_it.handle().idx()][0]);
+					}
+				}
+			}
+		}
+		glEnd();	
+		glPopMatrix();
+		glDisable(GL_POLYGON_OFFSET_FILL);
+		glEnable(GL_LIGHTING);
+	}
+
 	void Model::clear_sp_p()
 	{
 		sp_p_list.clear();
@@ -1018,6 +1105,7 @@ namespace OMT
 		selectPair();
 		std::map< double, PAIR> errorQueue;
 		std::map< double, PAIR>::reverse_iterator reve_ite;
+		std::map< double, PAIR>::iterator ite;
 		PAIR pair;
 		for (ERRORS::iterator iter = errors.begin(); iter != errors.end(); iter++)
 		{
@@ -1036,6 +1124,19 @@ namespace OMT
 			if(control_point_idx.size() >= control_number)
 				return;
 		}
+
+		//for (ite = errorQueue.begin(); ite != errorQueue.end(); ite++)
+		//{
+		//	//printf("Error:%f\n", ite->first);
+		//	pair = ite->second;
+		//	//printf("min idx:%d, max idx:%d\n", pair.first, pair.second);
+		//	control_point_idx.insert(pair.first);
+		//	if(control_point_idx.size() >= control_number)
+		//		return;
+		//	control_point_idx.insert(pair.second);
+		//	if(control_point_idx.size() >= control_number)
+		//		return;
+		//}
 	}
 
 	void Model::leastSquareMesh(int m, SELECT_CONTROL_POINT_TYPE type)
@@ -1052,11 +1153,13 @@ namespace OMT
 		if(type == eQuadricd)
 		{
 			quadricdIndex(m);
+			least_square_quadrics.clear();
 			printf("Begin process Least Square Mesh (Quadricd) ...\n");
 		}
 		else
 		{
 			randomIndex(m);
+			least_square_random.clear();
 			printf("Begin process Least Square Mesh (Random) ...\n");
 		}
 		LinearSystemLib::GeneralSparseMatrix GA;//Ax=B;
@@ -1132,7 +1235,15 @@ namespace OMT
 			i = 0;
 			for(v_ite = vertices_begin(); v_ite != vertices_end(); ++v_ite, i++)
 			{
-				point(v_ite.handle()) = Point(x[0][i], x[1][i], x[2][i]); 
+				//point(v_ite.handle()) = Point(x[0][i], x[1][i], x[2][i]); 
+				if(type == eQuadricd)
+				{
+					least_square_quadrics.insert(LEAST_SQUARE_MESH::value_type(v_ite.handle().idx(), Point(x[0][i], x[1][i], x[2][i])));
+				}
+				else
+				{
+					least_square_random.insert(LEAST_SQUARE_MESH::value_type(v_ite.handle().idx(), Point(x[0][i], x[1][i], x[2][i])));
+				}
 			}
 			for( int i = 0 ; i < dim ; ++i )
 				delete[] x[i];
@@ -1143,7 +1254,7 @@ namespace OMT
 		{
 			cerr << e.what() << endl;
 		}
-		printf("Random Least Square Mesh Ok...\n");
+		printf("Least Square Mesh Ok...\n");
 
 	}
 }
