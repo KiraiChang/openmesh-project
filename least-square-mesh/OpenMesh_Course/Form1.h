@@ -423,6 +423,7 @@ namespace OpenMesh_Course {
 			this->rbSelectQuadricd->TabStop = true;
 			this->rbSelectQuadricd->Text = L"Select Quadricd";
 			this->rbSelectQuadricd->UseVisualStyleBackColor = true;
+			this->rbSelectQuadricd->Visible = false;
 			// 
 			// rbSelectRandom
 			// 
@@ -435,6 +436,7 @@ namespace OpenMesh_Course {
 			this->rbSelectRandom->TabStop = true;
 			this->rbSelectRandom->Text = L"Select Random";
 			this->rbSelectRandom->UseVisualStyleBackColor = true;
+			this->rbSelectRandom->Visible = false;
 			// 
 			// btnLSM
 			// 
@@ -529,9 +531,17 @@ namespace OpenMesh_Course {
 private: System::Void hkoglPanelControl1_Paint(System::Object^  sender, System::Windows::Forms::PaintEventArgs^  e) 
 		 {
 			 if ( mesh != NULL && cbLightingModel->Checked)
+			 {
 				 mesh->Render_Solid();
+				 mesh->Render_Least_Square_Solid(OMT::eQuadricd);
+				 mesh->Render_Least_Square_Solid(OMT::eRandom);
+			 }
 			 else
+			 {
 				 mesh->Render_No_Lighting_Solid();
+				 mesh->Render_Least_Square_No_Lighting_Solid(OMT::eQuadricd);
+				 mesh->Render_Least_Square_No_Lighting_Solid(OMT::eRandom);
+			 }
 			 if ( mesh != NULL && cbWireframe->Checked)
 				 mesh->Render_Wireframe();
 			 if(mesh)
@@ -766,10 +776,11 @@ private: System::Void btnLSM_Click(System::Object^  sender, System::EventArgs^  
 		 {
 			 if(mesh != NULL)
 			 {
-				 OMT::SELECT_CONTROL_POINT_TYPE type = OMT::eRandom;
-				 if(this->rbSelectQuadricd->Checked)
-					 type = OMT::eQuadricd;
-				 mesh->leastSquareMesh(System::Convert::ToInt32(this->tbLSMCount->Text), type);
+				 //OMT::SELECT_CONTROL_POINT_TYPE type = OMT::eRandom;
+				 //if(this->rbSelectQuadricd->Checked)
+					// type = OMT::eQuadricd;
+				 mesh->leastSquareMesh(System::Convert::ToInt32(this->tbLSMCount->Text), OMT::eRandom);
+				 mesh->leastSquareMesh(System::Convert::ToInt32(this->tbLSMCount->Text), OMT::eQuadricd);
 			 }
 			 this->Refresh();
 		 }
