@@ -336,7 +336,6 @@ namespace OpenMesh_Course {
 			// openTextureFileDialog
 			// 
 			this->openTextureFileDialog->DefaultExt = L"BMP";
-			this->openTextureFileDialog->FileName = L"openTextureFileDialog";
 			this->openTextureFileDialog->Filter = L"Image File|*.BMP|All file|*.*";
 			this->openTextureFileDialog->FileOk += gcnew System::ComponentModel::CancelEventHandler(this, &Form1::openTextureFileDialog_FileOk);
 			// 
@@ -462,10 +461,7 @@ private: System::Void hkoglPanelControl2_Paint(System::Object^  sender, System::
 			 if(mesh)
 			 {
 				 mesh->RenderTexture();
-				 mesh->RenderSpecifiedPoint();
-				 mesh->RenderSpecifiedVertex();
-				 mesh->RenderSpecifiedFace();
-				 mesh->RenderSpecifiedEdge();
+				 mesh->RenderUVMapping();
 			 }
 
 		 }
