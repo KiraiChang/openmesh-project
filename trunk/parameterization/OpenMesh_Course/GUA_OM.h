@@ -79,7 +79,7 @@ namespace OMT//OpenMesh Triangle mesh
 	typedef MyMesh::VertexOHalfedgeIter						VOHEIter;	//VertexOutHalfEdge type
 	typedef MyMesh::ConstVertexVertexIter					CVVIter	;	//ConstVertexVertexIter type
 	/*----------------------------------------------------------------------*/
-
+	
 	/*定義額外資料結構*/
 	using namespace OpenMesh;
 	//指定特別畫出面的資料結構
@@ -147,6 +147,7 @@ namespace OMT//OpenMesh Triangle mesh
 		size_t							number_of_face;
 
 		GLuint							m_uiTexture[MAX_TEXTURE];				// Storage For One Texture
+		OpenMesh::FPropHandleT<bool>	f_bIsSelect;
 
 	public:
 										Model();//constructor
@@ -173,6 +174,7 @@ namespace OMT//OpenMesh Triangle mesh
 		double							findHalfEdge(const Point &p, HEHandle &handle);
 		double							findFace(const Point &p, FHandle &handle);
 
+		/*---------------------------------SIMPLIFY-------------------------------------*/
 		bool							isConvex(vector<VHandle> &polygon);
 		double							calculateError(int id_v1, int id_v2, double* vx = NULL, double* vy = NULL, double* vz = NULL);
 		void							selectPair();
@@ -187,6 +189,7 @@ namespace OMT//OpenMesh Triangle mesh
 		int								LoadGLTextures(const std::string &tex_name);
 		AUX_RGBImageRec *				LoadBMP(const char *Filename);
 		void							RenderTexture(void);
+		void							RenderUVMapping(void);
 	};
 }
 /*======================================================================*/

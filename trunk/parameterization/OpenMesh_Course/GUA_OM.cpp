@@ -75,6 +75,8 @@ namespace OMT
 		request_vertex_status();
 		request_edge_status();
 		request_face_status();
+		add_property(f_bIsSelect);
+		//property(f_bIsSelect, face_handle);
 		for(int i = 0; i < MAX_TEXTURE; i++)
 		{
 			m_uiTexture[i] = NULL;
@@ -363,6 +365,7 @@ namespace OMT
 		return mDist;
 	}
 
+	/*---------------------------------SIMPLIFY-------------------------------------*/
 	bool Model::isConvex(vector<VHandle> &polygon)
 	{
 		return true;
@@ -1077,17 +1080,18 @@ namespace OMT
 			glLoadIdentity();
 			glTranslatef(0.0f,0.0f,-2.5f);
 			glBindTexture(GL_TEXTURE_2D, m_uiTexture[0]);				// 選擇紋理
-			glBegin(GL_QUADS);							//  繪製正方形
-			//glTexCoord2f(0.0f, 0.0f);glVertex3f(-1.0f, 1.0f, 0.0f);					// 左上
-			//glTexCoord2f(1.0f, 0.0f);glVertex3f( 1.0f, 1.0f, 0.0f);					// 右上
-			//glTexCoord2f(1.0f, 1.0f);glVertex3f( 1.0f,-1.0f, 0.0f);					// 左下
-			//glTexCoord2f(0.0f, 1.0f);glVertex3f(-1.0f,-1.0f, 0.0f);					// 右下
+			glBegin(GL_QUADS);											//  繪製正方形
 			glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  0.0f);	// 紋理和四邊形的左下
 			glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  0.0f);	// 紋理和四邊形的右下
 			glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f,  0.0f);	// 紋理和四邊形的右上
 			glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f,  0.0f);	// 紋理和四邊形的左上
-			glEnd();								// 正方形繪製結束
+			glEnd();													// 正方形繪製結束
 		}
+	}
+
+	void Model::RenderUVMapping(void)
+	{
+
 	}
 }
 
