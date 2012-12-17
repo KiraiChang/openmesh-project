@@ -1078,18 +1078,36 @@ namespace OMT
 			glEnable(GL_DEPTH_TEST);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);			// 清除屏幕及深度緩存
 			glLoadIdentity();
-			glTranslatef(0.0f,0.0f,-2.5f);
+			glTranslatef(-0.5f, -0.5f, -1.25f);
 			glBindTexture(GL_TEXTURE_2D, m_uiTexture[0]);				// 選擇紋理
 			glBegin(GL_QUADS);											//  繪製正方形
-			glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  0.0f);	// 紋理和四邊形的左下
-			glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  0.0f);	// 紋理和四邊形的右下
+			glTexCoord2f(0.0f, 0.0f); glVertex3f( 0.0f,  0.0f,  0.0f);	// 紋理和四邊形的左下
+			glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f,  0.0f,  0.0f);	// 紋理和四邊形的右下
 			glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f,  0.0f);	// 紋理和四邊形的右上
-			glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f,  0.0f);	// 紋理和四邊形的左上
+			glTexCoord2f(0.0f, 1.0f); glVertex3f( 0.0f,  1.0f,  0.0f);	// 紋理和四邊形的左上
 			glEnd();													// 正方形繪製結束
 		}
 	}
 
 	void Model::RenderUVMapping(void)
+	{
+		glPushAttrib(GL_LIGHTING_BIT);
+		glDisable(GL_LIGHTING);
+		glEnable(GL_DEPTH_TEST);
+		glPointSize(5.0f);
+		glBegin(GL_POINTS);
+		SP_VERTEX_LIST::iterator v_itr = sp_uv_mapping_list.begin();
+		for (v_itr; v_itr != sp_uv_mapping_list.end(); ++v_itr)
+		{
+			glColor3f(v_itr->r, v_itr->g, v_itr->b);
+			glVertex3dv(&point(v_itr->vh)[0]);
+		}
+		glEnd();
+		glEnable(GL_LIGHTING);
+		glDisable(GL_POLYGON_OFFSET_FILL);
+	}
+
+	void Model::VertexMapping(const FHandle &_f)
 	{
 
 	}
