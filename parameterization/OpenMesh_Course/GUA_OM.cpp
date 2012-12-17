@@ -76,6 +76,7 @@ namespace OMT
 		request_edge_status();
 		request_face_status();
 		add_property(f_bIsSelect);
+		add_property(v_vec2dTexcoord);
 		//property(f_bIsSelect, face_handle);
 		for(int i = 0; i < MAX_TEXTURE; i++)
 		{
@@ -1075,7 +1076,7 @@ namespace OMT
 			glEnable(GL_TEXTURE_2D);	// Enable Texture Mapping ( NEW )
 			glShadeModel(GL_SMOOTH);	// Enable Smooth Shading
 			glDisable(GL_LIGHTING);
-			glEnable(GL_DEPTH_TEST);
+			glDisable(GL_DEPTH_TEST);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);			// 清除屏幕及深度緩存
 			glLoadIdentity();
 			glTranslatef(-0.5f, -0.5f, -1.25f);
@@ -1092,15 +1093,17 @@ namespace OMT
 	void Model::RenderUVMapping(void)
 	{
 		glPushAttrib(GL_LIGHTING_BIT);
-		glDisable(GL_LIGHTING);
-		glEnable(GL_DEPTH_TEST);
 		glPointSize(5.0f);
-		glBegin(GL_POINTS);
+		glBegin(GL_LINE_STRIP);
+		Point p;
+		p[2] = 0.0001;
 		SP_VERTEX_LIST::iterator v_itr = sp_uv_mapping_list.begin();
 		for (v_itr; v_itr != sp_uv_mapping_list.end(); ++v_itr)
 		{
 			glColor3f(v_itr->r, v_itr->g, v_itr->b);
-			glVertex3dv(&point(v_itr->vh)[0]);
+			p[0] = property(v_vec2dTexcoord, v_itr->vh)[0];
+			p[1] = property(v_vec2dTexcoord, v_itr->vh)[1];
+			glVertex3f(p[0], p[1], p[2]);
 		}
 		glEnd();
 		glEnable(GL_LIGHTING);
@@ -1109,7 +1112,105 @@ namespace OMT
 
 	void Model::VertexMapping(const FHandle &_f)
 	{
+		FVIter fv_ite;
+		int i = 0;
+		for(fv_ite = fv_iter(_f);fv_ite;++fv_ite)
+		{
+			if(i == 0)
+			{
+				property(v_vec2dTexcoord, fv_ite)[0] = 1.0;
+				property(v_vec2dTexcoord, fv_ite)[1] = 0.5;
+			}
+			else if(i == 1)
+			{
+				property(v_vec2dTexcoord, fv_ite)[0] = 0.5;
+				property(v_vec2dTexcoord, fv_ite)[1] = 1.0;
+			}
+			else if(i == 2)
+			{
+				property(v_vec2dTexcoord, fv_ite)[0] = 0.0;
+				property(v_vec2dTexcoord, fv_ite)[1] = 0.5;
+			}
 
+			i++;
+			add_sp_mapping(fv_ite, 1.0, 0.0, 0.0);
+		}
+	}
+
+	void Model::clear_sp_mapping(void)
+	{
+		sp_uv_mapping_list.clear();
+	}
+
+	void Model::add_sp_mapping(const VHandle &_v, float _r, float _g, float _b)
+	{
+		sp_v v;
+		v.vh = _v;
+		v.r = _r;
+		v.g = _g;
+		v.b = _b;
+		sp_uv_mapping_list.push_back(v);
+	}
+
+	void Model::selectFace(int _x, int _y, float _u, float _r, float _d, float _l, GLint viewport[4], GLdouble modelview[16], GLdouble projection[16])
+	{
+		Point _p;
+		GLdouble x, y, z;
+		float up = _y - _u;
+		float down = _y + _d;
+		float left = _x - _l;
+		float right = _x + _r;
+		FaceIter f_ite;
+		FVIter fv_ite;
+		bool isSelected;
+		Vec3d view_dir;
+		view_dir[0] = modelview[8];
+		view_dir[1] = modelview[9];
+		view_dir[2] = modelview[10];
+
+
+		for(f_ite = faces_begin();f_ite != faces_end();++f_ite)
+		{
+			isSelected = false;
+			Vec3d nor = normal(f_ite);
+			if(dot(view_dir, nor) < 0)
+				continue;
+			for(fv_ite = fv_iter(f_ite);fv_ite; ++fv_ite)
+			{
+				_p = point(fv_ite);
+				gluProject( _p[0], _p[1], _p[2], modelview, projection, viewport, &x, &y, &z);
+				if(x > left && x < right && y > up && y < down)
+				{
+					//veiw ray dot normal < 0 才要設定
+					isSelected = true;
+				}
+				else
+					continue;
+			}
+			if(isSelected)
+			{
+				add_mapping_face(f_ite.handle());
+				add_sp_f(f_ite.handle(), 1.0, 0.5, 0.0);
+			}
+		}
+	}
+
+	void Model::add_mapping_face(FHandle &_f)
+	{
+		sp_f f;
+		f.fh = _f;
+		property(f_bIsSelect, _f) = true;
+		sp_mapping_f_list.push_back(f);
+	}
+
+	void Model::clear_mapping_face(void)
+	{
+		SP_FACE_LIST::iterator ite;
+		for(ite = sp_mapping_f_list.begin(); ite != sp_mapping_f_list.end();++ite)
+		{
+			property(f_bIsSelect, ite->fh) = false;
+		}
+		sp_mapping_f_list.clear();
 	}
 }
 
