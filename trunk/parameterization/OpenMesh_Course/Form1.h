@@ -448,9 +448,14 @@ private: System::Void hkoglPanelControl1_MouseDown(System::Object^  sender, Syst
 					 mesh->clear_sp_v();
 					 mesh->clear_sp_f();
 					 mesh->clear_sp_e();
+					 mesh->clear_sp_mapping();
 					 //加入目前的滑鼠點
 					 OMT::Point mouse(objX,objY,objZ);
 					 mesh->add_sp_p(mouse, 1.0f, 0.0f, 1.0f);
+					 //OMT::FHandle handle;
+					 //if(mesh->findFace(mouse, handle) < INIT_DIST)
+						//mesh->VertexMapping(handle);
+					 mesh->selectFace(winX, winY, 10, 10, 10, 10, viewport, modelview, projection);
 
 					 this->Refresh();
 				 }

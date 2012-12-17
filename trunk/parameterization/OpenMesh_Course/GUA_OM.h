@@ -140,6 +140,7 @@ namespace OMT//OpenMesh Triangle mesh
 		SP_VERTEX_LIST					sp_v_list;
 		SP_EDGE_LIST					sp_e_list;
 		SP_FACE_LIST					sp_f_list;
+		SP_FACE_LIST					sp_mapping_f_list;
 		SP_VERTEX_LIST					sp_uv_mapping_list;
 		QUADRICES						quadrics;
 		ERRORS							errors;
@@ -148,6 +149,7 @@ namespace OMT//OpenMesh Triangle mesh
 
 		GLuint							m_uiTexture[MAX_TEXTURE];				// Storage For One Texture
 		OpenMesh::FPropHandleT<bool>	f_bIsSelect;
+		OpenMesh::VPropHandleT<Vec2d>	v_vec2dTexcoord;
 
 	public:
 										Model();//constructor
@@ -191,6 +193,11 @@ namespace OMT//OpenMesh Triangle mesh
 		void							RenderTexture(void);
 		void							RenderUVMapping(void);
 		void							VertexMapping(const FHandle &_f);
+		void							clear_sp_mapping(void);
+		void							add_sp_mapping(const VHandle &_v, float _r, float _g, float _b);
+		void							selectFace(int _x,  int _y, float _u, float _r, float _d, float _l, GLint viewport[4], GLdouble modelview[16], GLdouble projection[16]);
+		void							add_mapping_face(FHandle &_f);
+		void							clear_mapping_face(void);
 	};
 }
 /*======================================================================*/
