@@ -100,7 +100,6 @@ namespace OMT//OpenMesh Triangle mesh
 		Point pt;
 		float r, g, b;
 	};
-
 	//
 	typedef std::vector<VHandle> V_ONE_RING_HANLDE;
 	struct DELETE_HISTORY
@@ -141,6 +140,7 @@ namespace OMT//OpenMesh Triangle mesh
 		SP_VERTEX_LIST					sp_v_list;
 		SP_EDGE_LIST					sp_e_list;
 		SP_FACE_LIST					sp_f_list;
+		SP_VERTEX_LIST					sp_uv_mapping_list;
 		QUADRICES						quadrics;
 		ERRORS							errors;
 		V_DELETE_HISTORY				vDeleteHistory;
@@ -187,9 +187,10 @@ namespace OMT//OpenMesh Triangle mesh
 
 		/*---------------------------------TEXTURE--------------------------------------*/
 		int								LoadGLTextures(const std::string &tex_name);
-		AUX_RGBImageRec *				LoadBMP(const char *Filename);
+		AUX_RGBImageRec *				LoadBMP(const char *filename);
 		void							RenderTexture(void);
 		void							RenderUVMapping(void);
+		void							VertexMapping(const FHandle &_f);
 	};
 }
 /*======================================================================*/
