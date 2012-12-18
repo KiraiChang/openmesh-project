@@ -192,12 +192,14 @@ namespace OMT//OpenMesh Triangle mesh
 		AUX_RGBImageRec *				LoadBMP(const char *filename);
 		void							RenderTexture(void);
 		void							RenderUVMapping(void);
+		void							drawRect(int _x,  int _y, float _w, float _h, GLint viewport[4], GLdouble modelview[16], GLdouble projection[16]);
 		void							VertexMapping(const FHandle &_f);
 		void							clear_sp_mapping(void);
 		void							add_sp_mapping(const VHandle &_v, float _r, float _g, float _b);
 		void							selectFace(int _x,  int _y, float _u, float _r, float _d, float _l, GLint viewport[4], GLdouble modelview[16], GLdouble projection[16]);
 		void							add_mapping_face(FHandle &_f);
 		void							clear_mapping_face(void);
+		
 	};
 }
 /*======================================================================*/

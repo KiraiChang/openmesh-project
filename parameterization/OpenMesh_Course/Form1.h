@@ -5,6 +5,12 @@
 #include "GUA_OM.h"
 //#include <armadillo>
 
+GLint g_viewport[4];
+GLdouble g_modelview[16];
+GLdouble g_projection[16];
+GLfloat g_winX, g_winY, g_winZ;
+bool g_isSelected;
+
 Tri_Mesh *mesh;
 //static float fov = 0.7f;
 //arma::mat xf;
@@ -196,6 +202,8 @@ namespace OpenMesh_Course {
 			this->hkoglPanelControl1->Trackball_Property = hkcTrackballProp1;
 			this->hkoglPanelControl1->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &Form1::hkoglPanelControl1_Paint);
 			this->hkoglPanelControl1->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(this, &Form1::hkoglPanelControl1_MouseDown);
+			this->hkoglPanelControl1->MouseMove += gcnew System::Windows::Forms::MouseEventHandler(this, &Form1::hkoglPanelControl1_MouseMove);
+			this->hkoglPanelControl1->MouseUp += gcnew System::Windows::Forms::MouseEventHandler(this, &Form1::hkoglPanelControl1_MouseUp);
 			// 
 			// gpCommand
 			// 
@@ -366,6 +374,14 @@ private: System::Void hkoglPanelControl1_Paint(System::Object^  sender, System::
 				 mesh->Render_Wireframe();
 			 if(mesh)
 			 {
+				 if(g_isSelected)
+				 {
+					 mesh->clear_sp_mapping();
+					 mesh->clear_mapping_face();
+					 mesh->clear_sp_f();
+					 mesh->drawRect(g_winX, g_winY, 40, 40, g_viewport, g_modelview, g_projection);
+					 mesh->selectFace(g_winX, g_winY, 20, 20, 20, 20, g_viewport, g_modelview, g_projection);
+				 }
 				 mesh->RenderSpecifiedPoint();
 				 mesh->RenderSpecifiedVertex();
 				 mesh->RenderSpecifiedFace();
@@ -410,35 +426,31 @@ private: System::Void hkoglPanelControl1_MouseDown(System::Object^  sender, Syst
 			 {
 				 if(mesh)
 				 {
-					 GLint viewport[4];
-					 GLdouble modelview[16];
-					 GLdouble projection[16];
-					 GLfloat winX, winY, winZ;
 					 GLdouble objX, objY, objZ;
 					 objX = objY = objZ = 0.0;
 					 glPushMatrix();
 
 					 glMatrixMode(GL_MODELVIEW);	//glMultMatrixd(xf.memptr());
-					 glGetDoublev( GL_MODELVIEW_MATRIX, modelview );
+					 glGetDoublev( GL_MODELVIEW_MATRIX, g_modelview );
 
 					 glMatrixMode(GL_PROJECTION_MATRIX);	//glMultMatrixd(xf.memptr());
-					 glGetDoublev( GL_PROJECTION_MATRIX, projection );
+					 glGetDoublev( GL_PROJECTION_MATRIX, g_projection );
 
 					 glMatrixMode(GL_VIEWPORT); //glMultMatrixd(xf.memptr());
-					 glGetIntegerv( GL_VIEWPORT, viewport );
+					 glGetIntegerv( GL_VIEWPORT, g_viewport );
 
-					 winX = (float)e->X;
-					 winY = (float)viewport[3] - (float)e->Y;
+					 g_winX = (float)e->X;
+					 g_winY = (float)g_viewport[3] - (float)e->Y;
 
-					 glReadPixels( int(winX), int(winY), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ );
+					 glReadPixels( int(g_winX), int(g_winY), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &g_winZ );
 
-					 if(winZ>=0.99999f)
+					 if(g_winZ>=0.99999f)
 					 {
-						 std::cerr << "Click on background (z= " << winZ << ")" << std::endl;
+						 std::cerr << "Click on background (z= " << g_winZ << ")" << std::endl;
 						 glPopMatrix();
 						 return;
 					 }
-					 gluUnProject( winX, winY, winZ, modelview, projection, viewport, &objX, &objY, &objZ);
+					 gluUnProject( g_winX, g_winY, g_winZ, g_modelview, g_projection, g_viewport, &objX, &objY, &objZ);
 
 					 lOutput->Text = "ObjectX: "+objX+"\nObjectY: "+objY+"\nObjectZ: "+(objZ);
 					 glPopMatrix();
@@ -455,7 +467,7 @@ private: System::Void hkoglPanelControl1_MouseDown(System::Object^  sender, Syst
 					 //OMT::FHandle handle;
 					 //if(mesh->findFace(mouse, handle) < INIT_DIST)
 						//mesh->VertexMapping(handle);
-					 mesh->selectFace(winX, winY, 10, 10, 10, 10, viewport, modelview, projection);
+					 g_isSelected = true;
 
 					 this->Refresh();
 				 }
@@ -497,6 +509,33 @@ private: System::Void openTextureFileDialog_FileOk(System::Object^  sender, Syst
 private: System::Void btnLoadTexture_Click(System::Object^  sender, System::EventArgs^  e) 
 		 {
 			 openTextureFileDialog->ShowDialog();
+		 }
+private: System::Void hkoglPanelControl1_MouseMove(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) 
+		 {
+			 if(g_isSelected)
+			 {
+				 glPushMatrix();
+
+				 glMatrixMode(GL_MODELVIEW);	//glMultMatrixd(xf.memptr());
+				 glGetDoublev( GL_MODELVIEW_MATRIX, g_modelview );
+
+				 glMatrixMode(GL_PROJECTION_MATRIX);	//glMultMatrixd(xf.memptr());
+				 glGetDoublev( GL_PROJECTION_MATRIX, g_projection );
+
+				 glMatrixMode(GL_VIEWPORT); //glMultMatrixd(xf.memptr());
+				 glGetIntegerv( GL_VIEWPORT, g_viewport );
+
+				 g_winX = (float)e->X;
+				 g_winY = (float)g_viewport[3] - (float)e->Y;
+				 glPopMatrix();
+			 }
+		 }
+private: System::Void hkoglPanelControl1_MouseUp(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) 
+		 {
+			 if(e->Button == System::Windows::Forms::MouseButtons::Right)
+			 {
+				 g_isSelected = false;
+			 }
 		 }
 };
 }

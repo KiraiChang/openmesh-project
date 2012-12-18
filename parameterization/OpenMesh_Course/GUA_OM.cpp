@@ -1110,6 +1110,39 @@ namespace OMT
 		glDisable(GL_POLYGON_OFFSET_FILL);
 	}
 
+	void Model::drawRect(int _x,  int _y, float _w, float _h, GLint viewport[4], GLdouble modelview[16], GLdouble projection[16])
+	{
+		float l = _x - _w, r = _x + _w, u = _y - _h, d = _y + _h;
+		l /= viewport[2]; r /= viewport[2];
+		u /= viewport[3]; d /= viewport[3];
+		glPushMatrix();
+		glLoadIdentity();
+		glTranslatef(-0.5f, -0.5f, -1.25f);
+		glDisable(GL_DEPTH_TEST);
+		glDisable(GL_LIGHTING);
+		glBegin(GL_LINES);
+		glColor3f(1.0, 0.0, 0.0);
+		glVertex3f(l, u, 0);
+		glColor3f(1.0, 0.0, 0.0);
+		glVertex3f(r, u, 0);
+		glColor3f(1.0, 0.0, 0.0);
+		glVertex3f(r, u, 0);
+		glColor3f(1.0, 0.0, 0.0);
+		glVertex3f(r, d, 0);
+		glColor3f(1.0, 0.0, 0.0);
+		glVertex3f(r, d, 0);
+		glColor3f(1.0, 0.0, 0.0);
+		glVertex3f(l, d, 0);
+		glColor3f(1.0, 0.0, 0.0);
+		glVertex3f(l, d, 0);
+		glColor3f(1.0, 0.0, 0.0);
+		glVertex3f(l, u, 0);
+		glEnd();
+		glEnable(GL_LIGHTING);
+		glEnable(GL_DEPTH_TEST);
+		glPopMatrix();
+	}
+
 	void Model::VertexMapping(const FHandle &_f)
 	{
 		FVIter fv_ite;
@@ -1154,7 +1187,7 @@ namespace OMT
 
 	void Model::selectFace(int _x, int _y, float _u, float _r, float _d, float _l, GLint viewport[4], GLdouble modelview[16], GLdouble projection[16])
 	{
-		Point _p;
+		Point _p[3];
 		GLdouble x, y, z;
 		float up = _y - _u;
 		float down = _y + _d;
@@ -1167,18 +1200,19 @@ namespace OMT
 		view_dir[0] = modelview[8];
 		view_dir[1] = modelview[9];
 		view_dir[2] = modelview[10];
-
+		int index;
 
 		for(f_ite = faces_begin();f_ite != faces_end();++f_ite)
 		{
 			isSelected = false;
-			Vec3d nor = normal(f_ite);
-			if(dot(view_dir, nor) < 0)
-				continue;
-			for(fv_ite = fv_iter(f_ite);fv_ite; ++fv_ite)
+			index = 0;
+			//Vec3d nor = normal(f_ite);
+			//if(dot(view_dir, nor) < 0)
+			//	continue;
+			for(fv_ite = fv_iter(f_ite);fv_ite; ++fv_ite, ++index)
 			{
-				_p = point(fv_ite);
-				gluProject( _p[0], _p[1], _p[2], modelview, projection, viewport, &x, &y, &z);
+				_p[index] = point(fv_ite);
+				gluProject( _p[index][0], _p[index][1], _p[index][2], modelview, projection, viewport, &x, &y, &z);
 				if(x > left && x < right && y > up && y < down)
 				{
 					//veiw ray dot normal < 0 才要設定
@@ -1189,8 +1223,12 @@ namespace OMT
 			}
 			if(isSelected)
 			{
-				add_mapping_face(f_ite.handle());
-				add_sp_f(f_ite.handle(), 1.0, 0.5, 0.0);
+				Vec3d nor = cross(_p[0] - _p[1], _p[1] - _p[2]);
+				if(dot(view_dir, nor) > 0)
+				{
+					add_mapping_face(f_ite.handle());
+					add_sp_f(f_ite.handle(), 1.0, 0.5, 0.0);
+				}
 			}
 		}
 	}
