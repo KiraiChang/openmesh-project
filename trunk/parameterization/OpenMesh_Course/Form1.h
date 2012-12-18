@@ -174,13 +174,13 @@ namespace OpenMesh_Course {
 			hkcDisplayProp1->Grid_Line = System::Drawing::Color::DimGray;
 			this->hkoglPanelControl1->Display_Property = hkcDisplayProp1;
 			this->hkoglPanelControl1->Empty_Panel = false;
-			this->hkoglPanelControl1->Location = System::Drawing::Point(-2, 0);
+			this->hkoglPanelControl1->Location = System::Drawing::Point(12, 12);
 			this->hkoglPanelControl1->Name = L"hkoglPanelControl1";
 			hkcPixelFormat1->Accumu_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
 			hkcPixelFormat1->Alpha_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
 			hkcPixelFormat1->Stencil_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
 			this->hkoglPanelControl1->Pixel_Format = hkcPixelFormat1;
-			this->hkoglPanelControl1->Size = System::Drawing::Size(409, 455);
+			this->hkoglPanelControl1->Size = System::Drawing::Size(460, 467);
 			this->hkoglPanelControl1->TabIndex = 0;
 			hkcTrackballProp1->Const_Res = false;
 			hkcTrackballProp1->Delta_Res = 500;
@@ -210,13 +210,14 @@ namespace OpenMesh_Course {
 			// 
 			// gpCommand
 			// 
-			this->gpCommand->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Right));
+			this->gpCommand->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom) 
+				| System::Windows::Forms::AnchorStyles::Right));
 			this->gpCommand->Controls->Add(this->gbShowType);
 			this->gpCommand->Controls->Add(this->btnLoadTexture);
 			this->gpCommand->Controls->Add(this->btnLoadMesh);
-			this->gpCommand->Location = System::Drawing::Point(822, 0);
+			this->gpCommand->Location = System::Drawing::Point(906, 0);
 			this->gpCommand->Name = L"gpCommand";
-			this->gpCommand->Size = System::Drawing::Size(195, 399);
+			this->gpCommand->Size = System::Drawing::Size(174, 479);
 			this->gpCommand->TabIndex = 2;
 			this->gpCommand->TabStop = false;
 			this->gpCommand->Text = L"Command";
@@ -230,16 +231,16 @@ namespace OpenMesh_Course {
 			this->gbShowType->Controls->Add(this->lOutput);
 			this->gbShowType->Controls->Add(this->cbWireframe);
 			this->gbShowType->Controls->Add(this->cbLightingModel);
-			this->gbShowType->Location = System::Drawing::Point(3, 174);
+			this->gbShowType->Location = System::Drawing::Point(6, 174);
 			this->gbShowType->Name = L"gbShowType";
-			this->gbShowType->Size = System::Drawing::Size(192, 266);
+			this->gbShowType->Size = System::Drawing::Size(162, 299);
 			this->gbShowType->TabIndex = 3;
 			this->gbShowType->TabStop = false;
 			this->gbShowType->Text = L"Show Type";
 			// 
 			// textBoxRing
 			// 
-			this->textBoxRing->Location = System::Drawing::Point(6, 77);
+			this->textBoxRing->Location = System::Drawing::Point(6, 65);
 			this->textBoxRing->Name = L"textBoxRing";
 			this->textBoxRing->Size = System::Drawing::Size(100, 22);
 			this->textBoxRing->TabIndex = 5;
@@ -248,7 +249,7 @@ namespace OpenMesh_Course {
 			// lOutput
 			// 
 			this->lOutput->AutoSize = true;
-			this->lOutput->Location = System::Drawing::Point(6, 62);
+			this->lOutput->Location = System::Drawing::Point(6, 90);
 			this->lOutput->Name = L"lOutput";
 			this->lOutput->Size = System::Drawing::Size(24, 12);
 			this->lOutput->TabIndex = 4;
@@ -283,7 +284,7 @@ namespace OpenMesh_Course {
 			this->btnLoadTexture->Dock = System::Windows::Forms::DockStyle::Top;
 			this->btnLoadTexture->Location = System::Drawing::Point(3, 96);
 			this->btnLoadTexture->Name = L"btnLoadTexture";
-			this->btnLoadTexture->Size = System::Drawing::Size(189, 78);
+			this->btnLoadTexture->Size = System::Drawing::Size(168, 78);
 			this->btnLoadTexture->TabIndex = 5;
 			this->btnLoadTexture->Text = L"Load Texture";
 			this->btnLoadTexture->UseVisualStyleBackColor = true;
@@ -294,7 +295,7 @@ namespace OpenMesh_Course {
 			this->btnLoadMesh->Dock = System::Windows::Forms::DockStyle::Top;
 			this->btnLoadMesh->Location = System::Drawing::Point(3, 18);
 			this->btnLoadMesh->Name = L"btnLoadMesh";
-			this->btnLoadMesh->Size = System::Drawing::Size(189, 78);
+			this->btnLoadMesh->Size = System::Drawing::Size(168, 78);
 			this->btnLoadMesh->TabIndex = 0;
 			this->btnLoadMesh->Text = L"Load Mesh";
 			this->btnLoadMesh->UseVisualStyleBackColor = true;
@@ -325,13 +326,13 @@ namespace OpenMesh_Course {
 			hkcDisplayProp2->Grid_Line = System::Drawing::Color::DimGray;
 			this->hkoglPanelControl2->Display_Property = hkcDisplayProp2;
 			this->hkoglPanelControl2->Empty_Panel = false;
-			this->hkoglPanelControl2->Location = System::Drawing::Point(415, 0);
+			this->hkoglPanelControl2->Location = System::Drawing::Point(478, 12);
 			this->hkoglPanelControl2->Name = L"hkoglPanelControl2";
 			hkcPixelFormat2->Accumu_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
 			hkcPixelFormat2->Alpha_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
 			hkcPixelFormat2->Stencil_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
 			this->hkoglPanelControl2->Pixel_Format = hkcPixelFormat2;
-			this->hkoglPanelControl2->Size = System::Drawing::Size(410, 455);
+			this->hkoglPanelControl2->Size = System::Drawing::Size(422, 467);
 			this->hkoglPanelControl2->TabIndex = 10;
 			hkcTrackballProp2->Const_Res = false;
 			hkcTrackballProp2->Delta_Res = 500;
@@ -367,7 +368,7 @@ namespace OpenMesh_Course {
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 12);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(1017, 455);
+			this->ClientSize = System::Drawing::Size(1092, 491);
 			this->Controls->Add(this->hkoglPanelControl2);
 			this->Controls->Add(this->hkoglPanelControl1);
 			this->Controls->Add(this->gpCommand);
