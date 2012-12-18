@@ -3,6 +3,9 @@
 #define PI 3.141592653589793
 #define THRESHOLD 1.5
 
+#include <LinearSystemLib.h>
+#include <set>
+
 
 namespace OMT
 {
@@ -77,6 +80,8 @@ namespace OMT
 		request_face_status();
 		add_property(f_bIsSelect);
 		add_property(v_vec2dTexcoord);
+		add_property(SelRingID);
+		add_property(SelVID);
 		//property(f_bIsSelect, face_handle);
 		for(int i = 0; i < MAX_TEXTURE; i++)
 		{
@@ -1249,6 +1254,431 @@ namespace OMT
 			property(f_bIsSelect, ite->fh) = false;
 		}
 		sp_mapping_f_list.clear();
+	}
+
+	/*---------------------------------PARAMETERIZATION-----------------------------*/
+	double Model::RayTraceFace(OMP::FHandle& f, OMP::Point& p, OMP::Vector3d& rayDir)
+	{
+		double dir = -1;
+		bool positiveSide = true;
+		bool negativeSide = true;
+
+		int i = 0;
+		OMP::Point tp[3];
+		OMP::Vector3d v[3];
+		OMP::Vector3d tNormal;
+		for (OMP::FVIter fv_itr=fv_iter(f); fv_itr; ++fv_itr, i++)
+		{
+			tp[i] = point(fv_itr.handle());
+		}
+		tNormal = cross( tp[1] - tp[0], tp[2] - tp[0] );
+		// 			tNormal[0]/=3;
+		// 			tNormal[1]/=3;
+		// 			tNormal[2]/=3;
+
+		double denom = dot( tNormal, rayDir );
+		if ( denom > + std::numeric_limits<double>::epsilon() )
+		{
+			if (!negativeSide)	return -1;
+		}
+		else if ( denom < - std::numeric_limits<double>::epsilon() )
+		{
+			if (!positiveSide)  return -1;
+		}
+		else
+		{
+			// Parallel or triangle area is close to zero when
+			// the plane normal not normalised.
+			return -1;
+		}
+
+		dir = dot( tNormal, tp[0] - p ) / denom;
+		if ( dir < 0 )
+			return -1;
+
+
+		double n0 = fabs( tNormal[0] );
+		double n1 = fabs( tNormal[1] );
+		double n2 = fabs( tNormal[2] );
+		// Calculate the largest area projection plane in X, Y or Z.
+		int i0 = 1, i1 = 2;
+		if (n1 > n2)
+		{
+			if (n1 > n0) i0=0;
+		}
+		else
+		{
+			if (n2>n0) i1=0;
+		}
+
+		double u1 = tp[1][i0] - tp[0][i0];
+		double v1 = tp[1][i1] - tp[0][i1];
+		double u2 = tp[2][i0] - tp[0][i0];
+		double v2 = tp[2][i1] - tp[0][i1];
+		double u0 = dir * rayDir[i0] + p[i0] - tp[0][i0];
+		double v0 = dir * rayDir[i1] + p[i1] - tp[0][i1];
+
+		double alpha = u0 * v2 - u2 * v0;
+		double beta  = u1 * v0 - u0 * v1;
+		double area  = u1 * v2 - u2 * v1;
+
+		const double EPSILON = 1e-6f;
+		double tolerance = -EPSILON*area;
+		if (area > 0)
+		{
+			if (alpha < tolerance || beta < tolerance || alpha+beta > area-tolerance)
+				return -1;
+		}
+		else
+		{
+			if (alpha > tolerance || beta > tolerance || alpha+beta < area-tolerance)
+				return -1;
+		}
+
+		return dir;
+	}
+	/*======================================================================*/
+	FHandle Model::FindFace( Point& p, Vector3d& rayDir )
+	{
+		OMP::FIter f_it;
+		double minDir = 1000;
+		OMP::FHandle fh = faces_begin().handle();
+		for (f_it = faces_begin(); f_it != faces_end(); ++f_it) 
+		{
+			double dir = RayTraceFace(f_it.handle(), p, rayDir) ;
+			if (dir > 0 && dir<minDir) {
+				minDir = dir;
+				fh = f_it.handle();
+				//mesh->add_sp_f(f_it.handle(), 0.0f, 1.0f, 0.0f);
+				//return f_it.handle();
+			}
+		}
+		return fh;
+	}
+
+	void Model::SelectNring( int n, Point& p, Vector3d& rayDir )
+	{
+		ClearSelectFaces();
+		FHandle org_fid = FindFace(p, rayDir);
+		if (!is_valid_handle(org_fid))
+			return ;
+		FHandle org_fh = org_fid;
+		property(SelRingID, org_fh) = 0;
+		for (FVIter fv_it = fv_iter(org_fh); fv_it; ++fv_it)
+			property( SelVID, fv_it.handle() ) = 1;
+		sel_faces.push_back( org_fh );
+		int curRing = 0;
+		int NextStartID = 0;
+		while(curRing < n)
+		{
+			int curSize = sel_faces.size();
+			for (int i = NextStartID; i < curSize; i++)
+			{
+				for (FFIter ff_it = ff_iter( sel_faces[i] ); ff_it; ++ff_it)
+				{
+					if ( property( SelRingID, ff_it.handle() ) < 0 )
+					{
+						property( SelRingID, ff_it.handle() ) = curRing+1;
+						sel_faces.push_back( ff_it.handle() );
+						for (FVIter fv_it = fv_iter(ff_it.handle()); fv_it; ++fv_it)
+							property( SelVID, fv_it.handle() ) = 1;
+					}
+				}
+			}
+			NextStartID = curSize;
+			curRing++;
+		}
+
+
+		FindBound();
+		//FixBoundShape();
+		MapBoundTo2D();
+		FillCenter();
+	}
+
+	void Model::ClearSelectFaces()
+	{
+		sel_faces.clear();
+		for (FIter f_it = faces_begin(); f_it != faces_end(); ++f_it)
+		{
+			property(SelRingID, f_it) = -1;
+		}
+		for (VIter v_it = vertices_begin(); v_it != vertices_end(); ++v_it)
+		{
+			property(SelVID, v_it) = 0;
+		}
+	}
+
+	void Model::FindBound()
+	{
+		EHandle boundE;
+		for (int i = sel_faces.size()-1; i>=0; i++)
+		{
+			for ( FEIter fe_it = fe_iter(sel_faces[i]); fe_it; ++fe_it)
+			{
+				if ( IsBoundEdge( fe_it.handle() ) )
+				{
+					boundE = fe_it.handle();
+					break;
+				}
+			}
+			if ( is_valid_handle(boundE) )
+				break;
+		}
+		HEHandle startHEH = halfedge_handle(boundE, 0);
+		VHandle startV = from_vertex_handle(startHEH);
+		VHandle lastV = startV;
+		VHandle nextV = to_vertex_handle(startHEH);
+		bound_Vex.clear();
+		bound_Vex.push_back(nextV);
+		property( SelVID, nextV ) = -1;
+		int nextBoundID = -2;
+		while( startV != nextV )
+		{
+			for (VOHIter voh_it = voh_iter(nextV) ;voh_it ; ++voh_it )
+			{
+				EHandle eh = edge_handle( voh_it.handle() );
+				if ( IsBoundEdge(eh) )
+				{
+					VHandle vh = to_vertex_handle(voh_it.handle());
+					if (vh != lastV)
+					{
+						lastV = nextV;
+						nextV = vh;
+						property( SelVID, vh ) = nextBoundID;
+						nextBoundID--;
+						bound_Vex.push_back(vh);
+						break;
+					}
+				}
+			}
+		}
+	}
+
+	void Model::Parameterization()
+	{
+
+	}
+
+	void Model::MapBoundTo2D()
+	{
+		BoundVexIn2D.resize( bound_Vex.size() );
+		GLint	  glViewport[4];
+		GLdouble  glModelview[16];
+		GLdouble  glProjection[16];
+		double    pos[3];
+		GLdouble sx, sy, sz;
+		float alpha = 0.9;
+		float maxx = 0, minx = 100, maxy = 0, miny = 100;
+
+		glMatrixMode( GL_PROJECTION );
+		glGetDoublev( GL_PROJECTION_MATRIX, glProjection );
+		glMatrixMode( GL_MODELVIEW );
+		glGetDoublev( GL_MODELVIEW_MATRIX, glModelview );
+		glGetIntegerv( GL_VIEWPORT, glViewport );
+
+		for (int i=0; i<bound_Vex.size(); i++)
+		{
+			Point curPoint = point( bound_Vex[i] );
+			gluProject(curPoint[0], curPoint[1], curPoint[2], glModelview, glProjection, glViewport, &sx, &sy, &sz);
+			BoundVexIn2D[i][0] = sx/glViewport[2];
+			BoundVexIn2D[i][1] = sy/glViewport[3];
+
+			if(BoundVexIn2D[i][0] > maxx)
+				maxx = BoundVexIn2D[i][0];
+			if(BoundVexIn2D[i][0] < minx)
+				minx = BoundVexIn2D[i][0];
+			if(BoundVexIn2D[i][1] > maxy)
+				maxy = BoundVexIn2D[i][1];
+			if(BoundVexIn2D[i][1] < miny)
+				miny = BoundVexIn2D[i][1];
+			printf("x:%f y:%f\n", BoundVexIn2D[i][0], BoundVexIn2D[i][1]);
+		}
+
+		for(int i=0; i<bound_Vex.size(); i++)
+		{
+			BoundVexIn2D[i][0] -= minx;
+			BoundVexIn2D[i][0] /= (maxx - minx);
+
+			BoundVexIn2D[i][1] -= miny;
+			BoundVexIn2D[i][1] /= (maxy - miny);
+		}
+		
+	}
+
+	void Model::FixBoundShape()
+	{
+		int sizeN = sel_faces.size();
+		for (int i=0; i<sizeN; i++)
+		{
+			for (FFIter ff_it = ff_iter(sel_faces[i]); ff_it; ++ff_it)
+			{
+				if ( property(SelRingID, ff_it) >=0 )
+					continue;
+				int BoundEdgeN = 0;
+				for (FEIter fe_it = fe_iter(ff_it); fe_it; ++fe_it)
+				{
+					if ( IsBoundEdge(fe_it) )
+						BoundEdgeN++;
+				}
+				if (BoundEdgeN>=2)
+				{
+					sel_faces.push_back(ff_it);
+					property(SelRingID, ff_it) = property(SelRingID, sel_faces.back());
+				}
+			}
+		}
+	}
+
+	void Model::FillCenter()
+	{
+		std::set<int> centerVidSet;
+		for (int i=0; i<sel_faces.size(); i++)
+		{
+			for (FVIter fv_it = fv_iter(sel_faces[i]); fv_it; ++fv_it)
+			{
+				if ( property(SelVID, fv_it.handle()) == 1 )
+					centerVidSet.insert(fv_it.handle().idx());
+			}
+		}
+		int nextVid = 1;
+		std::vector<int> centerVid(centerVidSet.begin(), centerVidSet.end());
+
+		for (int i=0; i<centerVid.size(); i++)
+		{
+			property( SelVID, vertex_handle(centerVid[i]) ) = nextVid;
+			nextVid++;
+		}
+
+		using namespace LinearSystemLib;
+		GeneralSparseMatrix SM;
+		int unkown_v_num = centerVid.size();
+
+		printf("unknow num:%d\n", unkown_v_num);
+		SM.Create( unkown_v_num, unkown_v_num );
+		const int dim = 2;
+		double** B = new double*[dim];
+		B[0] = new double[unkown_v_num];
+		B[1] = new double[unkown_v_num];
+		int i=0, j=0;
+		for (i=0; i<unkown_v_num; i++)
+		{
+			B[0][i] = 0;
+			B[1][i] = 0;
+		}
+
+		for (i=0; i<unkown_v_num; i++)
+		{
+			double w_sum = 0;
+			VHandle curVh = vertex_handle(centerVid[i]);
+			B[0][i] = 0;
+			B[1][i] = 0;
+			for ( VVIter vv_it = vv_iter(curVh); vv_it; ++vv_it )
+			{
+				int mapID = property(SelVID, vv_it.handle());
+				if ( mapID == 0 )
+				{
+					printf("selected vertex may be not center!\n");
+					continue;
+				}
+				double w = calCotWeight(curVh, vv_it.handle());
+				w_sum+=w;
+				if ( mapID < 0 )
+				{
+					B[0][i] += w*BoundVexIn2D[-mapID-1][0];
+					B[1][i] += w*BoundVexIn2D[-mapID-1][1];
+				}
+				else if ( mapID>0 )
+				{
+					SM.SetElement(i, mapID-1, -w);
+					printf( "[%d, %d]=%f, ", i, mapID-1, float(-w) );
+				}
+
+			}
+			SM.SetElement(i, i, w_sum);
+		}
+
+		SparseLinearSystem sls( new StableSparseMatrix(SM), B, 2 );
+		double** xxx = 0; 
+		bool result = GeneralSparseLSSolver::GetInstance()->Solve( &sls, xxx );
+		CenterVexIn2D.clear();
+		for (i=0; i<unkown_v_num; i++)
+		{
+			Vec2d newP(xxx[0][i], xxx[1][i]);
+			CenterVexIn2D.push_back(newP);
+			printf("center%d %f %f\n", i, xxx[0][i], xxx[1][i]);
+		}
+
+		for (i=0; i<dim; i++)
+			delete[] xxx[i];
+		delete[] xxx;
+	}
+
+	double Model::calCotWeight( VHandle vh1, VHandle vh2 )
+	{
+		HEHandle heh = find_halfedge(vh1, vh2);
+		VHandle o_vh1 = opposite_vh(heh);
+		VHandle o_vh2 = opposite_he_opposite_vh(heh);
+
+		Point vh1_p = point(vh1);
+		Point vh2_p = point(vh2);
+		Point o_vh1_p, o_vh2_p;
+		double angle_a, angle_b;
+
+		if(o_vh1.is_valid())
+		{
+			o_vh1_p = point(o_vh1);
+			Vec3d vh11 = vh1_p - o_vh1_p;
+			Vec3d vh12 = vh2_p - o_vh1_p;
+
+			angle_a = dot(vh11,vh12) / (vh11.length()*vh12.length()) ;
+			angle_a = acos(angle_a);
+		}
+
+		if(o_vh2.is_valid())
+		{
+			o_vh2_p = point(o_vh2);
+			Vec3d vh21 = vh1_p-o_vh2_p; 
+			Vec3d vh22 = vh2_p-o_vh2_p;
+
+			angle_b = dot(vh21,vh22) / ( vh21.length()*vh22.length() );
+			angle_b = acos(angle_b);
+		}
+		double h_weight = 0;
+		if(o_vh1.is_valid() && o_vh2.is_valid())
+			h_weight = 0.5*((1.0/tan(angle_a))+(1.0/tan(angle_b))) ;
+		if(o_vh1.is_valid() && !o_vh2.is_valid())
+			h_weight = 0.5*((1.0/tan(angle_a))) ;
+		if(!o_vh1.is_valid() && o_vh2.is_valid())
+			h_weight = 0.5*((1.0/tan(angle_b))) ;
+
+		return h_weight;
+	}
+
+	void Model::RenderBound2D( float r, float g, float b )
+	{		
+		glPushAttrib(GL_LIGHTING_BIT);
+		glDisable(GL_LIGHTING);
+		glEnable(GL_DEPTH_TEST);
+		glPointSize(5.0f);
+		glBegin(GL_LINE_STRIP);
+
+		glColor3f(r, g, b);
+		for (int i=0; i<BoundVexIn2D.size(); i++)
+		{
+			glVertex3d( BoundVexIn2D[i][0], BoundVexIn2D[i][1], 0 );
+		}
+		glEnd();
+
+		glBegin(GL_POINTS);
+		glColor3f(1, 0, 0);
+		for (int i=0; i<CenterVexIn2D.size(); i++)
+		{
+			glVertex3d( CenterVexIn2D[i][0], CenterVexIn2D[i][1], 0 );
+		}
+		glEnd();
+		glEnable(GL_LIGHTING);
+		glDisable(GL_POLYGON_OFFSET_FILL);
 	}
 }
 

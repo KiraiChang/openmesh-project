@@ -92,6 +92,7 @@ namespace OpenMesh_Course {
 	private: System::Windows::Forms::Label^  lOutput;
 	private: System::Windows::Forms::Button^  btnLoadTexture;
 	private: System::Windows::Forms::OpenFileDialog^  openTextureFileDialog;
+	private: System::Windows::Forms::TextBox^  textBoxRing;
 
 
 
@@ -143,6 +144,7 @@ namespace OpenMesh_Course {
 			this->hkoglPanelControl1 = (gcnew HKOGLPanel::HKOGLPanelControl());
 			this->gpCommand = (gcnew System::Windows::Forms::GroupBox());
 			this->gbShowType = (gcnew System::Windows::Forms::GroupBox());
+			this->textBoxRing = (gcnew System::Windows::Forms::TextBox());
 			this->lOutput = (gcnew System::Windows::Forms::Label());
 			this->cbWireframe = (gcnew System::Windows::Forms::CheckBox());
 			this->cbLightingModel = (gcnew System::Windows::Forms::CheckBox());
@@ -157,6 +159,8 @@ namespace OpenMesh_Course {
 			// 
 			// hkoglPanelControl1
 			// 
+			this->hkoglPanelControl1->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom) 
+				| System::Windows::Forms::AnchorStyles::Left));
 			hkcCameraProp1->Enabled = true;
 			hkcCameraProp1->Far = 1000;
 			hkcCameraProp1->Fov = 45;
@@ -169,15 +173,14 @@ namespace OpenMesh_Course {
 			hkcDisplayProp1->Grid_Draw = true;
 			hkcDisplayProp1->Grid_Line = System::Drawing::Color::DimGray;
 			this->hkoglPanelControl1->Display_Property = hkcDisplayProp1;
-			this->hkoglPanelControl1->Dock = System::Windows::Forms::DockStyle::Left;
 			this->hkoglPanelControl1->Empty_Panel = false;
-			this->hkoglPanelControl1->Location = System::Drawing::Point(0, 0);
+			this->hkoglPanelControl1->Location = System::Drawing::Point(-2, 0);
 			this->hkoglPanelControl1->Name = L"hkoglPanelControl1";
 			hkcPixelFormat1->Accumu_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
 			hkcPixelFormat1->Alpha_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
 			hkcPixelFormat1->Stencil_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
 			this->hkoglPanelControl1->Pixel_Format = hkcPixelFormat1;
-			this->hkoglPanelControl1->Size = System::Drawing::Size(409, 399);
+			this->hkoglPanelControl1->Size = System::Drawing::Size(409, 455);
 			this->hkoglPanelControl1->TabIndex = 0;
 			hkcTrackballProp1->Const_Res = false;
 			hkcTrackballProp1->Delta_Res = 500;
@@ -207,29 +210,40 @@ namespace OpenMesh_Course {
 			// 
 			// gpCommand
 			// 
+			this->gpCommand->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Right));
 			this->gpCommand->Controls->Add(this->gbShowType);
 			this->gpCommand->Controls->Add(this->btnLoadTexture);
 			this->gpCommand->Controls->Add(this->btnLoadMesh);
-			this->gpCommand->Dock = System::Windows::Forms::DockStyle::Right;
-			this->gpCommand->Location = System::Drawing::Point(800, 0);
+			this->gpCommand->Location = System::Drawing::Point(822, 0);
 			this->gpCommand->Name = L"gpCommand";
-			this->gpCommand->Size = System::Drawing::Size(184, 399);
+			this->gpCommand->Size = System::Drawing::Size(195, 399);
 			this->gpCommand->TabIndex = 2;
 			this->gpCommand->TabStop = false;
 			this->gpCommand->Text = L"Command";
 			// 
 			// gbShowType
 			// 
+			this->gbShowType->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom) 
+				| System::Windows::Forms::AnchorStyles::Left) 
+				| System::Windows::Forms::AnchorStyles::Right));
+			this->gbShowType->Controls->Add(this->textBoxRing);
 			this->gbShowType->Controls->Add(this->lOutput);
 			this->gbShowType->Controls->Add(this->cbWireframe);
 			this->gbShowType->Controls->Add(this->cbLightingModel);
-			this->gbShowType->Dock = System::Windows::Forms::DockStyle::Right;
 			this->gbShowType->Location = System::Drawing::Point(3, 174);
 			this->gbShowType->Name = L"gbShowType";
-			this->gbShowType->Size = System::Drawing::Size(178, 222);
+			this->gbShowType->Size = System::Drawing::Size(192, 266);
 			this->gbShowType->TabIndex = 3;
 			this->gbShowType->TabStop = false;
 			this->gbShowType->Text = L"Show Type";
+			// 
+			// textBoxRing
+			// 
+			this->textBoxRing->Location = System::Drawing::Point(6, 77);
+			this->textBoxRing->Name = L"textBoxRing";
+			this->textBoxRing->Size = System::Drawing::Size(100, 22);
+			this->textBoxRing->TabIndex = 5;
+			this->textBoxRing->Text = L"10";
 			// 
 			// lOutput
 			// 
@@ -269,7 +283,7 @@ namespace OpenMesh_Course {
 			this->btnLoadTexture->Dock = System::Windows::Forms::DockStyle::Top;
 			this->btnLoadTexture->Location = System::Drawing::Point(3, 96);
 			this->btnLoadTexture->Name = L"btnLoadTexture";
-			this->btnLoadTexture->Size = System::Drawing::Size(178, 78);
+			this->btnLoadTexture->Size = System::Drawing::Size(189, 78);
 			this->btnLoadTexture->TabIndex = 5;
 			this->btnLoadTexture->Text = L"Load Texture";
 			this->btnLoadTexture->UseVisualStyleBackColor = true;
@@ -280,7 +294,7 @@ namespace OpenMesh_Course {
 			this->btnLoadMesh->Dock = System::Windows::Forms::DockStyle::Top;
 			this->btnLoadMesh->Location = System::Drawing::Point(3, 18);
 			this->btnLoadMesh->Name = L"btnLoadMesh";
-			this->btnLoadMesh->Size = System::Drawing::Size(178, 78);
+			this->btnLoadMesh->Size = System::Drawing::Size(189, 78);
 			this->btnLoadMesh->TabIndex = 0;
 			this->btnLoadMesh->Text = L"Load Mesh";
 			this->btnLoadMesh->UseVisualStyleBackColor = true;
@@ -295,6 +309,9 @@ namespace OpenMesh_Course {
 			// 
 			// hkoglPanelControl2
 			// 
+			this->hkoglPanelControl2->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom) 
+				| System::Windows::Forms::AnchorStyles::Left) 
+				| System::Windows::Forms::AnchorStyles::Right));
 			hkcCameraProp2->Enabled = true;
 			hkcCameraProp2->Far = 1000;
 			hkcCameraProp2->Fov = 45;
@@ -307,15 +324,14 @@ namespace OpenMesh_Course {
 			hkcDisplayProp2->Grid_Draw = true;
 			hkcDisplayProp2->Grid_Line = System::Drawing::Color::DimGray;
 			this->hkoglPanelControl2->Display_Property = hkcDisplayProp2;
-			this->hkoglPanelControl2->Dock = System::Windows::Forms::DockStyle::Left;
 			this->hkoglPanelControl2->Empty_Panel = false;
-			this->hkoglPanelControl2->Location = System::Drawing::Point(409, 0);
+			this->hkoglPanelControl2->Location = System::Drawing::Point(415, 0);
 			this->hkoglPanelControl2->Name = L"hkoglPanelControl2";
 			hkcPixelFormat2->Accumu_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
 			hkcPixelFormat2->Alpha_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
 			hkcPixelFormat2->Stencil_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
 			this->hkoglPanelControl2->Pixel_Format = hkcPixelFormat2;
-			this->hkoglPanelControl2->Size = System::Drawing::Size(388, 399);
+			this->hkoglPanelControl2->Size = System::Drawing::Size(410, 455);
 			this->hkoglPanelControl2->TabIndex = 10;
 			hkcTrackballProp2->Const_Res = false;
 			hkcTrackballProp2->Delta_Res = 500;
@@ -351,7 +367,7 @@ namespace OpenMesh_Course {
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 12);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(984, 399);
+			this->ClientSize = System::Drawing::Size(1017, 455);
 			this->Controls->Add(this->hkoglPanelControl2);
 			this->Controls->Add(this->hkoglPanelControl1);
 			this->Controls->Add(this->gpCommand);
@@ -452,6 +468,9 @@ private: System::Void hkoglPanelControl1_MouseDown(System::Object^  sender, Syst
 					 }
 					 gluUnProject( g_winX, g_winY, g_winZ, g_modelview, g_projection, g_viewport, &objX, &objY, &objZ);
 
+					 GLdouble orgX, orgY, orgZ;
+					 gluUnProject( g_winX, g_winY, 0, g_modelview, g_projection, g_viewport, &orgX, &orgY, &orgZ);
+
 					 lOutput->Text = "ObjectX: "+objX+"\nObjectY: "+objY+"\nObjectZ: "+(objZ);
 					 glPopMatrix();
 
@@ -467,7 +486,14 @@ private: System::Void hkoglPanelControl1_MouseDown(System::Object^  sender, Syst
 					 //OMT::FHandle handle;
 					 //if(mesh->findFace(mouse, handle) < INIT_DIST)
 						//mesh->VertexMapping(handle);
-					 g_isSelected = true;
+					 //g_isSelected = true;
+
+
+					 OMP::MyMesh::Point orgPoint(orgX, orgY, orgZ);
+					 OMP::Vector3d rayDir = mouse - orgPoint;
+					 rayDir = rayDir.normalize();
+					 //FaceOneRing(orgPoint, rayDir);
+					 mesh->SelectNring(Convert::ToInt32(textBoxRing->Text), orgPoint, rayDir);
 
 					 this->Refresh();
 				 }
@@ -479,6 +505,7 @@ private: System::Void hkoglPanelControl2_Paint(System::Object^  sender, System::
 			 {
 				 mesh->RenderTexture();
 				 mesh->RenderUVMapping();
+				 mesh->RenderBound2D(1.0, 0.0, 0.0);
 			 }
 
 		 }

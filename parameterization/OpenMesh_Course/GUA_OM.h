@@ -199,7 +199,37 @@ namespace OMT//OpenMesh Triangle mesh
 		void							selectFace(int _x,  int _y, float _u, float _r, float _d, float _l, GLint viewport[4], GLdouble modelview[16], GLdouble projection[16]);
 		void							add_mapping_face(FHandle &_f);
 		void							clear_mapping_face(void);
-		
+
+		/*---------------------------------PARAMETERIZATION-----------------------------*/
+	private:
+		OpenMesh::FPropHandleT<int>       SelRingID;
+		OpenMesh::VPropHandleT<int>		  SelVID;		//positive : inside, negative : bound, other : not selected
+		vector< FHandle > sel_faces;
+		vector< VHandle > bound_Vex;
+		vector< Vec2d > BoundVexIn2D;
+		vector< Vec2d > CenterVexIn2D;
+	public:
+		double RayTraceFace(FHandle& fh, Point& p, Vector3d& rayDir);
+		FHandle FindFace( Point& p, Vector3d& rayDir );
+		void SelectNring(int n, Point& p, Vector3d& rayDir);
+		void ClearSelectFaces();
+		void FindBound();
+		void FixBoundShape();
+		void MapBoundTo2D();
+		void FillCenter();
+		void Parameterization();
+		double calCotWeight(VHandle vh1, VHandle vh2);
+		void RenderBound2D( float r, float g, float b );
+		bool IsBoundEdge(EHandle eh)
+		{
+			HEHandle heh = halfedge_handle(eh, 0);
+			FHandle fh1 = face_handle( heh );
+			FHandle fh2 = opposite_face_handle( heh );
+			if ( property(SelRingID, fh1) * property(SelRingID, fh2)<0 )
+				return true;
+
+			return false;
+		}
 	};
 }
 /*======================================================================*/
