@@ -1391,7 +1391,7 @@ namespace OMT
 
 
 		FindBound();
-		//FixBoundShape();
+		FixBoundShape();
 		MapBoundTo2D();
 		FillCenter();
 	}
@@ -1462,47 +1462,61 @@ namespace OMT
 
 	void Model::MapBoundTo2D()
 	{
-		BoundVexIn2D.resize( bound_Vex.size() );
-		GLint	  glViewport[4];
-		GLdouble  glModelview[16];
-		GLdouble  glProjection[16];
-		double    pos[3];
-		GLdouble sx, sy, sz;
-		float alpha = 0.9;
-		float maxx = 0, minx = 100, maxy = 0, miny = 100;
-
-		glMatrixMode( GL_PROJECTION );
-		glGetDoublev( GL_PROJECTION_MATRIX, glProjection );
-		glMatrixMode( GL_MODELVIEW );
-		glGetDoublev( GL_MODELVIEW_MATRIX, glModelview );
-		glGetIntegerv( GL_VIEWPORT, glViewport );
-
-		for (int i=0; i<bound_Vex.size(); i++)
+		double boundLen = 0;
+		int boundVNum = bound_Vex.size();
+		BoundVexIn2D.resize( boundVNum );
+		for (int i=1; i<boundVNum; i++)
 		{
-			Point curPoint = point( bound_Vex[i] );
-			gluProject(curPoint[0], curPoint[1], curPoint[2], glModelview, glProjection, glViewport, &sx, &sy, &sz);
-			BoundVexIn2D[i][0] = sx/glViewport[2];
-			BoundVexIn2D[i][1] = sy/glViewport[3];
-
-			if(BoundVexIn2D[i][0] > maxx)
-				maxx = BoundVexIn2D[i][0];
-			if(BoundVexIn2D[i][0] < minx)
-				minx = BoundVexIn2D[i][0];
-			if(BoundVexIn2D[i][1] > maxy)
-				maxy = BoundVexIn2D[i][1];
-			if(BoundVexIn2D[i][1] < miny)
-				miny = BoundVexIn2D[i][1];
-			printf("x:%f y:%f\n", BoundVexIn2D[i][0], BoundVexIn2D[i][1]);
+			boundLen+= (point( bound_Vex[i] ) - point(bound_Vex[i-1]) ).length();
 		}
-
-		for(int i=0; i<bound_Vex.size(); i++)
+		BoundVexIn2D[0] = Vec2d(1, 0.5);
+		double curLen = 0;
+		for (int i=1; i<boundVNum; i++)
 		{
-			BoundVexIn2D[i][0] -= minx;
-			BoundVexIn2D[i][0] /= (maxx - minx);
-
-			BoundVexIn2D[i][1] -= miny;
-			BoundVexIn2D[i][1] /= (maxy - miny);
+			curLen += (point( bound_Vex[i] ) - point(bound_Vex[i-1]) ).length();
+			double angle = 2*3.1415926*curLen/boundLen;
+			BoundVexIn2D[i] = Vec2d(cos(angle), sin(angle))*0.5+Vec2d(0.5, 0.5);
 		}
+// 		GLint	  glViewport[4];
+// 		GLdouble  glModelview[16];
+// 		GLdouble  glProjection[16];
+// 		double    pos[3];
+// 		GLdouble sx, sy, sz;
+// 		float alpha = 0.9;
+// 		float maxx = 0, minx = 100, maxy = 0, miny = 100;
+// 
+// 		glMatrixMode( GL_PROJECTION );
+// 		glGetDoublev( GL_PROJECTION_MATRIX, glProjection );
+// 		glMatrixMode( GL_MODELVIEW );
+// 		glGetDoublev( GL_MODELVIEW_MATRIX, glModelview );
+// 		glGetIntegerv( GL_VIEWPORT, glViewport );
+// 
+// 		for (int i=0; i<bound_Vex.size(); i++)
+// 		{
+// 			Point curPoint = point( bound_Vex[i] );
+// 			gluProject(curPoint[0], curPoint[1], curPoint[2], glModelview, glProjection, glViewport, &sx, &sy, &sz);
+// 			BoundVexIn2D[i][0] = sx/glViewport[2];
+// 			BoundVexIn2D[i][1] = sy/glViewport[3];
+// 
+// 			if(BoundVexIn2D[i][0] > maxx)
+// 				maxx = BoundVexIn2D[i][0];
+// 			if(BoundVexIn2D[i][0] < minx)
+// 				minx = BoundVexIn2D[i][0];
+// 			if(BoundVexIn2D[i][1] > maxy)
+// 				maxy = BoundVexIn2D[i][1];
+// 			if(BoundVexIn2D[i][1] < miny)
+// 				miny = BoundVexIn2D[i][1];
+// 			printf("x:%f y:%f\n", BoundVexIn2D[i][0], BoundVexIn2D[i][1]);
+// 		}
+
+// 		for(int i=0; i<bound_Vex.size(); i++)
+// 		{
+// 			BoundVexIn2D[i][0] -= minx;
+// 			BoundVexIn2D[i][0] /= (maxx - minx);
+// 
+// 			BoundVexIn2D[i][1] -= miny;
+// 			BoundVexIn2D[i][1] /= (maxy - miny);
+// 		}
 		
 	}
 
