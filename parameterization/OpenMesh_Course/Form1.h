@@ -93,6 +93,7 @@ namespace OpenMesh_Course {
 	private: System::Windows::Forms::Button^  btnLoadTexture;
 	private: System::Windows::Forms::OpenFileDialog^  openTextureFileDialog;
 	private: System::Windows::Forms::TextBox^  textBoxRing;
+	private: System::Windows::Forms::CheckBox^  cbRTM;
 
 
 
@@ -144,6 +145,7 @@ namespace OpenMesh_Course {
 			this->hkoglPanelControl1 = (gcnew HKOGLPanel::HKOGLPanelControl());
 			this->gpCommand = (gcnew System::Windows::Forms::GroupBox());
 			this->gbShowType = (gcnew System::Windows::Forms::GroupBox());
+			this->cbRTM = (gcnew System::Windows::Forms::CheckBox());
 			this->textBoxRing = (gcnew System::Windows::Forms::TextBox());
 			this->lOutput = (gcnew System::Windows::Forms::Label());
 			this->cbWireframe = (gcnew System::Windows::Forms::CheckBox());
@@ -227,6 +229,7 @@ namespace OpenMesh_Course {
 			this->gbShowType->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom) 
 				| System::Windows::Forms::AnchorStyles::Left) 
 				| System::Windows::Forms::AnchorStyles::Right));
+			this->gbShowType->Controls->Add(this->cbRTM);
 			this->gbShowType->Controls->Add(this->textBoxRing);
 			this->gbShowType->Controls->Add(this->lOutput);
 			this->gbShowType->Controls->Add(this->cbWireframe);
@@ -237,6 +240,16 @@ namespace OpenMesh_Course {
 			this->gbShowType->TabIndex = 3;
 			this->gbShowType->TabStop = false;
 			this->gbShowType->Text = L"Show Type";
+			// 
+			// cbRTM
+			// 
+			this->cbRTM->AutoSize = true;
+			this->cbRTM->Location = System::Drawing::Point(6, 119);
+			this->cbRTM->Name = L"cbRTM";
+			this->cbRTM->Size = System::Drawing::Size(142, 16);
+			this->cbRTM->TabIndex = 6;
+			this->cbRTM->Text = L"Render Texture to Model";
+			this->cbRTM->UseVisualStyleBackColor = true;
 			// 
 			// textBoxRing
 			// 
@@ -383,10 +396,10 @@ namespace OpenMesh_Course {
 #pragma endregion
 private: System::Void hkoglPanelControl1_Paint(System::Object^  sender, System::Windows::Forms::PaintEventArgs^  e) 
 		 {
-			 if ( mesh != NULL && cbLightingModel->Checked)
+			 if ( mesh != NULL/* && cbLightingModel->Checked*/)
 				 mesh->Render_Solid();
-			 else
-				 mesh->Render_No_Lighting_Solid();
+			 //else
+				// mesh->Render_No_Lighting_Solid();
 			 if ( mesh != NULL && cbWireframe->Checked)
 				 mesh->Render_Wireframe();
 			 if(mesh)
@@ -403,6 +416,8 @@ private: System::Void hkoglPanelControl1_Paint(System::Object^  sender, System::
 				 mesh->RenderSpecifiedVertex();
 				 mesh->RenderSpecifiedFace();
 				 mesh->RenderSpecifiedEdge();
+				 if (cbRTM->Checked)
+					 mesh->RenderTextureToModel();
 			 }
 		 }
 private: System::Void btnLoadMesh_Click(System::Object^  sender, System::EventArgs^  e) 

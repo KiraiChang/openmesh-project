@@ -204,6 +204,7 @@ namespace OMT//OpenMesh Triangle mesh
 	private:
 		OpenMesh::FPropHandleT<int>       SelRingID;
 		OpenMesh::VPropHandleT<int>		  SelVID;		//positive : inside, negative : bound, other : not selected
+		std::vector<int> centerVid;
 		vector< FHandle > sel_faces;
 		vector< VHandle > bound_Vex;
 		vector< Vec2d > BoundVexIn2D;
@@ -220,6 +221,7 @@ namespace OMT//OpenMesh Triangle mesh
 		void Parameterization();
 		double calCotWeight(VHandle vh1, VHandle vh2);
 		void RenderBound2D( float r, float g, float b );
+		void RenderTextureToModel();
 		bool IsBoundEdge(EHandle eh)
 		{
 			HEHandle heh = halfedge_handle(eh, 0);
