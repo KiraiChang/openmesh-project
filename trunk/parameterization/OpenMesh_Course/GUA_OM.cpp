@@ -1542,7 +1542,7 @@ namespace OMT
 			}
 		}
 		int nextVid = 1;
-		std::vector<int> centerVid(centerVidSet.begin(), centerVidSet.end());
+		centerVid = std::vector<int>(centerVidSet.begin(), centerVidSet.end());
 
 		for (int i=0; i<centerVid.size(); i++)
 		{
@@ -1680,6 +1680,34 @@ namespace OMT
 		glEnable(GL_LIGHTING);
 		glDisable(GL_POLYGON_OFFSET_FILL);
 	}
+
+	void Model::RenderTextureToModel()
+	{
+		if(m_uiTexture[0] == NULL)
+			return;
+		glEnable(GL_TEXTURE_2D);	// Enable Texture Mapping ( NEW )
+		glShadeModel(GL_SMOOTH);	// Enable Smooth Shading
+		glBegin(GL_TRIANGLES);
+		glColor4f(1, 1, 1, 1);
+		for (int i=0; i<sel_faces.size(); i++)
+		{
+			for (FVIter fv_it = fv_iter(sel_faces[i]); fv_it; ++fv_it)
+			{
+				int mapID = property(SelVID, fv_it.handle());
+				if (mapID<0)
+					glTexCoord2d(BoundVexIn2D[-mapID-1][0], BoundVexIn2D[-mapID-1][1]);
+				else if (mapID>0)
+					glTexCoord2d(CenterVexIn2D[mapID-1][0], CenterVexIn2D[mapID-1][1]);
+				else
+					continue;
+				glNormal3dv(&normal(fv_it.handle())[0]);
+				glVertex3dv(&point(fv_it.handle())[0]);
+			}
+		}
+		glEnd();
+		glDisable(GL_TEXTURE_2D);	// Enable Texture Mapping ( NEW )
+	}
+
 }
 
 
