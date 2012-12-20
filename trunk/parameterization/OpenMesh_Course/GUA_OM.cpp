@@ -4,6 +4,7 @@
 #define THRESHOLD 1.5
 
 #include <LinearSystemLib.h>
+#include <math.h>
 #include <set>
 
 
@@ -1299,6 +1300,35 @@ namespace OMT
 		glVertex3f(l, d, 0);
 		glColor3f(1.0, 0.0, 0.0);
 		glVertex3f(l, u, 0);
+		glEnd();
+		glEnable(GL_LIGHTING);
+		glEnable(GL_DEPTH_TEST);
+		glPopMatrix();
+	}
+
+	void Model::drawCircle(float _x,  float _y, float _radin, float _r, float _g, float _b, int _n)
+	{
+		float pre_x, pre_y, cur_x, cur_y, a = 360.0/_n;
+		int i;
+		pre_x = _x+2*_radin*std::sin(0.001/360);
+		pre_y = _y-2*_radin*std::cos(0.001/360);
+		glPushMatrix();
+		glLoadIdentity();
+		glTranslatef(-0.5f, -0.5f, -1.25f);
+		glDisable(GL_DEPTH_TEST);
+		glDisable(GL_LIGHTING);
+		glBegin(GL_LINES);
+		for(i=1;i<=_n;i++)
+		{
+			cur_x = _x+2*_radin*std::sin(a*i*2*PI/360);
+			cur_y = _y-2*_radin*std::cos(a*i*2*PI/360);
+			glColor3f(_r, _g, _b);
+			glVertex3f(pre_x, pre_y, 0);
+			glColor3f(_r, _b, _b);
+			glVertex3f(cur_x, cur_y, 0);
+			pre_x = cur_x;
+			pre_y = cur_y;
+		}
 		glEnd();
 		glEnable(GL_LIGHTING);
 		glEnable(GL_DEPTH_TEST);
