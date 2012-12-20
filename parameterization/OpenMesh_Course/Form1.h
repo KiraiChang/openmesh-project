@@ -94,6 +94,7 @@ namespace OpenMesh_Course {
 	private: System::Windows::Forms::OpenFileDialog^  openTextureFileDialog;
 	private: System::Windows::Forms::TextBox^  textBoxRing;
 	private: System::Windows::Forms::CheckBox^  cbRTM;
+	private: System::Windows::Forms::TrackBar^  trackRadin;
 
 
 
@@ -155,8 +156,10 @@ namespace OpenMesh_Course {
 			this->openMeshFileDialog = (gcnew System::Windows::Forms::OpenFileDialog());
 			this->hkoglPanelControl2 = (gcnew HKOGLPanel::HKOGLPanelControl());
 			this->openTextureFileDialog = (gcnew System::Windows::Forms::OpenFileDialog());
+			this->trackRadin = (gcnew System::Windows::Forms::TrackBar());
 			this->gpCommand->SuspendLayout();
 			this->gbShowType->SuspendLayout();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->trackRadin))->BeginInit();
 			this->SuspendLayout();
 			// 
 			// hkoglPanelControl1
@@ -229,6 +232,7 @@ namespace OpenMesh_Course {
 			this->gbShowType->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom) 
 				| System::Windows::Forms::AnchorStyles::Left) 
 				| System::Windows::Forms::AnchorStyles::Right));
+			this->gbShowType->Controls->Add(this->trackRadin);
 			this->gbShowType->Controls->Add(this->cbRTM);
 			this->gbShowType->Controls->Add(this->textBoxRing);
 			this->gbShowType->Controls->Add(this->lOutput);
@@ -244,7 +248,7 @@ namespace OpenMesh_Course {
 			// cbRTM
 			// 
 			this->cbRTM->AutoSize = true;
-			this->cbRTM->Location = System::Drawing::Point(6, 119);
+			this->cbRTM->Location = System::Drawing::Point(8, 116);
 			this->cbRTM->Name = L"cbRTM";
 			this->cbRTM->Size = System::Drawing::Size(142, 16);
 			this->cbRTM->TabIndex = 6;
@@ -255,14 +259,14 @@ namespace OpenMesh_Course {
 			// 
 			this->textBoxRing->Location = System::Drawing::Point(6, 65);
 			this->textBoxRing->Name = L"textBoxRing";
-			this->textBoxRing->Size = System::Drawing::Size(100, 22);
+			this->textBoxRing->Size = System::Drawing::Size(24, 22);
 			this->textBoxRing->TabIndex = 5;
 			this->textBoxRing->Text = L"10";
 			// 
 			// lOutput
 			// 
 			this->lOutput->AutoSize = true;
-			this->lOutput->Location = System::Drawing::Point(6, 90);
+			this->lOutput->Location = System::Drawing::Point(6, 138);
 			this->lOutput->Name = L"lOutput";
 			this->lOutput->Size = System::Drawing::Size(24, 12);
 			this->lOutput->TabIndex = 4;
@@ -377,6 +381,13 @@ namespace OpenMesh_Course {
 			this->openTextureFileDialog->Filter = L"JPG File|*.JPG|BMP File|*.BMP|All file|*.*";
 			this->openTextureFileDialog->FileOk += gcnew System::ComponentModel::CancelEventHandler(this, &Form1::openTextureFileDialog_FileOk);
 			// 
+			// trackRadin
+			// 
+			this->trackRadin->Location = System::Drawing::Point(36, 65);
+			this->trackRadin->Name = L"trackRadin";
+			this->trackRadin->Size = System::Drawing::Size(120, 45);
+			this->trackRadin->TabIndex = 7;
+			// 
 			// Form1
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 12);
@@ -390,6 +401,7 @@ namespace OpenMesh_Course {
 			this->gpCommand->ResumeLayout(false);
 			this->gbShowType->ResumeLayout(false);
 			this->gbShowType->PerformLayout();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->trackRadin))->EndInit();
 			this->ResumeLayout(false);
 
 		}
@@ -418,6 +430,8 @@ private: System::Void hkoglPanelControl1_Paint(System::Object^  sender, System::
 				 mesh->RenderSpecifiedEdge();
 				 if (cbRTM->Checked)
 					 mesh->RenderTextureToModel();
+				 float value = (float)trackRadin->Value / trackRadin->Maximum * 0.25;
+				 mesh->drawCircle(g_winX/g_viewport[2], g_winY/g_viewport[3], value, 1.0, 0.0, 0.0, 32);
 			 }
 		 }
 private: System::Void btnLoadMesh_Click(System::Object^  sender, System::EventArgs^  e) 

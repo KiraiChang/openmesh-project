@@ -199,6 +199,7 @@ namespace OMT//OpenMesh Triangle mesh
 		void							RenderTexture(void);
 		void							RenderUVMapping(void);
 		void							drawRect(int _x,  int _y, float _w, float _h, GLint viewport[4], GLdouble modelview[16], GLdouble projection[16]);
+		void							drawCircle(float _x,  float _y, float _radin, float _r, float _g, float _b, int _n);
 		void							VertexMapping(const FHandle &_f);
 		void							clear_sp_mapping(void);
 		void							add_sp_mapping(const VHandle &_v, float _r, float _g, float _b);
