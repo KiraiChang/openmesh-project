@@ -12,6 +12,7 @@
 #include <gl/gl.h>
 #include <gl/glu.h>
 #include <gl/glaux.h>
+#include <highgui.h> 
 //#include "GLCamera.h"
 
 #define INIT_DIST 9999.9f
@@ -148,6 +149,8 @@ namespace OMT//OpenMesh Triangle mesh
 		size_t							number_of_face;
 
 		GLuint							m_uiTexture[MAX_TEXTURE];				// Storage For One Texture
+		//IplImage *						m_pImage[MAX_TEXTURE];
+		cv::Mat							m_matImage[MAX_TEXTURE];
 		OpenMesh::FPropHandleT<bool>	f_bIsSelect;
 		OpenMesh::VPropHandleT<Vec2d>	v_vec2dTexcoord;
 
@@ -188,8 +191,11 @@ namespace OMT//OpenMesh Triangle mesh
 		void							updateErrors(int idx);
 
 		/*---------------------------------TEXTURE--------------------------------------*/
+		//AUX_RGBImageRec *				LoadBMP(const char *filename);
+		//IplImage*						LoadImage(const char* filename, int flags);
 		int								LoadGLTextures(const std::string &tex_name);
-		AUX_RGBImageRec *				LoadBMP(const char *filename);
+		int								LoadImage(const std::string &tex_name, size_t image_id);
+		int								GenTextures(size_t texture_id, size_t image_id);
 		void							RenderTexture(void);
 		void							RenderUVMapping(void);
 		void							drawRect(int _x,  int _y, float _w, float _h, GLint viewport[4], GLdouble modelview[16], GLdouble projection[16]);

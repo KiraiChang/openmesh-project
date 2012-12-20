@@ -56,14 +56,14 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_USE_MATH_DEFINES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <AdditionalIncludeDirectories>..\..\..\SDK\VS2010\OpenMesh\include;..\..\..\SDK\VS2010\LinearSystemLib\include;..\..\..\SDK\VS2010\Taucs_vc8\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\SDK\VS2010\OpenMesh\include;..\..\..\SDK\VS2010\LinearSystemLib\include;..\..\..\SDK\VS2010\Taucs_vc8\include;..\..\..\SDK\VS2010\OpenCV\include\opencv\;..\..\..\SDK\VS2010\OpenCV\include\opencv2\;..\..\..\SDK\VS2010\OpenCV\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glu32.lib;opengl32.lib;glaux.lib;OpenMeshCored.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glu32.lib;opengl32.lib;glaux.lib;OpenMeshCored.lib;opencv_core243d.lib;opencv_highgui243d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <EntryPointSymbol>main</EntryPointSymbol>
-      <AdditionalLibraryDirectories>..\..\..\SDK\VS2010\OpenMesh\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\SDK\VS2010\OpenMesh\lib;..\..\..\SDK\VS2010\LinearSystemLib\lib;..\..\..\SDK\VS2010\Taucs_vc8\lib;..\..\..\SDK\VS2010\OpenCV\x86\vc10\lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -71,14 +71,14 @@
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>WIN32;NDEBUG;_USE_MATH_DEFINES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <AdditionalIncludeDirectories>..\..\..\SDK\VS2010\OpenMesh\include;..\..\..\SDK\VS2010\LinearSystemLib\include;..\..\..\SDK\VS2010\Taucs_vc8\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\SDK\VS2010\OpenMesh\include;..\..\..\SDK\VS2010\LinearSystemLib\include;..\..\..\SDK\VS2010\Taucs_vc8\include;..\..\..\SDK\VS2010\OpenCV\include\opencv\;..\..\..\SDK\VS2010\OpenCV\include\opencv2\;..\..\..\SDK\VS2010\OpenCV\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glu32.lib;opengl32.lib;glaux.lib;OpenMeshCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glu32.lib;opengl32.lib;glaux.lib;OpenMeshCore.lib;opencv_core243.lib;opencv_highgui243.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <EntryPointSymbol>main</EntryPointSymbol>
-      <AdditionalLibraryDirectories>..\..\..\SDK\VS2010\OpenMesh\lib;..\..\..\SDK\VS2010\LinearSystemLib\lib;..\..\..\SDK\VS2010\Taucs_vc8\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\SDK\VS2010\OpenMesh\lib;..\..\..\SDK\VS2010\LinearSystemLib\lib;..\..\..\SDK\VS2010\Taucs_vc8\lib;..\..\..\SDK\VS2010\OpenCV\x86\vc10\lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
