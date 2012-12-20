@@ -86,6 +86,7 @@ namespace OMT
 		for(int i = 0; i < MAX_TEXTURE; i++)
 		{
 			m_uiTexture[i] = NULL;
+			//m_pImage[i] = NULL;
 		}
 	}
 	Model::~Model()
@@ -96,8 +97,20 @@ namespace OMT
 
 		for(int i = 0; i < MAX_TEXTURE; i++)
 		{
-			glDeleteTextures(1, &m_uiTexture[i]);
-			m_uiTexture[i] = NULL;
+			if(m_uiTexture[i] != NULL)
+			{
+				glDeleteTextures(1, &m_uiTexture[i]);
+				m_uiTexture[i] = NULL;
+			}
+
+			//if(m_pImage[i] != NULL)
+			//{
+			//	cvReleaseImage(&m_pImage[i]);
+			//	m_pImage[i] = NULL;
+			//}
+
+			if(m_matImage[i].data != NULL)
+				m_matImage[i].release();
 		}
 	}
 
@@ -1007,54 +1020,7 @@ namespace OMT
 	}
 
 	/*---------------------------------TEXTURE--------------------------------------*/
-	int	Model::LoadGLTextures(const std::string &tex_name)
-	{
-		int   Status=FALSE;		                     // Status Indicator
-
-		AUX_RGBImageRec *TextureImage[1];		// Create Storage Space For The Texture
-
-		memset(TextureImage,0,sizeof(void *)*1);             // Set The Pointer To NULL
-
-		// Load The Bitmap, Check For Errors, If Bitmap's Not Found Quit
-		if (TextureImage[0]=LoadBMP(tex_name.c_str()))
-		{
-			Status = TRUE;			// Set The Status To TRUE
-
-			if(m_uiTexture[0] != NULL)
-				glDeleteTextures(1, &m_uiTexture[0]);
-			glGenTextures(1, &m_uiTexture[0]);		// Create The Texture
-
-			// Typical Texture Generation Using Data From The Bitmap
-			glBindTexture(GL_TEXTURE_2D, m_uiTexture[0]);
-
-			glTexImage2D(GL_TEXTURE_2D, 
-				0, 
-				3, 
-				TextureImage[0]->sizeX,
-				TextureImage[0]->sizeY,
-				0, 
-				GL_RGB,
-				GL_UNSIGNED_BYTE,
-				TextureImage[0]->data
-				); 
-
-			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-		}
-		if (TextureImage[0])				// If Texture Exists
-		{
-			if (TextureImage[0]->data)		// If Texture Image Exists
-			{
-				free(TextureImage[0]->data);		// Free The Texture Image Memory
-			}
-
-			free(TextureImage[0]);			// Free The Image Structure
-		}
-
-		return Status;				// Return The Status
-	}
-
-	AUX_RGBImageRec *Model::LoadBMP(const char *filename)	// Loads A Bitmap Image
+	AUX_RGBImageRec *LoadBMP(const char *filename)	// Loads A Bitmap Image
 	{
 		FILE *file=NULL;			// File Handle
 
@@ -1074,6 +1040,195 @@ namespace OMT
 		return NULL;				// If Load Failed Return NULL
 	}
 
+	IplImage* LoadCVImage(const char* filename, int flags)
+	{
+		IplImage* iplImg = cvLoadImage(filename, flags);
+		return iplImg;
+	}
+
+	int	Model::LoadGLTextures(const std::string &tex_name)
+	{
+		int   Status=FALSE;		                     // Status Indicator
+
+		//AUX_RGBImageRec *TextureImage[1];		// Create Storage Space For The Texture
+		IplImage *TextureImage[1];
+		//memset(TextureImage,0,sizeof(void *)*1);             // Set The Pointer To NULL
+
+		// Load The Bitmap, Check For Errors, If Bitmap's Not Found Quit
+		//if (TextureImage[0]=LoadBMP(tex_name.c_str()))
+		if (TextureImage[0]=LoadCVImage(tex_name.c_str(), CV_LOAD_IMAGE_COLOR))
+		{
+			Status = TRUE;			// Set The Status To TRUE
+
+			if(m_uiTexture[0] != NULL)
+				glDeleteTextures(1, &m_uiTexture[0]);
+			glGenTextures(1, &m_uiTexture[0]);		// Create The Texture
+
+			// Typical Texture Generation Using Data From The Bitmap
+			glBindTexture(GL_TEXTURE_2D, m_uiTexture[0]);
+
+			//glTexImage2D(GL_TEXTURE_2D, 
+			//	0, 
+			//	3, 
+			//	TextureImage[0]->sizeX,
+			//	TextureImage[0]->sizeY,
+			//	0, 
+			//	GL_RGB,
+			//	GL_UNSIGNED_BYTE,
+			//	TextureImage[0]->data
+			//	); 
+
+			glTexImage2D(GL_TEXTURE_2D, 
+				0, 
+				3, 
+				TextureImage[0]->width,
+				TextureImage[0]->height,
+				0, 
+				GL_RGB,
+				GL_UNSIGNED_BYTE,
+				TextureImage[0]->imageData
+				); 
+
+
+			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+		}
+		//if (TextureImage[0])				// If Texture Exists
+		//{
+		//	if (TextureImage[0]->data)		// If Texture Image Exists
+		//	{
+		//		free(TextureImage[0]->data);		// Free The Texture Image Memory
+		//	}
+
+		//	free(TextureImage[0]);			// Free The Image Structure
+		//}
+		cvReleaseImage(&TextureImage[0]);
+		return Status;				// Return The Status
+	}
+
+	int	Model::LoadImage(const std::string &tex_name, size_t image_id)
+	{
+		if(image_id < MAX_TEXTURE)
+		{
+			//if(m_pImage[image_id] != NULL)
+			//{
+			//	cvReleaseImage(&m_pImage[image_id]);
+			//	m_pImage[image_id] = NULL;
+			//}
+			if(m_matImage[image_id].data != NULL)
+			{
+				m_matImage[image_id].release();
+			}
+
+			//if (m_pImage[image_id]=LoadCVImage(tex_name.c_str(), CV_LOAD_IMAGE_COLOR))
+			cv::Mat image=cv::imread(tex_name.c_str(), cv::IMREAD_ANYCOLOR);
+
+			if(image.data != NULL)
+			{
+				cv::flip(image, m_matImage[image_id], 0);//des(i, j) = src(i,src.cols-j-1)
+				//cv::flip(image, m_matImage[image_id], 1);//des(i, j) = src(src.rows-i-1,j)
+				//cv::flip(image, m_matImage[image_id], -1);//des(i, j) = src(src.rows-i-1,src.cols-j-1)
+				image.release();
+				return TRUE;
+			}
+		}
+
+		return FALSE;
+	}
+
+	int	Model::GenTextures(size_t texture_id, size_t image_id)
+	{
+		if(texture_id < MAX_TEXTURE && image_id < MAX_TEXTURE)
+		{
+			if(m_uiTexture[texture_id] != NULL)
+				glDeleteTextures(1, &m_uiTexture[texture_id]);	// Release Old Texture
+			glGenTextures(1, &m_uiTexture[texture_id]);			// Create The Texture
+
+			// Typical Texture Generation Using Data From The Bitmap
+			glBindTexture(GL_TEXTURE_2D, m_uiTexture[texture_id]);
+
+			//glTexImage2D(GL_TEXTURE_2D, 
+			//	0, 
+			//	3, 
+			//	m_pImage[image_id]->width,
+			//	m_pImage[image_id]->height,
+			//	0, 
+			//	GL_RGB,
+			//	GL_UNSIGNED_BYTE,
+			//	m_pImage[image_id]->imageData
+			//	); 
+
+
+			//glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+			//glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+
+			//glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_DECAL);
+			//glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+			//glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+			//glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
+			//glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
+			//gluBuild2DMipmaps(GL_TEXTURE_2D, 
+			//	3,
+			//	m_pImage[image_id]->width,
+			//	m_pImage[image_id]->height,
+			//	GL_RGB,
+			//	GL_UNSIGNED_BYTE,
+			//	m_pImage[image_id]->imageData
+			//	);
+			//return TRUE;
+
+			//glTexImage2D(
+			//	GL_TEXTURE_2D, 
+			//	0, 
+			//	3, 
+			//	m_matImage[image_id].cols, 
+			//	m_matImage[image_id].rows, 
+			//	0, 
+			//	GL_BGR_EXT, 
+			//	GL_UNSIGNED_BYTE, 
+			//	m_matImage[image_id].data);
+
+			//glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); 
+			//glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); 
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); 
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); 
+			glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); 
+			//glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE ); 
+
+			if(m_matImage[image_id].channels() == 3 ) 
+			{   
+				glTexImage2D( 
+					GL_TEXTURE_2D, 
+					0, 
+					GL_RGB, 
+					m_matImage[image_id].cols, 
+					m_matImage[image_id].rows, 
+					0, 
+					GL_BGR_EXT, 
+					GL_UNSIGNED_BYTE, 
+					m_matImage[image_id].data 
+				);  
+			} 
+			else if( m_matImage[image_id].channels() == 4 ) 
+			{   
+				glTexImage2D( 
+				GL_TEXTURE_2D, 
+				0, 
+				GL_RGBA, 
+				m_matImage[image_id].cols, 
+				m_matImage[image_id].rows, 
+				0, 
+				GL_BGRA_EXT, 
+				GL_UNSIGNED_BYTE, 
+				m_matImage[image_id].data 
+				);  
+			} 
+
+			return TRUE;
+		}
+		return FALSE;
+	}
+
 	void Model::RenderTexture(void)
 	{
 		if(m_uiTexture[0] != NULL)
@@ -1087,11 +1242,13 @@ namespace OMT
 			glTranslatef(-0.5f, -0.5f, -1.25f);
 			glBindTexture(GL_TEXTURE_2D, m_uiTexture[0]);				// 選擇紋理
 			glBegin(GL_QUADS);											//  繪製正方形
+			glColor4f(1, 1, 1, 1);
 			glTexCoord2f(0.0f, 0.0f); glVertex3f( 0.0f,  0.0f,  0.0f);	// 紋理和四邊形的左下
 			glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f,  0.0f,  0.0f);	// 紋理和四邊形的右下
 			glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f,  0.0f);	// 紋理和四邊形的右上
 			glTexCoord2f(0.0f, 1.0f); glVertex3f( 0.0f,  1.0f,  0.0f);	// 紋理和四邊形的左上
 			glEnd();													// 正方形繪製結束
+			glDisable(GL_TEXTURE_2D);
 		}
 	}
 
@@ -1701,6 +1858,7 @@ namespace OMT
 			return;
 		glEnable(GL_TEXTURE_2D);	// Enable Texture Mapping ( NEW )
 		glShadeModel(GL_SMOOTH);	// Enable Smooth Shading
+		glBindTexture(GL_TEXTURE_2D, m_uiTexture[0]);// 選擇紋理
 		glBegin(GL_TRIANGLES);
 		glColor4f(1, 1, 1, 1);
 		for (int i=0; i<sel_faces.size(); i++)

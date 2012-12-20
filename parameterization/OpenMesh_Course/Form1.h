@@ -373,8 +373,8 @@ namespace OpenMesh_Course {
 			// 
 			// openTextureFileDialog
 			// 
-			this->openTextureFileDialog->DefaultExt = L"BMP";
-			this->openTextureFileDialog->Filter = L"Image File|*.BMP|All file|*.*";
+			this->openTextureFileDialog->DefaultExt = L"JPG";
+			this->openTextureFileDialog->Filter = L"JPG File|*.JPG|BMP File|*.BMP|All file|*.*";
 			this->openTextureFileDialog->FileOk += gcnew System::ComponentModel::CancelEventHandler(this, &Form1::openTextureFileDialog_FileOk);
 			// 
 			// Form1
@@ -520,7 +520,7 @@ private: System::Void hkoglPanelControl2_Paint(System::Object^  sender, System::
 			 if(mesh)
 			 {
 				 mesh->RenderTexture();
-				 mesh->RenderUVMapping();
+				 //mesh->RenderUVMapping();
 				 mesh->RenderBound2D(1.0, 0.0, 0.0);
 			 }
 
@@ -545,8 +545,18 @@ private: System::Void openTextureFileDialog_FileOk(System::Object^  sender, Syst
 			 {
 				 std::string filename;
 				 MarshalString(openTextureFileDialog->FileName, filename );
-				 mesh->LoadGLTextures(filename);
-				 hkoglPanelControl2->Invalidate();
+				 //hkoglPanelControl1->Make_Current();
+				 //mesh->LoadGLTextures(filename);
+				 //hkoglPanelControl2->Make_Current();
+				 //mesh->LoadGLTextures(filename);
+
+				 mesh->LoadImage(filename, 0);
+
+				 hkoglPanelControl1->Make_Current();
+				 mesh->GenTextures(0, 0);
+				 hkoglPanelControl2->Make_Current();
+				 mesh->GenTextures(0, 0);
+				 Refresh();
 			 }
 		 }
 private: System::Void btnLoadTexture_Click(System::Object^  sender, System::EventArgs^  e) 
