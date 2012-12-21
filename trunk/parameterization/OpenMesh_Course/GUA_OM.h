@@ -11,7 +11,7 @@
 #include <windows.h>
 #include <gl/gl.h>
 #include <gl/glu.h>
-#include <gl/glaux.h>
+//#include <gl/glaux.h>
 #include <highgui.h> 
 //#include "GLCamera.h"
 
@@ -204,6 +204,9 @@ namespace OMT//OpenMesh Triangle mesh
 		void							clear_sp_mapping(void);
 		void							add_sp_mapping(const VHandle &_v, float _r, float _g, float _b);
 		void							selectFace(int _x,  int _y, float _u, float _r, float _d, float _l, GLint viewport[4], GLdouble modelview[16], GLdouble projection[16]);
+		void							SelectNring(int n, int _x,  int _y,  float radin);
+		void							Selected(void);
+		void							RenderSelectFace(void);
 		void							add_mapping_face(FHandle &_f);
 		void							clear_mapping_face(void);
 

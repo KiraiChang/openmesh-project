@@ -1021,25 +1021,25 @@ namespace OMT
 	}
 
 	/*---------------------------------TEXTURE--------------------------------------*/
-	AUX_RGBImageRec *LoadBMP(const char *filename)	// Loads A Bitmap Image
-	{
-		FILE *file=NULL;			// File Handle
+	//AUX_RGBImageRec *LoadBMP(const char *filename)	// Loads A Bitmap Image
+	//{
+	//	FILE *file=NULL;			// File Handle
 
-		if (!filename)				// Make Sure A Filename Was Given
-		{
-			return NULL;				// If Not Return NULL
-		}
+	//	if (!filename)				// Make Sure A Filename Was Given
+	//	{
+	//		return NULL;				// If Not Return NULL
+	//	}
 
-		file=fopen(filename,"r");			// Check To See If The File Exists
+	//	file=fopen(filename,"r");			// Check To See If The File Exists
 
-		if (file)				// Does The File Exist?
-		{
-			fclose(file);				// Close The Handle
-			return auxDIBImageLoadA(filename);		// Load The Bitmap And Return A Pointer
-		}
+	//	if (file)				// Does The File Exist?
+	//	{
+	//		fclose(file);				// Close The Handle
+	//		return auxDIBImageLoadA(filename);		// Load The Bitmap And Return A Pointer
+	//	}
 
-		return NULL;				// If Load Failed Return NULL
-	}
+	//	return NULL;				// If Load Failed Return NULL
+	//}
 
 	IplImage* LoadCVImage(const char* filename, int flags)
 	{
@@ -1308,10 +1308,20 @@ namespace OMT
 
 	void Model::drawCircle(float _x,  float _y, float _radin, float _r, float _g, float _b, int _n)
 	{
+		GLfloat winX, winY;
+		GLint viewport[4];
+		glPushMatrix();
+		glMatrixMode(GL_VIEWPORT); //glMultMatrixd(xf.memptr());
+		glGetIntegerv( GL_VIEWPORT, viewport );
+		winX = (float)_x;
+		winY = (float)viewport[3] - (float)_y;
+		winX /= viewport[2];
+		winY/= viewport[3];
+
 		float pre_x, pre_y, cur_x, cur_y, a = 360.0/_n;
 		int i;
-		pre_x = _x+2*_radin*std::sin(0.001/360);
-		pre_y = _y-2*_radin*std::cos(0.001/360);
+		pre_x = winX+2*_radin*std::sin(0.001/360);
+		pre_y = winY-2*_radin*std::cos(0.001/360);
 		glPushMatrix();
 		glLoadIdentity();
 		glTranslatef(-0.5f, -0.5f, -1.25f);
@@ -1320,8 +1330,8 @@ namespace OMT
 		glBegin(GL_LINES);
 		for(i=1;i<=_n;i++)
 		{
-			cur_x = _x+2*_radin*std::sin(a*i*2*PI/360);
-			cur_y = _y-2*_radin*std::cos(a*i*2*PI/360);
+			cur_x = winX+2*_radin*std::sin(a*i*2*PI/360);
+			cur_y = winY-2*_radin*std::cos(a*i*2*PI/360);
 			glColor3f(_r, _g, _b);
 			glVertex3f(pre_x, pre_y, 0);
 			glColor3f(_r, _b, _b);
@@ -1423,6 +1433,123 @@ namespace OMT
 				}
 			}
 		}
+	}
+
+	void Model::SelectNring(int n, int _x,  int _y, float radin)
+	{
+		GLfloat winX, winY, winZ;
+		GLint viewport[4];
+		GLdouble modelview[16];
+		GLdouble projection[16];
+		GLdouble x, y, z;
+		Point curPoint;
+
+		glPushMatrix();
+		glMatrixMode(GL_MODELVIEW);	//glMultMatrixd(xf.memptr());
+		glGetDoublev( GL_MODELVIEW_MATRIX, modelview );
+
+		glMatrixMode(GL_PROJECTION_MATRIX);	//glMultMatrixd(xf.memptr());
+		glGetDoublev( GL_PROJECTION_MATRIX, projection );
+
+		glMatrixMode(GL_VIEWPORT); //glMultMatrixd(xf.memptr());
+		glGetIntegerv( GL_VIEWPORT, viewport );
+
+		winX = (float)_x;
+		winY = (float)viewport[3] - (float)_y;
+
+		Vec2d screen(winX, winY);
+		float max_radin = radin * viewport[2];
+		glReadPixels( int(winX), int(winY), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ );
+
+		if(winZ>=0.99999f)
+		{
+			//std::cerr << "Click on background (z= " << winZ << ")" << std::endl;
+			glPopMatrix();
+			return;
+		}
+
+		gluUnProject( winX, winY, winZ, modelview, projection, viewport, &x, &y, &z);
+		Point p(x, y, z);
+
+		gluUnProject( winX, winY, 0, modelview, projection, viewport, &x, &y, &z);
+
+		Point rayDir = p - Point(x, y, z);
+
+		ClearSelectFaces();
+		FHandle org_fid = FindFace(p, rayDir);
+		if (!is_valid_handle(org_fid))
+			return ;
+		FHandle org_fh = org_fid;
+		property(SelRingID, org_fh) = 0;
+		for (FVIter fv_it = fv_iter(org_fh); fv_it; ++fv_it)
+			property( SelVID, fv_it.handle() ) = 1;
+		sel_faces.push_back( org_fh );
+		bool isBreak = false;
+		bool isContuine = true;
+		int curRing = 0;
+		int NextStartID = 0;
+		while(curRing < n && !isBreak)
+		{
+			int curSize = sel_faces.size();
+			for (int i = NextStartID; i < curSize; i++)
+			{
+				for (FFIter ff_it = ff_iter( sel_faces[i] ); ff_it; ++ff_it)
+				{
+					if ( property( SelRingID, ff_it.handle() ) < 0 && isContuine)
+					{
+						for (FVIter fv_it = fv_iter(ff_it.handle()); fv_it; ++fv_it)
+						{
+							if(property( SelVID, fv_it.handle() ) != 1)
+							{
+								curPoint = point(fv_it.handle());
+								gluProject( curPoint[0], curPoint[1], curPoint[2], modelview, projection, viewport, &x, &y, &z);
+								float dist = (screen - Vec2d(x, y)).length();
+								printf("radin:%f, distance:%f, vertex:%f,%f,%f\n", max_radin, dist, x, y, z);
+								if(dist > max_radin)
+								{
+									isContuine = false;
+								}
+								property( SelVID, fv_it.handle() ) = 1;
+							}
+						}
+						property( SelRingID, ff_it.handle() ) = curRing+1;
+						sel_faces.push_back( ff_it.handle() );
+					}
+					else if(!isContuine)
+						isBreak = true;
+				}
+			}
+			NextStartID = curSize;
+			curRing++;
+		}
+		glPopMatrix();
+	}
+
+	void Model::Selected(void)
+	{
+		FindBound();
+		FixBoundShape();
+		MapBoundTo2D();
+		FillCenter();
+	}
+
+	void Model::RenderSelectFace(void)
+	{
+		VIter v_ite;
+		glPushAttrib(GL_LIGHTING_BIT);
+		glDisable(GL_LIGHTING);
+		glDisable(GL_DEPTH_TEST);
+		glPointSize(5.0f);
+		glBegin(GL_POINTS);
+		glColor3f(1.0, 0.0, 0.0);
+		for (v_ite = vertices_begin(); v_ite != vertices_end(); ++v_ite)
+		{
+			if(property(SelVID, v_ite) == 1)
+				glVertex3dv(&point(v_ite)[0]);
+		}
+		glEnd();
+		glEnable(GL_LIGHTING);
+		glDisable(GL_POLYGON_OFFSET_FILL);
 	}
 
 	void Model::add_mapping_face(FHandle &_f)
