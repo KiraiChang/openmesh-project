@@ -1484,18 +1484,17 @@ namespace OMT
 		for (FVIter fv_it = fv_iter(org_fh); fv_it; ++fv_it)
 			property( SelVID, fv_it.handle() ) = 1;
 		sel_faces.push_back( org_fh );
-		bool isBreak = false;
-		bool isContuine = true;
+		float max_dist = 0.0;
 		int curRing = 0;
 		int NextStartID = 0;
-		while(curRing < n && !isBreak)
+		while(curRing < n)
 		{
 			int curSize = sel_faces.size();
 			for (int i = NextStartID; i < curSize; i++)
 			{
 				for (FFIter ff_it = ff_iter( sel_faces[i] ); ff_it; ++ff_it)
 				{
-					if ( property( SelRingID, ff_it.handle() ) < 0 && isContuine)
+					if ( property( SelRingID, ff_it.handle() ) < 0)
 					{
 						for (FVIter fv_it = fv_iter(ff_it.handle()); fv_it; ++fv_it)
 						{
@@ -1505,9 +1504,9 @@ namespace OMT
 								gluProject( curPoint[0], curPoint[1], curPoint[2], modelview, projection, viewport, &x, &y, &z);
 								float dist = (screen - Vec2d(x, y)).length();
 								printf("radin:%f, distance:%f, vertex:%f,%f,%f\n", max_radin, dist, x, y, z);
-								if(dist > max_radin)
+								if(dist > max_dist)
 								{
-									isContuine = false;
+									max_dist = dist;
 								}
 								property( SelVID, fv_it.handle() ) = 1;
 							}
@@ -1515,12 +1514,12 @@ namespace OMT
 						property( SelRingID, ff_it.handle() ) = curRing+1;
 						sel_faces.push_back( ff_it.handle() );
 					}
-					else if(!isContuine)
-						isBreak = true;
 				}
 			}
 			NextStartID = curSize;
 			curRing++;
+			if(max_dist > max_radin)
+				break;
 		}
 		glPopMatrix();
 	}
@@ -1533,12 +1532,12 @@ namespace OMT
 		FillCenter();
 	}
 
-	void Model::RenderSelectFace(void)
+	void Model::RenderSelectVertex(void)
 	{
 		VIter v_ite;
 		glPushAttrib(GL_LIGHTING_BIT);
 		glDisable(GL_LIGHTING);
-		glDisable(GL_DEPTH_TEST);
+		glEnable(GL_DEPTH_TEST);
 		glPointSize(5.0f);
 		glBegin(GL_POINTS);
 		glColor3f(1.0, 0.0, 0.0);
@@ -1550,6 +1549,55 @@ namespace OMT
 		glEnd();
 		glEnable(GL_LIGHTING);
 		glDisable(GL_POLYGON_OFFSET_FILL);
+	}
+
+	void Model::RenderSelectFace(void)
+	{
+		glDisable(GL_CULL_FACE);
+		glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+		glPushAttrib(GL_LIGHTING_BIT);
+		glEnable(GL_POLYGON_OFFSET_FILL);
+		glPolygonOffset(0.5, 1.0);
+		glDisable(GL_LIGHTING);
+		glEnable(GL_DEPTH_TEST);
+		glBegin(GL_QUADS);
+		FVIter fv_ite;
+		FIter f_ite;
+		glColor3f(1.0, 0.0, 0.0);
+		Point vertex[3];
+		Point nor[3];
+		bool bIsDraw;
+		int i;
+		for (f_ite = faces_begin(); f_ite != faces_end(); ++f_ite)
+		{
+			bIsDraw = true;
+			for (fv_ite=fv_iter(f_ite), i = 0; fv_ite; ++fv_ite, i++)
+			{						
+				if(property(SelVID, fv_ite) == 1)
+				{
+					vertex[i] = point(fv_ite.handle());
+					nor[i] = normal(fv_ite.handle());
+				}
+				else
+				{
+					bIsDraw = false;
+					break;
+				}
+			}
+			if(bIsDraw)
+			{
+				for(i = 0; i < 3; i++)
+				{
+					glNormal3dv(&nor[i][0]);
+					glVertex3dv(&vertex[i][0]);
+				}
+			}
+		}
+		glEnd();		
+		glEnable(GL_LIGHTING);
+		glDisable(GL_POLYGON_OFFSET_FILL);
+		glPolygonMode(GL_FRONT,GL_FILL);
+		glEnable(GL_CULL_FACE);
 	}
 
 	void Model::add_mapping_face(FHandle &_f)

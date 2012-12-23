@@ -206,6 +206,7 @@ namespace OMT//OpenMesh Triangle mesh
 		void							selectFace(int _x,  int _y, float _u, float _r, float _d, float _l, GLint viewport[4], GLdouble modelview[16], GLdouble projection[16]);
 		void							SelectNring(int n, int _x,  int _y,  float radin);
 		void							Selected(void);
+		void							RenderSelectVertex(void);
 		void							RenderSelectFace(void);
 		void							add_mapping_face(FHandle &_f);
 		void							clear_mapping_face(void);
