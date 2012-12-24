@@ -7,6 +7,7 @@
 
 int g_mouse_x, g_mouse_y;
 bool g_isSelected;
+bool g_isSelectVertex;
 
 Tri_Mesh *mesh;
 //static float fov = 0.7f;
@@ -185,7 +186,7 @@ namespace OpenMesh_Course {
 			hkcPixelFormat1->Alpha_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
 			hkcPixelFormat1->Stencil_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
 			this->hkoglPanelControl1->Pixel_Format = hkcPixelFormat1;
-			this->hkoglPanelControl1->Size = System::Drawing::Size(460, 467);
+			this->hkoglPanelControl1->Size = System::Drawing::Size(420, 420);
 			this->hkoglPanelControl1->TabIndex = 0;
 			hkcTrackballProp1->Const_Res = false;
 			hkcTrackballProp1->Delta_Res = 500;
@@ -220,9 +221,9 @@ namespace OpenMesh_Course {
 			this->gpCommand->Controls->Add(this->gbShowType);
 			this->gpCommand->Controls->Add(this->btnLoadTexture);
 			this->gpCommand->Controls->Add(this->btnLoadMesh);
-			this->gpCommand->Location = System::Drawing::Point(906, 0);
+			this->gpCommand->Location = System::Drawing::Point(862, 0);
 			this->gpCommand->Name = L"gpCommand";
-			this->gpCommand->Size = System::Drawing::Size(174, 479);
+			this->gpCommand->Size = System::Drawing::Size(174, 432);
 			this->gpCommand->TabIndex = 2;
 			this->gpCommand->TabStop = false;
 			this->gpCommand->Text = L"Command";
@@ -241,7 +242,7 @@ namespace OpenMesh_Course {
 			this->gbShowType->Controls->Add(this->cbLightingModel);
 			this->gbShowType->Location = System::Drawing::Point(6, 152);
 			this->gbShowType->Name = L"gbShowType";
-			this->gbShowType->Size = System::Drawing::Size(162, 321);
+			this->gbShowType->Size = System::Drawing::Size(162, 274);
 			this->gbShowType->TabIndex = 3;
 			this->gbShowType->TabStop = false;
 			this->gbShowType->Text = L"Show Type";
@@ -285,7 +286,7 @@ namespace OpenMesh_Course {
 			// lOutput
 			// 
 			this->lOutput->AutoSize = true;
-			this->lOutput->Location = System::Drawing::Point(6, 143);
+			this->lOutput->Location = System::Drawing::Point(6, 158);
 			this->lOutput->Name = L"lOutput";
 			this->lOutput->Size = System::Drawing::Size(24, 12);
 			this->lOutput->TabIndex = 4;
@@ -360,13 +361,13 @@ namespace OpenMesh_Course {
 			hkcDisplayProp2->Grid_Line = System::Drawing::Color::DimGray;
 			this->hkoglPanelControl2->Display_Property = hkcDisplayProp2;
 			this->hkoglPanelControl2->Empty_Panel = false;
-			this->hkoglPanelControl2->Location = System::Drawing::Point(478, 12);
+			this->hkoglPanelControl2->Location = System::Drawing::Point(438, 12);
 			this->hkoglPanelControl2->Name = L"hkoglPanelControl2";
 			hkcPixelFormat2->Accumu_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
 			hkcPixelFormat2->Alpha_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
 			hkcPixelFormat2->Stencil_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
 			this->hkoglPanelControl2->Pixel_Format = hkcPixelFormat2;
-			this->hkoglPanelControl2->Size = System::Drawing::Size(422, 467);
+			this->hkoglPanelControl2->Size = System::Drawing::Size(420, 420);
 			this->hkoglPanelControl2->TabIndex = 10;
 			hkcTrackballProp2->Const_Res = false;
 			hkcTrackballProp2->Delta_Res = 500;
@@ -391,6 +392,8 @@ namespace OpenMesh_Course {
 			this->hkoglPanelControl2->Trackball_Property = hkcTrackballProp2;
 			this->hkoglPanelControl2->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &Form1::hkoglPanelControl2_Paint);
 			this->hkoglPanelControl2->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(this, &Form1::hkoglPanelControl2_MouseDown);
+			this->hkoglPanelControl2->MouseMove += gcnew System::Windows::Forms::MouseEventHandler(this, &Form1::hkoglPanelControl2_MouseMove);
+			this->hkoglPanelControl2->MouseUp += gcnew System::Windows::Forms::MouseEventHandler(this, &Form1::hkoglPanelControl2_MouseUp);
 			// 
 			// openTextureFileDialog
 			// 
@@ -402,7 +405,7 @@ namespace OpenMesh_Course {
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 12);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(1092, 491);
+			this->ClientSize = System::Drawing::Size(1038, 444);
 			this->Controls->Add(this->hkoglPanelControl2);
 			this->Controls->Add(this->hkoglPanelControl1);
 			this->Controls->Add(this->gpCommand);
@@ -573,6 +576,7 @@ private: System::Void hkoglPanelControl2_Paint(System::Object^  sender, System::
 				 mesh->RenderTexture();
 				 //mesh->RenderUVMapping();
 				 mesh->RenderBound2D(1.0, 0.0, 0.0);
+				 mesh->renderSelectPoint();
 			 }
 
 		 }
@@ -581,6 +585,26 @@ private: System::Void hkoglPanelControl2_MouseDown(System::Object^  sender, Syst
 			 switch(e->Button)
 			 {
 			 case System::Windows::Forms::MouseButtons::Right:
+				 {
+					 if(mesh)
+					 {
+						 GLint viewport[4];
+						 GLfloat winX, winY, winZ;
+						 glPushMatrix();
+
+						 glMatrixMode(GL_VIEWPORT); //glMultMatrixd(xf.memptr());
+						 glGetIntegerv( GL_VIEWPORT, viewport );
+
+						 glPopMatrix();
+
+						 winX = (float)e->X;
+						 winY = (float)viewport[3] - (float)e->Y;
+						 float u = winX / viewport[2];
+						 float v = winY / viewport[3];
+						 g_isSelectVertex = mesh->selectUVVertex(u, v);
+						 Refresh();
+					 }
+				 }
 				 break;
 			 case System::Windows::Forms::MouseButtons::Left:
 				 break;
@@ -633,6 +657,51 @@ private: System::Void hkoglPanelControl1_MouseUp(System::Object^  sender, System
 private: System::Void trackRadin_ValueChanged(System::Object^  sender, System::EventArgs^  e) 
 		 {
 			 Refresh();
+		 }
+private: System::Void hkoglPanelControl2_MouseUp(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) 
+		 {
+			 if(e->Button == System::Windows::Forms::MouseButtons::Right)
+			 {
+				 g_isSelectVertex = false;
+			 }
+		 }
+private: System::Void hkoglPanelControl2_MouseMove(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) 
+		 {
+			 if(mesh && g_isSelectVertex)
+			 {
+				 GLint viewport[4];
+				 GLfloat winX, winY, winZ;
+				 glPushMatrix();
+
+				 glMatrixMode(GL_VIEWPORT); //glMultMatrixd(xf.memptr());
+				 glGetIntegerv( GL_VIEWPORT, viewport );
+
+				 glPopMatrix();
+
+				 winX = (float)e->X;
+				 winY = (float)viewport[3] - (float)e->Y;
+				 float u = winX / viewport[2];
+				 float v = winY / viewport[3];
+				 mesh->moveUVVertex(u, v);
+				 Refresh();
+			 }
+			 else
+			 {
+				 GLint viewport[4];
+				 GLfloat winX, winY, winZ;
+				 glPushMatrix();
+
+				 glMatrixMode(GL_VIEWPORT); //glMultMatrixd(xf.memptr());
+				 glGetIntegerv( GL_VIEWPORT, viewport );
+
+				 glPopMatrix();
+
+				 winX = (float)e->X;
+				 winY = (float)viewport[3] - (float)e->Y;
+				 float u = winX / viewport[2];
+				 float v = winY / viewport[3];
+				 lOutput->Text = "X: "+u+" Y: "+v;
+			 }
 		 }
 };
 }

@@ -85,6 +85,7 @@ namespace OMT
 		add_property(SelVID);
 		add_property(fTex);
 		//property(f_bIsSelect, face_handle);
+		m_uiCurVertex = -1;
 		m_CurEditTex = NULL;
 		//for(int i = 0; i < MAX_TEXTURE; i++)
 		//{
@@ -1135,6 +1136,7 @@ namespace OMT
 		//		return TRUE;
 		//	}
 		//}
+		m_uiCurVertex = -1;
 		m_CurEditTex = new TextureInfo;
 		cv::Mat image = cv::imread(tex_name.c_str(), cv::IMREAD_ANYCOLOR);
 		printf("%d, %d\n", image.cols, image.rows);
@@ -1679,6 +1681,62 @@ namespace OMT
 		sp_mapping_f_list.clear();
 	}
 
+	bool Model::selectUVVertex(float u, float v)
+	{
+		//printf("u:%f, v:%f\n", u, v);
+		Vec2d uv(u, v);
+		float min_dist = 1000.0;
+		float threshold = 0.01;
+		for(unsigned int i = 0; i < m_CurEditTex->UVs.size();++i)
+		{
+			float dist = (m_CurEditTex->UVs[i] - uv).length();
+			
+			if(dist < min_dist)
+			{
+				//printf("dist:%f, u:%f, v:%f\n", dist, m_CurEditTex->UVs[i][0], m_CurEditTex->UVs[i][1]);
+				min_dist = dist;
+				if(min_dist < threshold)
+				{
+					printf("dist:%f, u:%f, v:%f\n", dist, m_CurEditTex->UVs[i][0], m_CurEditTex->UVs[i][1]);
+					m_uiCurVertex = i;
+					break;
+				}
+			}
+		}
+		return m_uiCurVertex != -1;
+	}
+
+	void Model::moveUVVertex(float u, float v)
+	{
+		if(m_uiCurVertex < m_CurEditTex->UVs.size())
+		{
+			printf("u:%f, v:%f\n", u, v);
+			m_CurEditTex->UVs[m_uiCurVertex][0] = u;
+			m_CurEditTex->UVs[m_uiCurVertex][1] = v;
+		}
+	}
+
+	void Model::renderSelectPoint(void)
+	{
+		if(m_CurEditTex != NULL && m_uiCurVertex < m_CurEditTex->UVs.size())
+		{
+			glPushAttrib(GL_LIGHTING_BIT);
+			glDisable(GL_LIGHTING);
+			glEnable(GL_DEPTH_TEST);
+			glPointSize(10.0f);
+
+			glBegin(GL_POINTS);
+			glColor3f(1, 1, 0);
+
+			
+			glVertex3d( m_CurEditTex->UVs[m_uiCurVertex][0], m_CurEditTex->UVs[m_uiCurVertex][1], 0 );
+			glEnd();
+
+			glEnable(GL_LIGHTING);
+			glDisable(GL_POLYGON_OFFSET_FILL);
+		}
+	}
+
 	/*---------------------------------PARAMETERIZATION-----------------------------*/
 	double Model::RayTraceFace(OMP::FHandle& f, OMP::Point& p, OMP::Vector3d& rayDir)
 	{
@@ -2132,28 +2190,35 @@ namespace OMT
 
 	void Model::RenderBound2D( float r, float g, float b )
 	{		
-		glPushAttrib(GL_LIGHTING_BIT);
-		glDisable(GL_LIGHTING);
-		glEnable(GL_DEPTH_TEST);
-		glPointSize(5.0f);
-		glBegin(GL_LINE_STRIP);
-
-		glColor3f(r, g, b);
-		for (int i=0; i<BoundVexIn2D.size(); i++)
+		if(m_CurEditTex != NULL)
 		{
-			glVertex3d( BoundVexIn2D[i][0], BoundVexIn2D[i][1], 0 );
-		}
-		glEnd();
+			glPushAttrib(GL_LIGHTING_BIT);
+			glDisable(GL_LIGHTING);
+			glEnable(GL_DEPTH_TEST);
+			glPointSize(5.0f);
+			//glBegin(GL_LINE_STRIP);
 
-		glBegin(GL_POINTS);
-		glColor3f(1, 0, 0);
-		for (int i=0; i<CenterVexIn2D.size(); i++)
-		{
-			glVertex3d( CenterVexIn2D[i][0], CenterVexIn2D[i][1], 0 );
+			//glColor3f(r, g, b);
+			//for (int i=0; i<BoundVexIn2D.size(); i++)
+			//{
+			//	glVertex3d( BoundVexIn2D[i][0], BoundVexIn2D[i][1], 0 );
+			//}
+			//glEnd();
+
+			glBegin(GL_POINTS);
+			glColor3f(1, 0, 0);
+			//for (int i=0; i<CenterVexIn2D.size(); i++)
+			//{
+			//	glVertex3d( CenterVexIn2D[i][0], CenterVexIn2D[i][1], 0 );
+			//}
+			for (int i=0; i<m_CurEditTex->UVs.size(); i++)
+			{
+				glVertex3d( m_CurEditTex->UVs[i][0], m_CurEditTex->UVs[i][1], 0 );
+			}
+			glEnd();
+			glEnable(GL_LIGHTING);
+			glDisable(GL_POLYGON_OFFSET_FILL);
 		}
-		glEnd();
-		glEnable(GL_LIGHTING);
-		glDisable(GL_POLYGON_OFFSET_FILL);
 	}
 
 	void Model::RenderTextureToModel()
@@ -2163,7 +2228,8 @@ namespace OMT
 		glEnable(GL_TEXTURE_2D);	// Enable Texture Mapping ( NEW )
 		glShadeModel(GL_SMOOTH);	// Enable Smooth Shading
 		glDisable(GL_LIGHTING);
-
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LEQUAL);
 		for (FIter f_it = faces_begin(); f_it!=faces_end(); ++f_it)
 		{
 			TextureForFace* tff = property(fTex, f_it);
@@ -2178,7 +2244,7 @@ namespace OMT
 				{
 					glEnable(GL_BLEND);
 					glBlendEquation(GL_FUNC_ADD);
-					glDisable(GL_DEPTH_TEST);
+					//glDisable(GL_DEPTH_TEST);
 					glBlendFunc(GL_CONSTANT_COLOR, GL_ONE_MINUS_CONSTANT_COLOR);
 					glBlendColor(1.0/(curTime+2.0), 1.0/(curTime+2.0), 1.0/(curTime+2.0), 1);
 				}
@@ -2199,26 +2265,7 @@ namespace OMT
 				curTime++;
 			}
 		}
-
-		// 		glBindTexture(GL_TEXTURE_2D, m_uiTexture[0]);// ¿ï¾Ü¯¾²z
-		// 		glBegin(GL_TRIANGLES);
-		// 		glColor4f(1, 1, 1, 1);
-		// 		for (int i=0; i<sel_faces.size(); i++)
-		// 		{
-		// 			for (FVIter fv_it = fv_iter(sel_faces[i]); fv_it; ++fv_it)
-		// 			{
-		// 				int mapID = property(SelVID, fv_it.handle());
-		// 				if (mapID<0)
-		// 					glTexCoord2d(BoundVexIn2D[-mapID-1][0], BoundVexIn2D[-mapID-1][1]);
-		// 				else if (mapID>0)
-		// 					glTexCoord2d(CenterVexIn2D[mapID-1][0], CenterVexIn2D[mapID-1][1]);
-		// 				else
-		// 					continue;
-		// 				glNormal3dv(&normal(fv_it.handle())[0]);
-		// 				glVertex3dv(&point(fv_it.handle())[0]);
-		// 			}
-		// 		}
-		// 		glEnd();
+		glDepthFunc(GL_LESS);
 		glDisable(GL_TEXTURE_2D);	// Enable Texture Mapping ( NEW )
 		glDisable(GL_BLEND);
 	}

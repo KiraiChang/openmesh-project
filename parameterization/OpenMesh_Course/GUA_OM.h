@@ -24,7 +24,6 @@ struct TextureInfo
 	std::vector<OpenMesh::Vec2d> UVs;
 	GLuint texGID[2];	//for 2 panel
 	cv::Mat	imgMat;
-
 	TextureInfo(){}
 };
 
@@ -177,6 +176,7 @@ namespace OMT//OpenMesh Triangle mesh
 		OpenMesh::VPropHandleT<Vec2d>	v_vec2dTexcoord;
 		std::vector<TextureInfo*>		m_TexInfos;
 		TextureInfo*					m_CurEditTex;
+		unsigned int					m_uiCurVertex;
 
 	public:
 										Model();//constructor
@@ -235,6 +235,9 @@ namespace OMT//OpenMesh Triangle mesh
 		void							RenderSelectFace(void);
 		void							add_mapping_face(FHandle &_f);
 		void							clear_mapping_face(void);
+		bool							selectUVVertex(float u, float v);
+		void							moveUVVertex(float u, float v);
+		void							renderSelectPoint(void);
 
 		/*---------------------------------PARAMETERIZATION-----------------------------*/
 	private:
