@@ -1503,7 +1503,7 @@ namespace OMT
 								curPoint = point(fv_it.handle());
 								gluProject( curPoint[0], curPoint[1], curPoint[2], modelview, projection, viewport, &x, &y, &z);
 								float dist = (screen - Vec2d(x, y)).length();
-								printf("radin:%f, distance:%f, vertex:%f,%f,%f\n", max_radin, dist, x, y, z);
+								//printf("radin:%f, distance:%f, vertex:%f,%f,%f\n", max_radin, dist, x, y, z);
 								if(dist > max_dist)
 								{
 									max_dist = dist;

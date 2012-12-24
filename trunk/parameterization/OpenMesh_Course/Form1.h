@@ -351,7 +351,7 @@ namespace OpenMesh_Course {
 			hkcCameraProp2->Far = 1000;
 			hkcCameraProp2->Fov = 45;
 			hkcCameraProp2->Near = 0.001;
-			hkcCameraProp2->Type = HKOGLPanel::HKCCameraProp::CAMERATYPE::PERSPECTIVE;
+			hkcCameraProp2->Type = HKOGLPanel::HKCCameraProp::CAMERATYPE::ORTHOGRAPHIC;
 			hkcCameraProp2->Zoom = 1;
 			this->hkoglPanelControl2->Camera_Property = hkcCameraProp2;
 			hkcDisplayProp2->Back_Color = System::Drawing::Color::White;
