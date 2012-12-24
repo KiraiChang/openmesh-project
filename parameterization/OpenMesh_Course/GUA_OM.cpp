@@ -83,12 +83,14 @@ namespace OMT
 		add_property(v_vec2dTexcoord);
 		add_property(SelRingID);
 		add_property(SelVID);
+		add_property(fTex);
 		//property(f_bIsSelect, face_handle);
-		for(int i = 0; i < MAX_TEXTURE; i++)
-		{
-			m_uiTexture[i] = NULL;
-			//m_pImage[i] = NULL;
-		}
+		m_CurEditTex = NULL;
+		//for(int i = 0; i < MAX_TEXTURE; i++)
+		//{
+		//	m_uiTexture[i] = NULL;
+		//	//m_pImage[i] = NULL;
+		//}
 	}
 	Model::~Model()
 	{
@@ -96,23 +98,23 @@ namespace OMT
 		release_edge_status();
 		release_face_status();
 
-		for(int i = 0; i < MAX_TEXTURE; i++)
-		{
-			if(m_uiTexture[i] != NULL)
-			{
-				glDeleteTextures(1, &m_uiTexture[i]);
-				m_uiTexture[i] = NULL;
-			}
+		//for(int i = 0; i < MAX_TEXTURE; i++)
+		//{
+		//	if(m_uiTexture[i] != NULL)
+		//	{
+		//		glDeleteTextures(1, &m_uiTexture[i]);
+		//		m_uiTexture[i] = NULL;
+		//	}
 
-			//if(m_pImage[i] != NULL)
-			//{
-			//	cvReleaseImage(&m_pImage[i]);
-			//	m_pImage[i] = NULL;
-			//}
+		//	//if(m_pImage[i] != NULL)
+		//	//{
+		//	//	cvReleaseImage(&m_pImage[i]);
+		//	//	m_pImage[i] = NULL;
+		//	//}
 
-			if(m_matImage[i].data != NULL)
-				m_matImage[i].release();
-		}
+		//	if(m_matImage[i].data != NULL)
+		//		m_matImage[i].release();
+		//}
 	}
 
 	void Model::initQuadrices()
@@ -1051,188 +1053,246 @@ namespace OMT
 	{
 		int   Status=FALSE;		                     // Status Indicator
 
-		//AUX_RGBImageRec *TextureImage[1];		// Create Storage Space For The Texture
-		IplImage *TextureImage[1];
-		//memset(TextureImage,0,sizeof(void *)*1);             // Set The Pointer To NULL
+		////AUX_RGBImageRec *TextureImage[1];		// Create Storage Space For The Texture
+		//IplImage *TextureImage[1];
+		////memset(TextureImage,0,sizeof(void *)*1);             // Set The Pointer To NULL
 
-		// Load The Bitmap, Check For Errors, If Bitmap's Not Found Quit
-		//if (TextureImage[0]=LoadBMP(tex_name.c_str()))
-		if (TextureImage[0]=LoadCVImage(tex_name.c_str(), CV_LOAD_IMAGE_COLOR))
-		{
-			Status = TRUE;			// Set The Status To TRUE
-
-			if(m_uiTexture[0] != NULL)
-				glDeleteTextures(1, &m_uiTexture[0]);
-			glGenTextures(1, &m_uiTexture[0]);		// Create The Texture
-
-			// Typical Texture Generation Using Data From The Bitmap
-			glBindTexture(GL_TEXTURE_2D, m_uiTexture[0]);
-
-			//glTexImage2D(GL_TEXTURE_2D, 
-			//	0, 
-			//	3, 
-			//	TextureImage[0]->sizeX,
-			//	TextureImage[0]->sizeY,
-			//	0, 
-			//	GL_RGB,
-			//	GL_UNSIGNED_BYTE,
-			//	TextureImage[0]->data
-			//	); 
-
-			glTexImage2D(GL_TEXTURE_2D, 
-				0, 
-				3, 
-				TextureImage[0]->width,
-				TextureImage[0]->height,
-				0, 
-				GL_RGB,
-				GL_UNSIGNED_BYTE,
-				TextureImage[0]->imageData
-				); 
-
-
-			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-		}
-		//if (TextureImage[0])				// If Texture Exists
+		//// Load The Bitmap, Check For Errors, If Bitmap's Not Found Quit
+		////if (TextureImage[0]=LoadBMP(tex_name.c_str()))
+		//if (TextureImage[0]=LoadCVImage(tex_name.c_str(), CV_LOAD_IMAGE_COLOR))
 		//{
-		//	if (TextureImage[0]->data)		// If Texture Image Exists
-		//	{
-		//		free(TextureImage[0]->data);		// Free The Texture Image Memory
-		//	}
+		//	Status = TRUE;			// Set The Status To TRUE
 
-		//	free(TextureImage[0]);			// Free The Image Structure
+		//	if(m_uiTexture[0] != NULL)
+		//		glDeleteTextures(1, &m_uiTexture[0]);
+		//	glGenTextures(1, &m_uiTexture[0]);		// Create The Texture
+
+		//	// Typical Texture Generation Using Data From The Bitmap
+		//	glBindTexture(GL_TEXTURE_2D, m_uiTexture[0]);
+
+		//	//glTexImage2D(GL_TEXTURE_2D, 
+		//	//	0, 
+		//	//	3, 
+		//	//	TextureImage[0]->sizeX,
+		//	//	TextureImage[0]->sizeY,
+		//	//	0, 
+		//	//	GL_RGB,
+		//	//	GL_UNSIGNED_BYTE,
+		//	//	TextureImage[0]->data
+		//	//	); 
+
+		//	glTexImage2D(GL_TEXTURE_2D, 
+		//		0, 
+		//		3, 
+		//		TextureImage[0]->width,
+		//		TextureImage[0]->height,
+		//		0, 
+		//		GL_RGB,
+		//		GL_UNSIGNED_BYTE,
+		//		TextureImage[0]->imageData
+		//		); 
+
+
+		//	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+		//	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
 		//}
-		cvReleaseImage(&TextureImage[0]);
+		////if (TextureImage[0])				// If Texture Exists
+		////{
+		////	if (TextureImage[0]->data)		// If Texture Image Exists
+		////	{
+		////		free(TextureImage[0]->data);		// Free The Texture Image Memory
+		////	}
+
+		////	free(TextureImage[0]);			// Free The Image Structure
+		////}
+		//cvReleaseImage(&TextureImage[0]);
 		return Status;				// Return The Status
 	}
 
 	int	Model::LoadImage(const std::string &tex_name, size_t image_id)
 	{
-		if(image_id < MAX_TEXTURE)
+		//if(image_id < MAX_TEXTURE)
+		//{
+		//	//if(m_pImage[image_id] != NULL)
+		//	//{
+		//	//	cvReleaseImage(&m_pImage[image_id]);
+		//	//	m_pImage[image_id] = NULL;
+		//	//}
+		//	if(m_matImage[image_id].data != NULL)
+		//	{
+		//		m_matImage[image_id].release();
+		//	}
+
+		//	//if (m_pImage[image_id]=LoadCVImage(tex_name.c_str(), CV_LOAD_IMAGE_COLOR))
+		//	cv::Mat image=cv::imread(tex_name.c_str(), cv::IMREAD_ANYCOLOR);
+
+		//	if(image.data != NULL)
+		//	{
+		//		cv::flip(image, m_matImage[image_id], 0);//des(i, j) = src(i,src.cols-j-1)
+		//		//cv::flip(image, m_matImage[image_id], 1);//des(i, j) = src(src.rows-i-1,j)
+		//		//cv::flip(image, m_matImage[image_id], -1);//des(i, j) = src(src.rows-i-1,src.cols-j-1)
+		//		image.release();
+		//		return TRUE;
+		//	}
+		//}
+		m_CurEditTex = new TextureInfo;
+		cv::Mat image = cv::imread(tex_name.c_str(), cv::IMREAD_ANYCOLOR);
+		printf("%d, %d\n", image.cols, image.rows);
+		if ( image.data != NULL )
 		{
-			//if(m_pImage[image_id] != NULL)
-			//{
-			//	cvReleaseImage(&m_pImage[image_id]);
-			//	m_pImage[image_id] = NULL;
-			//}
-			if(m_matImage[image_id].data != NULL)
-			{
-				m_matImage[image_id].release();
-			}
-
-			//if (m_pImage[image_id]=LoadCVImage(tex_name.c_str(), CV_LOAD_IMAGE_COLOR))
-			cv::Mat image=cv::imread(tex_name.c_str(), cv::IMREAD_ANYCOLOR);
-
-			if(image.data != NULL)
-			{
-				cv::flip(image, m_matImage[image_id], 0);//des(i, j) = src(i,src.cols-j-1)
-				//cv::flip(image, m_matImage[image_id], 1);//des(i, j) = src(src.rows-i-1,j)
-				//cv::flip(image, m_matImage[image_id], -1);//des(i, j) = src(src.rows-i-1,src.cols-j-1)
-				image.release();
-				return TRUE;
-			}
+			printf("load image success!\n");
+			cv::flip(image, m_CurEditTex->imgMat, 0);
+			image.release();
+			m_TexInfos.push_back(m_CurEditTex);
+			return TRUE;
 		}
-
+		else
+		{
+			printf("load image %s error!\n", tex_name.c_str());
+			delete m_CurEditTex;
+			m_CurEditTex = NULL;
+		}
 		return FALSE;
 	}
 
 	int	Model::GenTextures(size_t texture_id, size_t image_id)
 	{
-		if(texture_id < MAX_TEXTURE && image_id < MAX_TEXTURE)
-		{
-			if(m_uiTexture[texture_id] != NULL)
-				glDeleteTextures(1, &m_uiTexture[texture_id]);	// Release Old Texture
-			glGenTextures(1, &m_uiTexture[texture_id]);			// Create The Texture
+		//if(texture_id < MAX_TEXTURE && image_id < MAX_TEXTURE)
+		//{
+		//	if(m_uiTexture[texture_id] != NULL)
+		//		glDeleteTextures(1, &m_uiTexture[texture_id]);	// Release Old Texture
+		//	glGenTextures(1, &m_uiTexture[texture_id]);			// Create The Texture
 
-			// Typical Texture Generation Using Data From The Bitmap
-			glBindTexture(GL_TEXTURE_2D, m_uiTexture[texture_id]);
+		//	// Typical Texture Generation Using Data From The Bitmap
+		//	glBindTexture(GL_TEXTURE_2D, m_uiTexture[texture_id]);
 
-			//glTexImage2D(GL_TEXTURE_2D, 
-			//	0, 
-			//	3, 
-			//	m_pImage[image_id]->width,
-			//	m_pImage[image_id]->height,
-			//	0, 
-			//	GL_RGB,
-			//	GL_UNSIGNED_BYTE,
-			//	m_pImage[image_id]->imageData
-			//	); 
+		//	//glTexImage2D(GL_TEXTURE_2D, 
+		//	//	0, 
+		//	//	3, 
+		//	//	m_pImage[image_id]->width,
+		//	//	m_pImage[image_id]->height,
+		//	//	0, 
+		//	//	GL_RGB,
+		//	//	GL_UNSIGNED_BYTE,
+		//	//	m_pImage[image_id]->imageData
+		//	//	); 
 
 
-			//glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-			//glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+		//	//glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+		//	//glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
 
-			//glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_DECAL);
-			//glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-			//glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-			//glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
-			//glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
-			//gluBuild2DMipmaps(GL_TEXTURE_2D, 
-			//	3,
-			//	m_pImage[image_id]->width,
-			//	m_pImage[image_id]->height,
-			//	GL_RGB,
-			//	GL_UNSIGNED_BYTE,
-			//	m_pImage[image_id]->imageData
-			//	);
-			//return TRUE;
+		//	//glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_DECAL);
+		//	//glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+		//	//glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+		//	//glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
+		//	//glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
+		//	//gluBuild2DMipmaps(GL_TEXTURE_2D, 
+		//	//	3,
+		//	//	m_pImage[image_id]->width,
+		//	//	m_pImage[image_id]->height,
+		//	//	GL_RGB,
+		//	//	GL_UNSIGNED_BYTE,
+		//	//	m_pImage[image_id]->imageData
+		//	//	);
+		//	//return TRUE;
 
-			//glTexImage2D(
-			//	GL_TEXTURE_2D, 
-			//	0, 
-			//	3, 
-			//	m_matImage[image_id].cols, 
-			//	m_matImage[image_id].rows, 
-			//	0, 
-			//	GL_BGR_EXT, 
-			//	GL_UNSIGNED_BYTE, 
-			//	m_matImage[image_id].data);
+		//	//glTexImage2D(
+		//	//	GL_TEXTURE_2D, 
+		//	//	0, 
+		//	//	3, 
+		//	//	m_matImage[image_id].cols, 
+		//	//	m_matImage[image_id].rows, 
+		//	//	0, 
+		//	//	GL_BGR_EXT, 
+		//	//	GL_UNSIGNED_BYTE, 
+		//	//	m_matImage[image_id].data);
 
-			//glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); 
-			//glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); 
-			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); 
-			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); 
-			glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); 
-			//glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE ); 
+		//	//glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); 
+		//	//glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); 
+		//	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); 
+		//	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); 
+		//	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); 
+		//	//glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE ); 
 
-			if(m_matImage[image_id].channels() == 3 ) 
-			{   
-				glTexImage2D( 
-					GL_TEXTURE_2D, 
-					0, 
-					GL_RGB, 
-					m_matImage[image_id].cols, 
-					m_matImage[image_id].rows, 
-					0, 
-					GL_BGR_EXT, 
-					GL_UNSIGNED_BYTE, 
-					m_matImage[image_id].data 
+		//	if(m_matImage[image_id].channels() == 3 ) 
+		//	{   
+		//		glTexImage2D( 
+		//			GL_TEXTURE_2D, 
+		//			0, 
+		//			GL_RGB, 
+		//			m_matImage[image_id].cols, 
+		//			m_matImage[image_id].rows, 
+		//			0, 
+		//			GL_BGR_EXT, 
+		//			GL_UNSIGNED_BYTE, 
+		//			m_matImage[image_id].data 
+		//		);  
+		//	} 
+		//	else if( m_matImage[image_id].channels() == 4 ) 
+		//	{   
+		//		glTexImage2D( 
+		//		GL_TEXTURE_2D, 
+		//		0, 
+		//		GL_RGBA, 
+		//		m_matImage[image_id].cols, 
+		//		m_matImage[image_id].rows, 
+		//		0, 
+		//		GL_BGRA_EXT, 
+		//		GL_UNSIGNED_BYTE, 
+		//		m_matImage[image_id].data 
+		//		);  
+		//	} 
+
+		//	return TRUE;
+		//}
+		return FALSE;
+	}
+
+	int Model::GenTextures( int panelID )
+	{
+		if ( !m_CurEditTex )
+			return false;
+		glGenTextures(1, &(m_CurEditTex->texGID[panelID]) );			// Create The Texture
+		glBindTexture(GL_TEXTURE_2D, m_CurEditTex->texGID[panelID]);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); 
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); 
+		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); 
+		if(m_CurEditTex->imgMat.channels() == 3 ) 
+		{   
+			glTexImage2D( 
+				GL_TEXTURE_2D, 
+				0, 
+				GL_RGB, 
+				m_CurEditTex->imgMat.cols, 
+				m_CurEditTex->imgMat.rows, 
+				0, 
+				GL_BGR_EXT, 
+				GL_UNSIGNED_BYTE, 
+				m_CurEditTex->imgMat.data 
 				);  
-			} 
-			else if( m_matImage[image_id].channels() == 4 ) 
-			{   
-				glTexImage2D( 
+		} 
+		else if( m_CurEditTex->imgMat.channels() == 4 ) 
+		{   
+			glTexImage2D( 
 				GL_TEXTURE_2D, 
 				0, 
 				GL_RGBA, 
-				m_matImage[image_id].cols, 
-				m_matImage[image_id].rows, 
+				m_CurEditTex->imgMat.cols, 
+				m_CurEditTex->imgMat.rows, 
 				0, 
 				GL_BGRA_EXT, 
 				GL_UNSIGNED_BYTE, 
-				m_matImage[image_id].data 
+				m_CurEditTex->imgMat.data 
 				);  
-			} 
+		} 
 
-			return TRUE;
-		}
-		return FALSE;
+		return TRUE;
 	}
 
 	void Model::RenderTexture(void)
 	{
-		if(m_uiTexture[0] != NULL)
+		//if(m_uiTexture[0] != NULL)
+		if(m_CurEditTex != NULL)
 		{
 			glEnable(GL_TEXTURE_2D);	// Enable Texture Mapping ( NEW )
 			glShadeModel(GL_SMOOTH);	// Enable Smooth Shading
@@ -1241,7 +1301,8 @@ namespace OMT
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);			// 清除屏幕及深度緩存
 			glLoadIdentity();
 			glTranslatef(-0.5f, -0.5f, -1.25f);
-			glBindTexture(GL_TEXTURE_2D, m_uiTexture[0]);				// 選擇紋理
+			//glBindTexture(GL_TEXTURE_2D, m_uiTexture[0]);				// 選擇紋理
+			glBindTexture(GL_TEXTURE_2D, m_CurEditTex->texGID[1]);
 			glBegin(GL_QUADS);											//  繪製正方形
 			glColor4f(1, 1, 1, 1);
 			glTexCoord2f(0.0f, 0.0f); glVertex3f( 0.0f,  0.0f,  0.0f);	// 紋理和四邊形的左下
@@ -1988,6 +2049,44 @@ namespace OMT
 		for (i=0; i<dim; i++)
 			delete[] xxx[i];
 		delete[] xxx;
+
+		int cntVNum = CenterVexIn2D.size();
+		int totalVnum = BoundVexIn2D.size() + CenterVexIn2D.size();
+		std::vector<int> AllSelVhSet;
+		AllSelVhSet.resize(totalVnum);
+		m_CurEditTex->UVs.resize(totalVnum);
+		for ( int i=0; i<cntVNum; i++ )
+			m_CurEditTex->UVs[i] = CenterVexIn2D[i];
+		for (int i=cntVNum; i<totalVnum; i++)
+			m_CurEditTex->UVs[i] = BoundVexIn2D[i-cntVNum];
+
+
+		for (int i=0; i<sel_faces.size(); i++)
+		{
+			TextureForFace* tff = new TextureForFace;
+			tff->texInfo = m_CurEditTex;
+			TextureForFace* curFaceBackTff = property(fTex, sel_faces[i]);
+			if ( curFaceBackTff == NULL )
+			{
+				property(fTex, sel_faces[i]) = tff;
+			}
+			else
+			{
+				while( curFaceBackTff->nextTexture != NULL )
+					curFaceBackTff = curFaceBackTff->nextTexture;
+				curFaceBackTff->nextTexture = tff;
+			}
+
+			int vhid = 0;
+			for (FVIter fv_it = fv_iter(sel_faces[i]); fv_it; ++fv_it)
+			{
+				if ( property(SelVID, fv_it.handle()) < 0 )
+					tff->uvmap[vhid] = -property(SelVID, fv_it.handle()) + cntVNum - 1;
+				else if ( property(SelVID, fv_it.handle()) > 0 )
+					tff->uvmap[vhid] = property(SelVID, fv_it.handle()) - 1;
+				vhid++;
+			}
+		}
 	}
 
 	double Model::calCotWeight( VHandle vh1, VHandle vh2 )
@@ -2059,32 +2158,78 @@ namespace OMT
 
 	void Model::RenderTextureToModel()
 	{
-		if(m_uiTexture[0] == NULL)
-			return;
+		// 		if(m_uiTexture[0] == NULL)
+		// 			return;
 		glEnable(GL_TEXTURE_2D);	// Enable Texture Mapping ( NEW )
 		glShadeModel(GL_SMOOTH);	// Enable Smooth Shading
-		glBindTexture(GL_TEXTURE_2D, m_uiTexture[0]);// 選擇紋理
-		glBegin(GL_TRIANGLES);
-		glColor4f(1, 1, 1, 1);
-		for (int i=0; i<sel_faces.size(); i++)
+		glDisable(GL_LIGHTING);
+
+		for (FIter f_it = faces_begin(); f_it!=faces_end(); ++f_it)
 		{
-			for (FVIter fv_it = fv_iter(sel_faces[i]); fv_it; ++fv_it)
+			TextureForFace* tff = property(fTex, f_it);
+			int curTime = 0;
+			while( tff!=NULL )
 			{
-				int mapID = property(SelVID, fv_it.handle());
-				if (mapID<0)
-					glTexCoord2d(BoundVexIn2D[-mapID-1][0], BoundVexIn2D[-mapID-1][1]);
-				else if (mapID>0)
-					glTexCoord2d(CenterVexIn2D[mapID-1][0], CenterVexIn2D[mapID-1][1]);
+				if (curTime==0)
+				{
+					glDisable(GL_BLEND);
+				}
 				else
-					continue;
-				glNormal3dv(&normal(fv_it.handle())[0]);
-				glVertex3dv(&point(fv_it.handle())[0]);
+				{
+					glEnable(GL_BLEND);
+					glBlendEquation(GL_FUNC_ADD);
+					glDisable(GL_DEPTH_TEST);
+					glBlendFunc(GL_CONSTANT_COLOR, GL_ONE_MINUS_CONSTANT_COLOR);
+					glBlendColor(1.0/(curTime+2.0), 1.0/(curTime+2.0), 1.0/(curTime+2.0), 1);
+				}
+				glBindTexture(GL_TEXTURE_2D, tff->texInfo->texGID[0]);
+				glBegin(GL_TRIANGLES);
+				glColor3f(1, 1, 1);
+				int cur_v_count = 0;
+				for (FVIter fv_it = fv_iter(f_it); fv_it; ++fv_it)
+				{
+					int texUvMapID = tff->uvmap[cur_v_count];
+					glTexCoord2dv( &(tff->texInfo->UVs[texUvMapID][0]) );
+					glNormal3dv(&normal(fv_it.handle())[0]);
+					glVertex3dv(&point(fv_it.handle())[0]);
+					cur_v_count++;
+				}
+				glEnd();
+				tff = tff->nextTexture;
+				curTime++;
 			}
 		}
-		glEnd();
+
+		// 		glBindTexture(GL_TEXTURE_2D, m_uiTexture[0]);// 選擇紋理
+		// 		glBegin(GL_TRIANGLES);
+		// 		glColor4f(1, 1, 1, 1);
+		// 		for (int i=0; i<sel_faces.size(); i++)
+		// 		{
+		// 			for (FVIter fv_it = fv_iter(sel_faces[i]); fv_it; ++fv_it)
+		// 			{
+		// 				int mapID = property(SelVID, fv_it.handle());
+		// 				if (mapID<0)
+		// 					glTexCoord2d(BoundVexIn2D[-mapID-1][0], BoundVexIn2D[-mapID-1][1]);
+		// 				else if (mapID>0)
+		// 					glTexCoord2d(CenterVexIn2D[mapID-1][0], CenterVexIn2D[mapID-1][1]);
+		// 				else
+		// 					continue;
+		// 				glNormal3dv(&normal(fv_it.handle())[0]);
+		// 				glVertex3dv(&point(fv_it.handle())[0]);
+		// 			}
+		// 		}
+		// 		glEnd();
 		glDisable(GL_TEXTURE_2D);	// Enable Texture Mapping ( NEW )
+		glDisable(GL_BLEND);
 	}
 
+	void Model::InitModelProperty()
+	{
+		for (FIter f_it = faces_begin(); f_it!=faces_end(); ++f_it)
+		{
+			property( fTex , f_it.handle()) = NULL;
+		}
+	}
 }
 
 
@@ -2693,6 +2838,7 @@ bool ReadFile(std::string _fileName,Tri_Mesh *_mesh)
 				_mesh->update_normals();
 		}
 		_mesh->initQuadrices();
+		_mesh->InitModelProperty();
 	}
 	return isRead;
 }

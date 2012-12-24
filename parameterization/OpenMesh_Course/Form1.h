@@ -538,24 +538,32 @@ private: System::Void hkoglPanelControl1_MouseDown(System::Object^  sender, Syst
 					 //g_isSelected = true;
 
 
-					 OMP::MyMesh::Point orgPoint(orgX, orgY, orgZ);
-					 OMP::Vector3d rayDir = mouse - orgPoint;
-					 rayDir = rayDir.normalize();
-					 //FaceOneRing(orgPoint, rayDir);
-					 mesh->SelectNring(Convert::ToInt32(textBoxRing->Text), orgPoint, rayDir);
+					 //OMP::MyMesh::Point orgPoint(orgX, orgY, orgZ);
+					 //OMP::Vector3d rayDir = mouse - orgPoint;
+					 //rayDir = rayDir.normalize();
+					 ////FaceOneRing(orgPoint, rayDir);
+					 //mesh->SelectNring(Convert::ToInt32(textBoxRing->Text), orgPoint, rayDir);
+
+					 if(cbSelected->Checked)
+					 {
+						 cbSelected->Checked = false;
+						 if(mesh)
+							 mesh->Selected();
+						 //Refresh();
+					 }
 
 					 this->Refresh();
 				 }
 			 }
 			 else if(e->Button == System::Windows::Forms::MouseButtons::Left)
 			 {
-				 if(cbSelected->Checked)
-				 {
-					 cbSelected->Checked = false;
-					 if(mesh)
-						 mesh->Selected();
-					 Refresh();
-				 }
+				 //if(cbSelected->Checked)
+				 //{
+					// cbSelected->Checked = false;
+					// if(mesh)
+					//	 mesh->Selected();
+					// Refresh();
+				 //}
 			 }
 		 }
 private: System::Void hkoglPanelControl2_Paint(System::Object^  sender, System::Windows::Forms::PaintEventArgs^  e) 
@@ -596,9 +604,11 @@ private: System::Void openTextureFileDialog_FileOk(System::Object^  sender, Syst
 				 mesh->LoadImage(filename, 0);
 
 				 hkoglPanelControl1->Make_Current();
-				 mesh->GenTextures(0, 0);
+				 //mesh->GenTextures(0, 0);
+				 mesh->GenTextures(0);
 				 hkoglPanelControl2->Make_Current();
-				 mesh->GenTextures(0, 0);
+				 //mesh->GenTextures(0, 0);
+				 mesh->GenTextures(1);
 				 Refresh();
 			 }
 		 }
