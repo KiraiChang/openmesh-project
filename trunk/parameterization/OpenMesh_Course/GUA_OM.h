@@ -9,13 +9,35 @@
 #include <OpenMesh/Core/Geometry/QuadricT.hh>
 
 #include <windows.h>
+#include "glew.h"
 #include <gl/gl.h>
 #include <gl/glu.h>
+//#include <gl/glut.h>
 //#include <gl/glaux.h>
 #include <highgui.h> 
 //#include "GLCamera.h"
 
 #define INIT_DIST 9999.9f
+
+struct TextureInfo
+{
+	std::vector<OpenMesh::Vec2d> UVs;
+	GLuint texGID[2];	//for 2 panel
+	cv::Mat	imgMat;
+
+	TextureInfo(){}
+};
+
+struct TextureForFace
+{
+	TextureInfo* texInfo;
+	int uvmap[3];
+	TextureForFace* nextTexture;
+	TextureForFace() : texInfo(NULL), nextTexture(NULL)
+	{
+		uvmap[0] = uvmap[1] = uvmap[2] = -1;
+	}
+};
 
 struct Face_InnerAngle
 {
@@ -148,11 +170,13 @@ namespace OMT//OpenMesh Triangle mesh
 		V_DELETE_HISTORY				vDeleteHistory;
 		size_t							number_of_face;
 
-		GLuint							m_uiTexture[MAX_TEXTURE];				// Storage For One Texture
-		//IplImage *						m_pImage[MAX_TEXTURE];
-		cv::Mat							m_matImage[MAX_TEXTURE];
+		//GLuint							m_uiTexture[MAX_TEXTURE];				// Storage For One Texture
+		////IplImage *						m_pImage[MAX_TEXTURE];
+		//cv::Mat							m_matImage[MAX_TEXTURE];
 		OpenMesh::FPropHandleT<bool>	f_bIsSelect;
 		OpenMesh::VPropHandleT<Vec2d>	v_vec2dTexcoord;
+		std::vector<TextureInfo*>		m_TexInfos;
+		TextureInfo*					m_CurEditTex;
 
 	public:
 										Model();//constructor
@@ -195,6 +219,7 @@ namespace OMT//OpenMesh Triangle mesh
 		//IplImage*						LoadImage(const char* filename, int flags);
 		int								LoadGLTextures(const std::string &tex_name);
 		int								LoadImage(const std::string &tex_name, size_t image_id);
+		int								GenTextures(int panelID);
 		int								GenTextures(size_t texture_id, size_t image_id);
 		void							RenderTexture(void);
 		void							RenderUVMapping(void);
@@ -215,12 +240,14 @@ namespace OMT//OpenMesh Triangle mesh
 	private:
 		OpenMesh::FPropHandleT<int>       SelRingID;
 		OpenMesh::VPropHandleT<int>		  SelVID;		//positive : inside, negative : bound, other : not selected
+		OpenMesh::FPropHandleT<TextureForFace*>	fTex;
 		std::vector<int> centerVid;
 		vector< FHandle > sel_faces;
 		vector< VHandle > bound_Vex;
 		vector< Vec2d > BoundVexIn2D;
 		vector< Vec2d > CenterVexIn2D;
 	public:
+		void InitModelProperty();
 		double RayTraceFace(FHandle& fh, Point& p, Vector3d& rayDir);
 		FHandle FindFace( Point& p, Vector3d& rayDir );
 		void SelectNring(int n, Point& p, Vector3d& rayDir);
