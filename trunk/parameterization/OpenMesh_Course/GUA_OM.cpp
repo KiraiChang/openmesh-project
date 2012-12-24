@@ -1708,11 +1708,46 @@ namespace OMT
 
 	void Model::moveUVVertex(float u, float v)
 	{
-		if(m_uiCurVertex < m_CurEditTex->UVs.size())
+		if(m_CurEditTex && m_uiCurVertex < m_CurEditTex->UVs.size())
 		{
-			printf("u:%f, v:%f\n", u, v);
+			//printf("u:%f, v:%f\n", u, v);
 			m_CurEditTex->UVs[m_uiCurVertex][0] = u;
 			m_CurEditTex->UVs[m_uiCurVertex][1] = v;
+		}
+	}
+
+	void Model::scaleUVVertex(float scale)
+	{
+		if(m_CurEditTex)
+		{
+			printf("scale:%f", scale);
+			unsigned int index;
+			Vec2d center(0.5, 0.5);
+			for(index = 0;index < m_CurEditTex->UVs.size();++index)
+			{
+				m_CurEditTex->UVs[index] = (m_CurEditTex->UVs[index]- center) * scale + center;
+			}
+		}
+	}
+
+	void Model::rotationUVVertex(float angle)
+	{
+		if(m_CurEditTex)
+		{
+			float theta = angle/360*2*PI;
+			printf("angle:%f", theta);
+			unsigned int index;
+			Vec2d center(0.5, 0.5);
+			//Vec2d rotation(std::cos(theta), std::sin(theta));
+			Vec2d diff;
+			Vec2d newVec;
+			for(index = 0;index < m_CurEditTex->UVs.size();++index)
+			{
+				diff = m_CurEditTex->UVs[index]- center;
+				newVec[0] = diff[0] * cos(theta) - diff[1] * sin(theta);
+				newVec[1] = diff[0] * sin(theta) + diff[1] * cos(theta);
+				m_CurEditTex->UVs[index] = newVec + center;
+			}
 		}
 	}
 

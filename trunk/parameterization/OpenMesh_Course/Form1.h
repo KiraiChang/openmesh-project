@@ -56,36 +56,9 @@ namespace OpenMesh_Course {
 	private: System::Windows::Forms::GroupBox^  gpCommand;
 	private: System::Windows::Forms::Button^  btnLoadMesh;
 	private: System::Windows::Forms::OpenFileDialog^  openMeshFileDialog;
-
-
-
-
-
-
-
-
-
-
-
 	private: System::Windows::Forms::GroupBox^  gbShowType;
-
 	private: System::Windows::Forms::CheckBox^  cbWireframe;
 	private: System::Windows::Forms::CheckBox^  cbLightingModel;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	private: HKOGLPanel::HKOGLPanelControl^  hkoglPanelControl2;
 	private: System::Windows::Forms::Label^  lOutput;
 	private: System::Windows::Forms::Button^  btnLoadTexture;
@@ -94,25 +67,12 @@ namespace OpenMesh_Course {
 	private: System::Windows::Forms::CheckBox^  cbRTM;
 	private: System::Windows::Forms::TrackBar^  trackRadin;
 	private: System::Windows::Forms::CheckBox^  cbSelected;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	private: System::Windows::Forms::Label^  label1;
+	private: System::Windows::Forms::TextBox^  tbRotation;
+	private: System::Windows::Forms::Button^  btnRotation;
+	private: System::Windows::Forms::TextBox^  tbScale;
+	private: System::Windows::Forms::Button^  btnScale;
+	private: System::Windows::Forms::Label^  label2;
 
 	protected: 
 
@@ -146,6 +106,12 @@ namespace OpenMesh_Course {
 			this->hkoglPanelControl1 = (gcnew HKOGLPanel::HKOGLPanelControl());
 			this->gpCommand = (gcnew System::Windows::Forms::GroupBox());
 			this->gbShowType = (gcnew System::Windows::Forms::GroupBox());
+			this->label2 = (gcnew System::Windows::Forms::Label());
+			this->label1 = (gcnew System::Windows::Forms::Label());
+			this->tbRotation = (gcnew System::Windows::Forms::TextBox());
+			this->btnRotation = (gcnew System::Windows::Forms::Button());
+			this->tbScale = (gcnew System::Windows::Forms::TextBox());
+			this->btnScale = (gcnew System::Windows::Forms::Button());
 			this->cbSelected = (gcnew System::Windows::Forms::CheckBox());
 			this->trackRadin = (gcnew System::Windows::Forms::TrackBar());
 			this->cbRTM = (gcnew System::Windows::Forms::CheckBox());
@@ -233,6 +199,12 @@ namespace OpenMesh_Course {
 			this->gbShowType->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom) 
 				| System::Windows::Forms::AnchorStyles::Left) 
 				| System::Windows::Forms::AnchorStyles::Right));
+			this->gbShowType->Controls->Add(this->label2);
+			this->gbShowType->Controls->Add(this->label1);
+			this->gbShowType->Controls->Add(this->tbRotation);
+			this->gbShowType->Controls->Add(this->btnRotation);
+			this->gbShowType->Controls->Add(this->tbScale);
+			this->gbShowType->Controls->Add(this->btnScale);
 			this->gbShowType->Controls->Add(this->cbSelected);
 			this->gbShowType->Controls->Add(this->trackRadin);
 			this->gbShowType->Controls->Add(this->cbRTM);
@@ -246,6 +218,62 @@ namespace OpenMesh_Course {
 			this->gbShowType->TabIndex = 3;
 			this->gbShowType->TabStop = false;
 			this->gbShowType->Text = L"Show Type";
+			// 
+			// label2
+			// 
+			this->label2->AutoSize = true;
+			this->label2->Location = System::Drawing::Point(53, 175);
+			this->label2->Name = L"label2";
+			this->label2->Size = System::Drawing::Size(11, 12);
+			this->label2->TabIndex = 14;
+			this->label2->Text = L"o";
+			// 
+			// label1
+			// 
+			this->label1->AutoSize = true;
+			this->label1->Location = System::Drawing::Point(53, 151);
+			this->label1->Name = L"label1";
+			this->label1->Size = System::Drawing::Size(14, 12);
+			this->label1->TabIndex = 13;
+			this->label1->Text = L"%";
+			// 
+			// tbRotation
+			// 
+			this->tbRotation->Location = System::Drawing::Point(6, 175);
+			this->tbRotation->Name = L"tbRotation";
+			this->tbRotation->RightToLeft = System::Windows::Forms::RightToLeft::No;
+			this->tbRotation->Size = System::Drawing::Size(45, 22);
+			this->tbRotation->TabIndex = 12;
+			this->tbRotation->Text = L"0";
+			// 
+			// btnRotation
+			// 
+			this->btnRotation->Location = System::Drawing::Point(73, 175);
+			this->btnRotation->Name = L"btnRotation";
+			this->btnRotation->Size = System::Drawing::Size(75, 23);
+			this->btnRotation->TabIndex = 11;
+			this->btnRotation->Text = L"Rotation";
+			this->btnRotation->UseVisualStyleBackColor = true;
+			this->btnRotation->Click += gcnew System::EventHandler(this, &Form1::btnRotation_Click);
+			// 
+			// tbScale
+			// 
+			this->tbScale->Location = System::Drawing::Point(6, 146);
+			this->tbScale->Name = L"tbScale";
+			this->tbScale->RightToLeft = System::Windows::Forms::RightToLeft::No;
+			this->tbScale->Size = System::Drawing::Size(45, 22);
+			this->tbScale->TabIndex = 10;
+			this->tbScale->Text = L"100.0";
+			// 
+			// btnScale
+			// 
+			this->btnScale->Location = System::Drawing::Point(73, 146);
+			this->btnScale->Name = L"btnScale";
+			this->btnScale->Size = System::Drawing::Size(75, 23);
+			this->btnScale->TabIndex = 9;
+			this->btnScale->Text = L"Scale";
+			this->btnScale->UseVisualStyleBackColor = true;
+			this->btnScale->Click += gcnew System::EventHandler(this, &Form1::btnScale_Click);
 			// 
 			// cbSelected
 			// 
@@ -286,7 +314,7 @@ namespace OpenMesh_Course {
 			// lOutput
 			// 
 			this->lOutput->AutoSize = true;
-			this->lOutput->Location = System::Drawing::Point(6, 158);
+			this->lOutput->Location = System::Drawing::Point(6, 259);
 			this->lOutput->Name = L"lOutput";
 			this->lOutput->Size = System::Drawing::Size(24, 12);
 			this->lOutput->TabIndex = 4;
@@ -701,6 +729,22 @@ private: System::Void hkoglPanelControl2_MouseMove(System::Object^  sender, Syst
 				 float u = winX / viewport[2];
 				 float v = winY / viewport[3];
 				 lOutput->Text = "X: "+u+" Y: "+v;
+			 }
+		 }
+private: System::Void btnScale_Click(System::Object^  sender, System::EventArgs^  e) 
+		 {
+			 if(mesh)
+			 {
+				 mesh->scaleUVVertex(Convert::ToDouble(tbScale->Text) / 100);
+				 Refresh();
+			 }
+		 }
+private: System::Void btnRotation_Click(System::Object^  sender, System::EventArgs^  e) 
+		 {
+			 if(mesh)
+			 {
+				 mesh->rotationUVVertex(Convert::ToDouble(tbRotation->Text));
+				 Refresh();
 			 }
 		 }
 };

@@ -237,6 +237,8 @@ namespace OMT//OpenMesh Triangle mesh
 		void							clear_mapping_face(void);
 		bool							selectUVVertex(float u, float v);
 		void							moveUVVertex(float u, float v);
+		void							scaleUVVertex(float scale);
+		void							rotationUVVertex(float scale);
 		void							renderSelectPoint(void);
 
 		/*---------------------------------PARAMETERIZATION-----------------------------*/
