@@ -91,6 +91,7 @@ namespace OpenMesh_Course {
 		System::ComponentModel::Container ^components;
 	private: System::Windows::Forms::Button^  btnMirrorY;
 	private: System::Windows::Forms::Button^  btnMirrorX;
+	private: System::Windows::Forms::CheckBox^  cbMoveAllUV;
 			 int texID;
 
 #pragma region Windows Form Designer generated code
@@ -142,6 +143,7 @@ namespace OpenMesh_Course {
 			this->openTextureFileDialog = (gcnew System::Windows::Forms::OpenFileDialog());
 			this->openDataDialog = (gcnew System::Windows::Forms::OpenFileDialog());
 			this->saveDataDialog = (gcnew System::Windows::Forms::SaveFileDialog());
+			this->cbMoveAllUV = (gcnew System::Windows::Forms::CheckBox());
 			this->gpCommand->SuspendLayout();
 			this->gbShowType->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->trackRadin))->BeginInit();
@@ -239,6 +241,7 @@ namespace OpenMesh_Course {
 			this->gbShowType->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom) 
 				| System::Windows::Forms::AnchorStyles::Left) 
 				| System::Windows::Forms::AnchorStyles::Right));
+			this->gbShowType->Controls->Add(this->cbMoveAllUV);
 			this->gbShowType->Controls->Add(this->btnMirrorY);
 			this->gbShowType->Controls->Add(this->btnMirrorX);
 			this->gbShowType->Controls->Add(this->cbTextureInfo);
@@ -264,7 +267,7 @@ namespace OpenMesh_Course {
 			// 
 			// btnMirrorY
 			// 
-			this->btnMirrorY->Location = System::Drawing::Point(87, 204);
+			this->btnMirrorY->Location = System::Drawing::Point(87, 231);
 			this->btnMirrorY->Name = L"btnMirrorY";
 			this->btnMirrorY->Size = System::Drawing::Size(59, 23);
 			this->btnMirrorY->TabIndex = 17;
@@ -274,7 +277,7 @@ namespace OpenMesh_Course {
 			// 
 			// btnMirrorX
 			// 
-			this->btnMirrorX->Location = System::Drawing::Point(8, 204);
+			this->btnMirrorX->Location = System::Drawing::Point(8, 231);
 			this->btnMirrorX->Name = L"btnMirrorX";
 			this->btnMirrorX->Size = System::Drawing::Size(59, 23);
 			this->btnMirrorX->TabIndex = 16;
@@ -294,7 +297,7 @@ namespace OpenMesh_Course {
 			// label2
 			// 
 			this->label2->AutoSize = true;
-			this->label2->Location = System::Drawing::Point(53, 175);
+			this->label2->Location = System::Drawing::Point(53, 202);
 			this->label2->Name = L"label2";
 			this->label2->Size = System::Drawing::Size(11, 12);
 			this->label2->TabIndex = 14;
@@ -303,7 +306,7 @@ namespace OpenMesh_Course {
 			// label1
 			// 
 			this->label1->AutoSize = true;
-			this->label1->Location = System::Drawing::Point(53, 151);
+			this->label1->Location = System::Drawing::Point(53, 178);
 			this->label1->Name = L"label1";
 			this->label1->Size = System::Drawing::Size(14, 12);
 			this->label1->TabIndex = 13;
@@ -311,7 +314,7 @@ namespace OpenMesh_Course {
 			// 
 			// tbRotation
 			// 
-			this->tbRotation->Location = System::Drawing::Point(6, 175);
+			this->tbRotation->Location = System::Drawing::Point(6, 202);
 			this->tbRotation->Name = L"tbRotation";
 			this->tbRotation->RightToLeft = System::Windows::Forms::RightToLeft::No;
 			this->tbRotation->Size = System::Drawing::Size(45, 22);
@@ -320,7 +323,7 @@ namespace OpenMesh_Course {
 			// 
 			// btnRotation
 			// 
-			this->btnRotation->Location = System::Drawing::Point(73, 175);
+			this->btnRotation->Location = System::Drawing::Point(73, 202);
 			this->btnRotation->Name = L"btnRotation";
 			this->btnRotation->Size = System::Drawing::Size(75, 23);
 			this->btnRotation->TabIndex = 11;
@@ -330,7 +333,7 @@ namespace OpenMesh_Course {
 			// 
 			// tbScale
 			// 
-			this->tbScale->Location = System::Drawing::Point(6, 146);
+			this->tbScale->Location = System::Drawing::Point(6, 173);
 			this->tbScale->Name = L"tbScale";
 			this->tbScale->RightToLeft = System::Windows::Forms::RightToLeft::No;
 			this->tbScale->Size = System::Drawing::Size(45, 22);
@@ -339,7 +342,7 @@ namespace OpenMesh_Course {
 			// 
 			// btnScale
 			// 
-			this->btnScale->Location = System::Drawing::Point(73, 146);
+			this->btnScale->Location = System::Drawing::Point(73, 173);
 			this->btnScale->Name = L"btnScale";
 			this->btnScale->Size = System::Drawing::Size(75, 23);
 			this->btnScale->TabIndex = 9;
@@ -359,7 +362,7 @@ namespace OpenMesh_Course {
 			// 
 			// trackRadin
 			// 
-			this->trackRadin->Location = System::Drawing::Point(36, 110);
+			this->trackRadin->Location = System::Drawing::Point(36, 137);
 			this->trackRadin->Name = L"trackRadin";
 			this->trackRadin->Size = System::Drawing::Size(120, 45);
 			this->trackRadin->TabIndex = 7;
@@ -377,7 +380,7 @@ namespace OpenMesh_Course {
 			// 
 			// textBoxRing
 			// 
-			this->textBoxRing->Location = System::Drawing::Point(6, 110);
+			this->textBoxRing->Location = System::Drawing::Point(6, 137);
 			this->textBoxRing->Name = L"textBoxRing";
 			this->textBoxRing->Size = System::Drawing::Size(24, 22);
 			this->textBoxRing->TabIndex = 5;
@@ -510,6 +513,16 @@ namespace OpenMesh_Course {
 			// 
 			this->saveDataDialog->Filter = L"DAT File|*.DAT|All file|*.*";
 			this->saveDataDialog->FileOk += gcnew System::ComponentModel::CancelEventHandler(this, &Form1::saveDataDialog_FileOk);
+			// 
+			// cbMoveAllUV
+			// 
+			this->cbMoveAllUV->AutoSize = true;
+			this->cbMoveAllUV->Location = System::Drawing::Point(6, 111);
+			this->cbMoveAllUV->Name = L"cbMoveAllUV";
+			this->cbMoveAllUV->Size = System::Drawing::Size(87, 16);
+			this->cbMoveAllUV->TabIndex = 18;
+			this->cbMoveAllUV->Text = L"Move All UV";
+			this->cbMoveAllUV->UseVisualStyleBackColor = true;
 			// 
 			// Form1
 			// 
@@ -700,20 +713,29 @@ private: System::Void hkoglPanelControl2_MouseDown(System::Object^  sender, Syst
 				 {
 					 if(mesh)
 					 {
-						 GLint viewport[4];
-						 GLfloat winX, winY, winZ;
-						 glPushMatrix();
+						 if(cbMoveAllUV->Checked)
+						 {
+							 g_isSelectVertex = true;
+							 g_mouse_x = e->X;
+							 g_mouse_y = e->Y;
+						 }
+						 else
+						 {
+							 GLint viewport[4];
+							 GLfloat winX, winY, winZ;
+							 glPushMatrix();
 
-						 glMatrixMode(GL_VIEWPORT); //glMultMatrixd(xf.memptr());
-						 glGetIntegerv( GL_VIEWPORT, viewport );
+							 glMatrixMode(GL_VIEWPORT); //glMultMatrixd(xf.memptr());
+							 glGetIntegerv( GL_VIEWPORT, viewport );
 
-						 glPopMatrix();
+							 glPopMatrix();
 
-						 winX = (float)e->X;
-						 winY = (float)viewport[3] - (float)e->Y;
-						 float u = winX / viewport[2];
-						 float v = winY / viewport[3];
-						 g_isSelectVertex = mesh->selectUVVertex(u, v);
+							 winX = (float)e->X;
+							 winY = (float)viewport[3] - (float)e->Y;
+							 float u = winX / viewport[2];
+							 float v = winY / viewport[3];
+							 g_isSelectVertex = mesh->selectUVVertex(u, v);
+						 }
 						 Refresh();
 					 }
 				 }
@@ -794,11 +816,25 @@ private: System::Void hkoglPanelControl2_MouseMove(System::Object^  sender, Syst
 
 				 glPopMatrix();
 
-				 winX = (float)e->X;
-				 winY = (float)viewport[3] - (float)e->Y;
-				 float u = winX / viewport[2];
-				 float v = winY / viewport[3];
-				 mesh->moveUVVertex(u, v);
+				 if(cbMoveAllUV->Checked)
+				 {
+					 float diff_x = e->X - g_mouse_x;
+					 float diff_y = g_mouse_y - e->Y;
+
+					 g_mouse_x = e->X;
+					 g_mouse_y = e->Y;
+					 diff_x /= viewport[2];
+					 diff_y /= viewport[3];
+					 mesh->moveAllUVVertex(diff_x, diff_y);
+				 }
+				 else
+				 {
+					 winX = (float)e->X;
+					 winY = (float)viewport[3] - (float)e->Y;
+					 float u = winX / viewport[2];
+					 float v = winY / viewport[3];
+					 mesh->moveUVVertex(u, v);
+				 }
 				 Refresh();
 			 }
 			 else
