@@ -1717,6 +1717,16 @@ namespace OMT
 		}
 	}
 
+	void Model::moveAllUVVertex(float u, float v)
+	{
+		for(int i = 0;i < m_CurEditTex->UVs.size(); i++)
+		{
+			//printf("u:%f, v:%f\n", u, v);
+			m_CurEditTex->UVs[i][0] += u;
+			m_CurEditTex->UVs[i][1] += v;
+		}
+	}
+
 	void Model::scaleUVVertex(float scalex, float scaley)
 	{
 		if(m_CurEditTex)
