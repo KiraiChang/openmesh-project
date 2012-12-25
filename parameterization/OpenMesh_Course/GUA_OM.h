@@ -21,9 +21,12 @@
 
 struct TextureInfo
 {
+	std::string img_path;
 	std::vector<OpenMesh::Vec2d> UVs;
 	GLuint texGID[2];	//for 2 panel
 	cv::Mat	imgMat;
+	std::vector<OpenMesh::FaceHandle> usedFhs;
+
 	TextureInfo(){}
 };
 
@@ -240,6 +243,8 @@ namespace OMT//OpenMesh Triangle mesh
 		void							scaleUVVertex(float scale);
 		void							rotationUVVertex(float scale);
 		void							renderSelectPoint(void);
+		int								getNumOfTex(){return m_TexInfos.size();}
+		void							ChangeCurEditTex(unsigned int tid);
 
 		/*---------------------------------PARAMETERIZATION-----------------------------*/
 	private:
@@ -264,6 +269,7 @@ namespace OMT//OpenMesh Triangle mesh
 		void Parameterization();
 		double calCotWeight(VHandle vh1, VHandle vh2);
 		void RenderBound2D( float r, float g, float b );
+		void RenderUVPoint(float r, float g, float b);
 		void RenderTextureToModel();
 		bool IsBoundEdge(EHandle eh)
 		{
@@ -275,6 +281,10 @@ namespace OMT//OpenMesh Triangle mesh
 
 			return false;
 		}
+		void SaveTextureInfoToFile(const std::string &f_name);
+		bool LoadTextureInfoFromFile(const std::string &f_name);
+		void ClearAllTexture();
+		void GenAllTex(unsigned int paneID);
 	};
 }
 /*======================================================================*/
