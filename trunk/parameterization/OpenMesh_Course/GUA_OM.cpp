@@ -1717,13 +1717,14 @@ namespace OMT
 		}
 	}
 
-	void Model::scaleUVVertex(float scale)
+	void Model::scaleUVVertex(float scalex, float scaley)
 	{
 		if(m_CurEditTex)
 		{
-			printf("scale:%f", scale);
+			printf("scalex:%f, %f", scalex, scaley);
 			unsigned int index;
 			Vec2d center(0.5, 0.5);
+			Vec2d scale(scalex, scaley);
 			for(index = 0;index < m_CurEditTex->UVs.size();++index)
 			{
 				m_CurEditTex->UVs[index] = (m_CurEditTex->UVs[index]- center) * scale + center;
@@ -2479,6 +2480,7 @@ namespace OMT
 	{
 		if (!m_CurEditTex)
 			return ;
+		glDisable(GL_CULL_FACE);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		glDisable(GL_DEPTH_TEST);
 		glBegin(GL_TRIANGLES);
@@ -2508,6 +2510,7 @@ namespace OMT
 		}
 		glEnd();
 		glPolygonMode(GL_FRONT, GL_FILL);
+		glEnable(GL_CULL_FACE);
 
 // 		glBegin(GL_POINTS);
 // 		for (int i=0; i<m_CurEditTex->UVs.size(); i++)

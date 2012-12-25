@@ -240,7 +240,7 @@ namespace OMT//OpenMesh Triangle mesh
 		void							clear_mapping_face(void);
 		bool							selectUVVertex(float u, float v);
 		void							moveUVVertex(float u, float v);
-		void							scaleUVVertex(float scale);
+		void							scaleUVVertex(float scalex, float scaley);
 		void							rotationUVVertex(float scale);
 		void							renderSelectPoint(void);
 		int								getNumOfTex(){return m_TexInfos.size();}
