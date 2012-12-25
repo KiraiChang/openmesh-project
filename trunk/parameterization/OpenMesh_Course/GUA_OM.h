@@ -25,7 +25,7 @@ struct TextureInfo
 	std::vector<OpenMesh::Vec2d> UVs;
 	GLuint texGID[2];	//for 2 panel
 	cv::Mat	imgMat;
-	std::vector<OpenMesh::FaceHandle> usedFhs;
+	std::vector<int> FV_UV;
 
 	TextureInfo(){}
 };
