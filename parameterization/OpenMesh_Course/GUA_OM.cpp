@@ -2154,7 +2154,7 @@ namespace OMT
 		for (int i=cntVNum; i<totalVnum; i++)
 			m_CurEditTex->UVs[i] = BoundVexIn2D[i-cntVNum];
 
-		m_CurEditTex->usedFhs.clear();
+		m_CurEditTex->FV_UV.clear();
 		for (int i=0; i<sel_faces.size(); i++)
 		{
 			TextureForFace* tff = new TextureForFace;
@@ -2178,9 +2178,9 @@ namespace OMT
 					tff->uvmap[vhid] = -property(SelVID, fv_it.handle()) + cntVNum - 1;
 				else if ( property(SelVID, fv_it.handle()) > 0 )
 					tff->uvmap[vhid] = property(SelVID, fv_it.handle()) - 1;
+				m_CurEditTex->FV_UV.push_back(tff->uvmap[vhid]);
 				vhid++;
 			}
-			m_CurEditTex->usedFhs.push_back(sel_faces[i]);
 		}
 	}
 
@@ -2443,9 +2443,12 @@ namespace OMT
 			tff->nextTexture = NULL;
 			int uvID[3];
 			fscanf(fp, "%d %d %d", uvID, uvID+1, uvID+2);
-			tff->uvmap[0] = uvID[0];
-			tff->uvmap[1] = uvID[1];
-			tff->uvmap[2] = uvID[2];
+			for (int i=0; i<3; i++)
+			{
+				tff->uvmap[i] = uvID[i];
+				tff->texInfo->FV_UV.push_back(tff->uvmap[i]);
+			}
+
 			TextureForFace* cur_tff = property(fTex, fh);
 			if (cur_tff == NULL)
 			{
@@ -2477,24 +2480,31 @@ namespace OMT
 		if (!m_CurEditTex)
 			return ;
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		glDisable(GL_DEPTH_TEST);
 		glBegin(GL_TRIANGLES);
 		glColor3f(r, g, b);
-		for (int i=0; i<m_CurEditTex->usedFhs.size(); i++)
+		for (int i=0; i<m_CurEditTex->FV_UV.size(); i+=3)
 		{
-			FHandle fh = m_CurEditTex->usedFhs[i];
-			TextureForFace* tff = property(fTex, fh);
-			while(tff!=NULL)
-			{
-				if (tff->texInfo == m_CurEditTex)
-				{
-					for (int i=0; i<3; i++)
-					{
-						int v_to_uv_id = tff->uvmap[i];
-						glVertex2dv( &(m_CurEditTex->UVs[v_to_uv_id][0]) );
-					}
-				}
-				tff = tff->nextTexture;
-			}
+			int fvuv = m_CurEditTex->FV_UV[i];
+			glVertex2dv( &(m_CurEditTex->UVs[fvuv][0]) );
+			fvuv = m_CurEditTex->FV_UV[i+1];
+			glVertex2dv( &(m_CurEditTex->UVs[fvuv][0]) );
+			fvuv = m_CurEditTex->FV_UV[i+2];
+			glVertex2dv( &(m_CurEditTex->UVs[fvuv][0]) );
+// 			FHandle fh = m_CurEditTex->FV_UV[i];
+// 			TextureForFace* tff = property(fTex, fh);
+// 			while(tff!=NULL)
+// 			{
+// 				if (tff->texInfo == m_CurEditTex)
+// 				{
+// 					for (int i=0; i<3; i++)
+// 					{
+// 						int v_to_uv_id = tff->uvmap[i];
+// 						glVertex2dv( &(m_CurEditTex->UVs[v_to_uv_id][0]) );
+// 					}
+// 				}
+// 				tff = tff->nextTexture;
+// 			}
 		}
 		glEnd();
 		glPolygonMode(GL_FRONT, GL_FILL);
