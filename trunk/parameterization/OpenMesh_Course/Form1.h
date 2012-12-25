@@ -73,6 +73,14 @@ namespace OpenMesh_Course {
 	private: System::Windows::Forms::TextBox^  tbScale;
 	private: System::Windows::Forms::Button^  btnScale;
 	private: System::Windows::Forms::Label^  label2;
+	private: System::Windows::Forms::Button^  btnLoadData;
+
+	private: System::Windows::Forms::Button^  btnSaveData;
+	private: System::Windows::Forms::ComboBox^  cbTextureInfo;
+
+
+	private: System::Windows::Forms::OpenFileDialog^  openDataDialog;
+	private: System::Windows::Forms::SaveFileDialog^  saveDataDialog;
 
 	protected: 
 
@@ -81,6 +89,7 @@ namespace OpenMesh_Course {
 		/// Required designer variable.
 		/// </summary>
 		System::ComponentModel::Container ^components;
+		int texID;
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
@@ -89,23 +98,26 @@ namespace OpenMesh_Course {
 		/// </summary>
 		void InitializeComponent(void)
 		{
-			HKOGLPanel::HKCCameraProp^  hkcCameraProp1 = (gcnew HKOGLPanel::HKCCameraProp());
-			HKOGLPanel::HKCDisplayProp^  hkcDisplayProp1 = (gcnew HKOGLPanel::HKCDisplayProp());
-			HKOGLPanel::HKCPixelFormat^  hkcPixelFormat1 = (gcnew HKOGLPanel::HKCPixelFormat());
-			HKOGLPanel::HKCTrackballProp^  hkcTrackballProp1 = (gcnew HKOGLPanel::HKCTrackballProp());
-			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig1 = (gcnew HKOGLPanel::HKCTrackballTrig());
-			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig2 = (gcnew HKOGLPanel::HKCTrackballTrig());
-			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig3 = (gcnew HKOGLPanel::HKCTrackballTrig());
-			HKOGLPanel::HKCCameraProp^  hkcCameraProp2 = (gcnew HKOGLPanel::HKCCameraProp());
-			HKOGLPanel::HKCDisplayProp^  hkcDisplayProp2 = (gcnew HKOGLPanel::HKCDisplayProp());
-			HKOGLPanel::HKCPixelFormat^  hkcPixelFormat2 = (gcnew HKOGLPanel::HKCPixelFormat());
-			HKOGLPanel::HKCTrackballProp^  hkcTrackballProp2 = (gcnew HKOGLPanel::HKCTrackballProp());
-			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig4 = (gcnew HKOGLPanel::HKCTrackballTrig());
-			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig5 = (gcnew HKOGLPanel::HKCTrackballTrig());
-			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig6 = (gcnew HKOGLPanel::HKCTrackballTrig());
+			HKOGLPanel::HKCCameraProp^  hkcCameraProp3 = (gcnew HKOGLPanel::HKCCameraProp());
+			HKOGLPanel::HKCDisplayProp^  hkcDisplayProp3 = (gcnew HKOGLPanel::HKCDisplayProp());
+			HKOGLPanel::HKCPixelFormat^  hkcPixelFormat3 = (gcnew HKOGLPanel::HKCPixelFormat());
+			HKOGLPanel::HKCTrackballProp^  hkcTrackballProp3 = (gcnew HKOGLPanel::HKCTrackballProp());
+			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig7 = (gcnew HKOGLPanel::HKCTrackballTrig());
+			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig8 = (gcnew HKOGLPanel::HKCTrackballTrig());
+			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig9 = (gcnew HKOGLPanel::HKCTrackballTrig());
+			HKOGLPanel::HKCCameraProp^  hkcCameraProp4 = (gcnew HKOGLPanel::HKCCameraProp());
+			HKOGLPanel::HKCDisplayProp^  hkcDisplayProp4 = (gcnew HKOGLPanel::HKCDisplayProp());
+			HKOGLPanel::HKCPixelFormat^  hkcPixelFormat4 = (gcnew HKOGLPanel::HKCPixelFormat());
+			HKOGLPanel::HKCTrackballProp^  hkcTrackballProp4 = (gcnew HKOGLPanel::HKCTrackballProp());
+			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig10 = (gcnew HKOGLPanel::HKCTrackballTrig());
+			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig11 = (gcnew HKOGLPanel::HKCTrackballTrig());
+			HKOGLPanel::HKCTrackballTrig^  hkcTrackballTrig12 = (gcnew HKOGLPanel::HKCTrackballTrig());
 			this->hkoglPanelControl1 = (gcnew HKOGLPanel::HKOGLPanelControl());
 			this->gpCommand = (gcnew System::Windows::Forms::GroupBox());
+			this->btnLoadData = (gcnew System::Windows::Forms::Button());
+			this->btnSaveData = (gcnew System::Windows::Forms::Button());
 			this->gbShowType = (gcnew System::Windows::Forms::GroupBox());
+			this->cbTextureInfo = (gcnew System::Windows::Forms::ComboBox());
 			this->label2 = (gcnew System::Windows::Forms::Label());
 			this->label1 = (gcnew System::Windows::Forms::Label());
 			this->tbRotation = (gcnew System::Windows::Forms::TextBox());
@@ -124,6 +136,8 @@ namespace OpenMesh_Course {
 			this->openMeshFileDialog = (gcnew System::Windows::Forms::OpenFileDialog());
 			this->hkoglPanelControl2 = (gcnew HKOGLPanel::HKOGLPanelControl());
 			this->openTextureFileDialog = (gcnew System::Windows::Forms::OpenFileDialog());
+			this->openDataDialog = (gcnew System::Windows::Forms::OpenFileDialog());
+			this->saveDataDialog = (gcnew System::Windows::Forms::SaveFileDialog());
 			this->gpCommand->SuspendLayout();
 			this->gbShowType->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->trackRadin))->BeginInit();
@@ -133,48 +147,48 @@ namespace OpenMesh_Course {
 			// 
 			this->hkoglPanelControl1->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom) 
 				| System::Windows::Forms::AnchorStyles::Left));
-			hkcCameraProp1->Enabled = true;
-			hkcCameraProp1->Far = 1000;
-			hkcCameraProp1->Fov = 45;
-			hkcCameraProp1->Near = 0.001;
-			hkcCameraProp1->Type = HKOGLPanel::HKCCameraProp::CAMERATYPE::PERSPECTIVE;
-			hkcCameraProp1->Zoom = 1;
-			this->hkoglPanelControl1->Camera_Property = hkcCameraProp1;
-			hkcDisplayProp1->Back_Color = System::Drawing::Color::White;
-			hkcDisplayProp1->Grid_Axis = System::Drawing::Color::Black;
-			hkcDisplayProp1->Grid_Draw = true;
-			hkcDisplayProp1->Grid_Line = System::Drawing::Color::DimGray;
-			this->hkoglPanelControl1->Display_Property = hkcDisplayProp1;
+			hkcCameraProp3->Enabled = true;
+			hkcCameraProp3->Far = 1000;
+			hkcCameraProp3->Fov = 45;
+			hkcCameraProp3->Near = 0.001;
+			hkcCameraProp3->Type = HKOGLPanel::HKCCameraProp::CAMERATYPE::PERSPECTIVE;
+			hkcCameraProp3->Zoom = 1;
+			this->hkoglPanelControl1->Camera_Property = hkcCameraProp3;
+			hkcDisplayProp3->Back_Color = System::Drawing::Color::White;
+			hkcDisplayProp3->Grid_Axis = System::Drawing::Color::Black;
+			hkcDisplayProp3->Grid_Draw = true;
+			hkcDisplayProp3->Grid_Line = System::Drawing::Color::DimGray;
+			this->hkoglPanelControl1->Display_Property = hkcDisplayProp3;
 			this->hkoglPanelControl1->Empty_Panel = false;
 			this->hkoglPanelControl1->Location = System::Drawing::Point(12, 12);
 			this->hkoglPanelControl1->Name = L"hkoglPanelControl1";
-			hkcPixelFormat1->Accumu_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
-			hkcPixelFormat1->Alpha_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
-			hkcPixelFormat1->Stencil_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
-			this->hkoglPanelControl1->Pixel_Format = hkcPixelFormat1;
+			hkcPixelFormat3->Accumu_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
+			hkcPixelFormat3->Alpha_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
+			hkcPixelFormat3->Stencil_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
+			this->hkoglPanelControl1->Pixel_Format = hkcPixelFormat3;
 			this->hkoglPanelControl1->Size = System::Drawing::Size(420, 420);
 			this->hkoglPanelControl1->TabIndex = 0;
-			hkcTrackballProp1->Const_Res = false;
-			hkcTrackballProp1->Delta_Res = 500;
-			hkcTrackballProp1->Enabled = true;
-			hkcTrackballProp1->Move_Res = 1000;
-			hkcTrackballTrig1->Key_Down = false;
-			hkcTrackballTrig1->Keyboard = System::Windows::Forms::Keys::None;
-			hkcTrackballTrig1->Mouse = System::Windows::Forms::MouseButtons::Right;
-			hkcTrackballTrig1->Mouse_Down = false;
-			hkcTrackballProp1->Move_Trigger = hkcTrackballTrig1;
-			hkcTrackballTrig2->Key_Down = false;
-			hkcTrackballTrig2->Keyboard = System::Windows::Forms::Keys::None;
-			hkcTrackballTrig2->Mouse = System::Windows::Forms::MouseButtons::Left;
-			hkcTrackballTrig2->Mouse_Down = false;
-			hkcTrackballProp1->Rotate_Trigger = hkcTrackballTrig2;
-			hkcTrackballProp1->Zoom_Res = 100;
-			hkcTrackballTrig3->Key_Down = false;
-			hkcTrackballTrig3->Keyboard = System::Windows::Forms::Keys::None;
-			hkcTrackballTrig3->Mouse = System::Windows::Forms::MouseButtons::Middle;
-			hkcTrackballTrig3->Mouse_Down = false;
-			hkcTrackballProp1->Zoom_Trigger = hkcTrackballTrig3;
-			this->hkoglPanelControl1->Trackball_Property = hkcTrackballProp1;
+			hkcTrackballProp3->Const_Res = false;
+			hkcTrackballProp3->Delta_Res = 500;
+			hkcTrackballProp3->Enabled = true;
+			hkcTrackballProp3->Move_Res = 1000;
+			hkcTrackballTrig7->Key_Down = false;
+			hkcTrackballTrig7->Keyboard = System::Windows::Forms::Keys::None;
+			hkcTrackballTrig7->Mouse = System::Windows::Forms::MouseButtons::Right;
+			hkcTrackballTrig7->Mouse_Down = false;
+			hkcTrackballProp3->Move_Trigger = hkcTrackballTrig7;
+			hkcTrackballTrig8->Key_Down = false;
+			hkcTrackballTrig8->Keyboard = System::Windows::Forms::Keys::None;
+			hkcTrackballTrig8->Mouse = System::Windows::Forms::MouseButtons::Left;
+			hkcTrackballTrig8->Mouse_Down = false;
+			hkcTrackballProp3->Rotate_Trigger = hkcTrackballTrig8;
+			hkcTrackballProp3->Zoom_Res = 100;
+			hkcTrackballTrig9->Key_Down = false;
+			hkcTrackballTrig9->Keyboard = System::Windows::Forms::Keys::None;
+			hkcTrackballTrig9->Mouse = System::Windows::Forms::MouseButtons::Middle;
+			hkcTrackballTrig9->Mouse_Down = false;
+			hkcTrackballProp3->Zoom_Trigger = hkcTrackballTrig9;
+			this->hkoglPanelControl1->Trackball_Property = hkcTrackballProp3;
 			this->hkoglPanelControl1->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &Form1::hkoglPanelControl1_Paint);
 			this->hkoglPanelControl1->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(this, &Form1::hkoglPanelControl1_MouseDown);
 			this->hkoglPanelControl1->MouseMove += gcnew System::Windows::Forms::MouseEventHandler(this, &Form1::hkoglPanelControl1_MouseMove);
@@ -184,6 +198,8 @@ namespace OpenMesh_Course {
 			// 
 			this->gpCommand->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom) 
 				| System::Windows::Forms::AnchorStyles::Right));
+			this->gpCommand->Controls->Add(this->btnLoadData);
+			this->gpCommand->Controls->Add(this->btnSaveData);
 			this->gpCommand->Controls->Add(this->gbShowType);
 			this->gpCommand->Controls->Add(this->btnLoadTexture);
 			this->gpCommand->Controls->Add(this->btnLoadMesh);
@@ -194,11 +210,32 @@ namespace OpenMesh_Course {
 			this->gpCommand->TabStop = false;
 			this->gpCommand->Text = L"Command";
 			// 
+			// btnLoadData
+			// 
+			this->btnLoadData->Location = System::Drawing::Point(87, 76);
+			this->btnLoadData->Name = L"btnLoadData";
+			this->btnLoadData->Size = System::Drawing::Size(75, 40);
+			this->btnLoadData->TabIndex = 7;
+			this->btnLoadData->Text = L"Load";
+			this->btnLoadData->UseVisualStyleBackColor = true;
+			this->btnLoadData->Click += gcnew System::EventHandler(this, &Form1::btnLoadData_Click);
+			// 
+			// btnSaveData
+			// 
+			this->btnSaveData->Location = System::Drawing::Point(14, 76);
+			this->btnSaveData->Name = L"btnSaveData";
+			this->btnSaveData->Size = System::Drawing::Size(67, 40);
+			this->btnSaveData->TabIndex = 6;
+			this->btnSaveData->Text = L"Save";
+			this->btnSaveData->UseVisualStyleBackColor = true;
+			this->btnSaveData->Click += gcnew System::EventHandler(this, &Form1::btnSaveData_Click);
+			// 
 			// gbShowType
 			// 
 			this->gbShowType->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom) 
 				| System::Windows::Forms::AnchorStyles::Left) 
 				| System::Windows::Forms::AnchorStyles::Right));
+			this->gbShowType->Controls->Add(this->cbTextureInfo);
 			this->gbShowType->Controls->Add(this->label2);
 			this->gbShowType->Controls->Add(this->label1);
 			this->gbShowType->Controls->Add(this->tbRotation);
@@ -218,6 +255,15 @@ namespace OpenMesh_Course {
 			this->gbShowType->TabIndex = 3;
 			this->gbShowType->TabStop = false;
 			this->gbShowType->Text = L"Show Type";
+			// 
+			// cbTextureInfo
+			// 
+			this->cbTextureInfo->FormattingEnabled = true;
+			this->cbTextureInfo->Location = System::Drawing::Point(8, 204);
+			this->cbTextureInfo->Name = L"cbTextureInfo";
+			this->cbTextureInfo->Size = System::Drawing::Size(140, 20);
+			this->cbTextureInfo->TabIndex = 15;
+			this->cbTextureInfo->SelectedIndexChanged += gcnew System::EventHandler(this, &Form1::cbTextureInfo_SelectedIndexChanged);
 			// 
 			// label2
 			// 
@@ -346,9 +392,9 @@ namespace OpenMesh_Course {
 			// 
 			// btnLoadTexture
 			// 
-			this->btnLoadTexture->Location = System::Drawing::Point(6, 85);
+			this->btnLoadTexture->Location = System::Drawing::Point(87, 21);
 			this->btnLoadTexture->Name = L"btnLoadTexture";
-			this->btnLoadTexture->Size = System::Drawing::Size(162, 61);
+			this->btnLoadTexture->Size = System::Drawing::Size(75, 40);
 			this->btnLoadTexture->TabIndex = 5;
 			this->btnLoadTexture->Text = L"Load Texture";
 			this->btnLoadTexture->UseVisualStyleBackColor = true;
@@ -356,9 +402,9 @@ namespace OpenMesh_Course {
 			// 
 			// btnLoadMesh
 			// 
-			this->btnLoadMesh->Location = System::Drawing::Point(6, 21);
+			this->btnLoadMesh->Location = System::Drawing::Point(14, 21);
 			this->btnLoadMesh->Name = L"btnLoadMesh";
-			this->btnLoadMesh->Size = System::Drawing::Size(162, 58);
+			this->btnLoadMesh->Size = System::Drawing::Size(67, 40);
 			this->btnLoadMesh->TabIndex = 0;
 			this->btnLoadMesh->Text = L"Load Mesh";
 			this->btnLoadMesh->UseVisualStyleBackColor = true;
@@ -376,48 +422,48 @@ namespace OpenMesh_Course {
 			this->hkoglPanelControl2->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom) 
 				| System::Windows::Forms::AnchorStyles::Left) 
 				| System::Windows::Forms::AnchorStyles::Right));
-			hkcCameraProp2->Enabled = true;
-			hkcCameraProp2->Far = 1000;
-			hkcCameraProp2->Fov = 45;
-			hkcCameraProp2->Near = 0.001;
-			hkcCameraProp2->Type = HKOGLPanel::HKCCameraProp::CAMERATYPE::ORTHOGRAPHIC;
-			hkcCameraProp2->Zoom = 1;
-			this->hkoglPanelControl2->Camera_Property = hkcCameraProp2;
-			hkcDisplayProp2->Back_Color = System::Drawing::Color::White;
-			hkcDisplayProp2->Grid_Axis = System::Drawing::Color::Black;
-			hkcDisplayProp2->Grid_Draw = true;
-			hkcDisplayProp2->Grid_Line = System::Drawing::Color::DimGray;
-			this->hkoglPanelControl2->Display_Property = hkcDisplayProp2;
+			hkcCameraProp4->Enabled = true;
+			hkcCameraProp4->Far = 1000;
+			hkcCameraProp4->Fov = 45;
+			hkcCameraProp4->Near = 0.001;
+			hkcCameraProp4->Type = HKOGLPanel::HKCCameraProp::CAMERATYPE::ORTHOGRAPHIC;
+			hkcCameraProp4->Zoom = 1;
+			this->hkoglPanelControl2->Camera_Property = hkcCameraProp4;
+			hkcDisplayProp4->Back_Color = System::Drawing::Color::White;
+			hkcDisplayProp4->Grid_Axis = System::Drawing::Color::Black;
+			hkcDisplayProp4->Grid_Draw = true;
+			hkcDisplayProp4->Grid_Line = System::Drawing::Color::DimGray;
+			this->hkoglPanelControl2->Display_Property = hkcDisplayProp4;
 			this->hkoglPanelControl2->Empty_Panel = false;
 			this->hkoglPanelControl2->Location = System::Drawing::Point(438, 12);
 			this->hkoglPanelControl2->Name = L"hkoglPanelControl2";
-			hkcPixelFormat2->Accumu_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
-			hkcPixelFormat2->Alpha_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
-			hkcPixelFormat2->Stencil_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
-			this->hkoglPanelControl2->Pixel_Format = hkcPixelFormat2;
+			hkcPixelFormat4->Accumu_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
+			hkcPixelFormat4->Alpha_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
+			hkcPixelFormat4->Stencil_Buffer_Bits = HKOGLPanel::HKCPixelFormat::PIXELBITS::BITS_0;
+			this->hkoglPanelControl2->Pixel_Format = hkcPixelFormat4;
 			this->hkoglPanelControl2->Size = System::Drawing::Size(420, 420);
 			this->hkoglPanelControl2->TabIndex = 10;
-			hkcTrackballProp2->Const_Res = false;
-			hkcTrackballProp2->Delta_Res = 500;
-			hkcTrackballProp2->Enabled = true;
-			hkcTrackballProp2->Move_Res = 1000;
-			hkcTrackballTrig4->Key_Down = false;
-			hkcTrackballTrig4->Keyboard = System::Windows::Forms::Keys::None;
-			hkcTrackballTrig4->Mouse = System::Windows::Forms::MouseButtons::Right;
-			hkcTrackballTrig4->Mouse_Down = false;
-			hkcTrackballProp2->Move_Trigger = hkcTrackballTrig4;
-			hkcTrackballTrig5->Key_Down = false;
-			hkcTrackballTrig5->Keyboard = System::Windows::Forms::Keys::None;
-			hkcTrackballTrig5->Mouse = System::Windows::Forms::MouseButtons::Left;
-			hkcTrackballTrig5->Mouse_Down = false;
-			hkcTrackballProp2->Rotate_Trigger = hkcTrackballTrig5;
-			hkcTrackballProp2->Zoom_Res = 100;
-			hkcTrackballTrig6->Key_Down = false;
-			hkcTrackballTrig6->Keyboard = System::Windows::Forms::Keys::None;
-			hkcTrackballTrig6->Mouse = System::Windows::Forms::MouseButtons::Middle;
-			hkcTrackballTrig6->Mouse_Down = false;
-			hkcTrackballProp2->Zoom_Trigger = hkcTrackballTrig6;
-			this->hkoglPanelControl2->Trackball_Property = hkcTrackballProp2;
+			hkcTrackballProp4->Const_Res = false;
+			hkcTrackballProp4->Delta_Res = 500;
+			hkcTrackballProp4->Enabled = true;
+			hkcTrackballProp4->Move_Res = 1000;
+			hkcTrackballTrig10->Key_Down = false;
+			hkcTrackballTrig10->Keyboard = System::Windows::Forms::Keys::None;
+			hkcTrackballTrig10->Mouse = System::Windows::Forms::MouseButtons::Right;
+			hkcTrackballTrig10->Mouse_Down = false;
+			hkcTrackballProp4->Move_Trigger = hkcTrackballTrig10;
+			hkcTrackballTrig11->Key_Down = false;
+			hkcTrackballTrig11->Keyboard = System::Windows::Forms::Keys::None;
+			hkcTrackballTrig11->Mouse = System::Windows::Forms::MouseButtons::Left;
+			hkcTrackballTrig11->Mouse_Down = false;
+			hkcTrackballProp4->Rotate_Trigger = hkcTrackballTrig11;
+			hkcTrackballProp4->Zoom_Res = 100;
+			hkcTrackballTrig12->Key_Down = false;
+			hkcTrackballTrig12->Keyboard = System::Windows::Forms::Keys::None;
+			hkcTrackballTrig12->Mouse = System::Windows::Forms::MouseButtons::Middle;
+			hkcTrackballTrig12->Mouse_Down = false;
+			hkcTrackballProp4->Zoom_Trigger = hkcTrackballTrig12;
+			this->hkoglPanelControl2->Trackball_Property = hkcTrackballProp4;
 			this->hkoglPanelControl2->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &Form1::hkoglPanelControl2_Paint);
 			this->hkoglPanelControl2->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(this, &Form1::hkoglPanelControl2_MouseDown);
 			this->hkoglPanelControl2->MouseMove += gcnew System::Windows::Forms::MouseEventHandler(this, &Form1::hkoglPanelControl2_MouseMove);
@@ -428,6 +474,16 @@ namespace OpenMesh_Course {
 			this->openTextureFileDialog->DefaultExt = L"JPG";
 			this->openTextureFileDialog->Filter = L"JPG File|*.JPG|BMP File|*.BMP|All file|*.*";
 			this->openTextureFileDialog->FileOk += gcnew System::ComponentModel::CancelEventHandler(this, &Form1::openTextureFileDialog_FileOk);
+			// 
+			// openDataDialog
+			// 
+			this->openDataDialog->Filter = L"DAT File|*.DAT|All file|*.*";
+			this->openDataDialog->FileOk += gcnew System::ComponentModel::CancelEventHandler(this, &Form1::openDataDialog_FileOk);
+			// 
+			// saveDataDialog
+			// 
+			this->saveDataDialog->Filter = L"DAT File|*.DAT|All file|*.*";
+			this->saveDataDialog->FileOk += gcnew System::ComponentModel::CancelEventHandler(this, &Form1::saveDataDialog_FileOk);
 			// 
 			// Form1
 			// 
@@ -499,6 +555,7 @@ private: System::Void openMeshFileDialog_FileOk(System::Object^  sender, System:
 				 std::cout<<filename<<std::endl;
 
 			 hkoglPanelControl1->Invalidate();
+			 texID = 0;
 		 }
 private: System::Void cbModel_CheckedChanged(System::Object^  sender, System::EventArgs^  e) 
 		 {
@@ -603,6 +660,7 @@ private: System::Void hkoglPanelControl2_Paint(System::Object^  sender, System::
 			 {
 				 mesh->RenderTexture();
 				 //mesh->RenderUVMapping();
+				 mesh->RenderUVPoint(0.5, 0.5, 0.0);
 				 mesh->RenderBound2D(1.0, 0.0, 0.0);
 				 mesh->renderSelectPoint();
 			 }
@@ -661,6 +719,10 @@ private: System::Void openTextureFileDialog_FileOk(System::Object^  sender, Syst
 				 hkoglPanelControl2->Make_Current();
 				 //mesh->GenTextures(0, 0);
 				 mesh->GenTextures(1);
+				 cbTextureInfo->Items->Add( "Texture" + texID );
+				 cbTextureInfo->SelectedIndex = mesh->getNumOfTex()-1;
+				 texID++;
+
 				 Refresh();
 			 }
 		 }
@@ -746,6 +808,62 @@ private: System::Void btnRotation_Click(System::Object^  sender, System::EventAr
 				 mesh->rotationUVVertex(Convert::ToDouble(tbRotation->Text));
 				 Refresh();
 			 }
+		 }
+private: System::Void btnSaveData_Click(System::Object^  sender, System::EventArgs^  e) 
+		 {
+			 if (mesh!=NULL)
+				 saveDataDialog->ShowDialog();
+			 //{
+				// mesh->SaveTextureInfoToFile("Test.dat");
+				// printf("save Ok\n");
+			 //}
+				
+		 }
+private: System::Void btnLoadData_Click(System::Object^  sender, System::EventArgs^  e) 
+		 {
+			 if (mesh!=NULL)
+				openDataDialog->ShowDialog();
+		 }
+private: System::Void openDataDialog_FileOk(System::Object^  sender, System::ComponentModel::CancelEventArgs^  e) 
+		 {
+			 if (mesh!=NULL)
+			 {
+				 std::string filename;
+				 MarshalString( openDataDialog->FileName, filename );
+				 printf("filename:%s", filename);
+				 mesh->LoadTextureInfoFromFile(filename);
+				 hkoglPanelControl1->Make_Current();
+				 mesh->GenAllTex(0);
+				 hkoglPanelControl2->Make_Current();
+				 mesh->GenAllTex(1);
+				 int texNum = mesh->getNumOfTex();
+				 cbTextureInfo->Items->Clear();
+				 for (int i=0; i < texNum; i++)
+				 {
+					 cbTextureInfo->Items->Add( "Texture" + i );
+				 }
+				 cbTextureInfo->SelectedIndex = texNum-1;
+				 texID = texNum;
+				 mesh->ChangeCurEditTex(texNum-1);
+				 Refresh();
+			 }
+		 }
+private: System::Void saveDataDialog_FileOk(System::Object^  sender, System::ComponentModel::CancelEventArgs^  e) 
+		 {
+			 if (mesh!=NULL)
+			 {
+				 std::string filename;
+				 MarshalString( saveDataDialog->FileName, filename );
+				 printf("filename:%s", filename);
+				 mesh->SaveTextureInfoToFile("Test.dat");
+				 printf("save Ok\n");
+			 }
+		 }
+
+private: System::Void cbTextureInfo_SelectedIndexChanged(System::Object^  sender, System::EventArgs^  e) 
+		 {
+			 mesh->ChangeCurEditTex(cbTextureInfo->SelectedIndex);
+			 Refresh();
 		 }
 };
 }

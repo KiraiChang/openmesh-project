@@ -1145,6 +1145,7 @@ namespace OMT
 			printf("load image success!\n");
 			cv::flip(image, m_CurEditTex->imgMat, 0);
 			image.release();
+			m_CurEditTex->img_path = tex_name;
 			m_TexInfos.push_back(m_CurEditTex);
 			return TRUE;
 		}
@@ -2153,7 +2154,7 @@ namespace OMT
 		for (int i=cntVNum; i<totalVnum; i++)
 			m_CurEditTex->UVs[i] = BoundVexIn2D[i-cntVNum];
 
-
+		m_CurEditTex->usedFhs.clear();
 		for (int i=0; i<sel_faces.size(); i++)
 		{
 			TextureForFace* tff = new TextureForFace;
@@ -2179,6 +2180,7 @@ namespace OMT
 					tff->uvmap[vhid] = property(SelVID, fv_it.handle()) - 1;
 				vhid++;
 			}
+			m_CurEditTex->usedFhs.push_back(sel_faces[i]);
 		}
 	}
 
@@ -2311,6 +2313,205 @@ namespace OMT
 		{
 			property( fTex , f_it.handle()) = NULL;
 		}
+	}
+
+	void Model::ClearAllTexture()
+	{
+		for (int i=0; i<m_TexInfos.size(); i++)
+		{
+			TextureInfo* tf = m_TexInfos[i];
+			tf->imgMat.release();
+
+			if(tf->texGID[0] != NULL)
+				glDeleteTextures(1, &tf->texGID[0]);
+			if(tf->texGID[1] != NULL)
+				glDeleteTextures(1, &tf->texGID[1]);
+
+			m_TexInfos[i]->UVs.clear();
+			delete m_TexInfos[i];
+		}
+		m_TexInfos.clear();
+
+		for (FIter f_it = faces_begin(); f_it!=faces_end(); ++f_it)
+		{
+			TextureForFace* tff = property(fTex, f_it);
+			while(tff)
+			{
+				TextureForFace* next_tff = tff->nextTexture;
+				delete tff;
+				tff = next_tff;
+			}
+			property(fTex, f_it) = NULL;
+		}
+		m_CurEditTex = NULL;
+	}
+
+	void Model::SaveTextureInfoToFile( const std::string &f_name )
+	{
+		FILE* fp = fopen(f_name.c_str(), "w");
+		fprintf(fp, "%d\n", m_TexInfos.size());
+		for (int i=0; i<m_TexInfos.size(); i++)
+		{
+			fprintf(fp, "%s\n", m_TexInfos[i]->img_path);
+			int uvNum = m_TexInfos[i]->UVs.size();
+			fprintf(fp, "%d\n", uvNum);
+			for (int j=0; j<uvNum; j++ )
+			{
+				fprintf(fp, "%f %f ", (float)m_TexInfos[i]->UVs[j][0], (float)m_TexInfos[i]->UVs[j][1] );
+			}
+			fprintf(fp, "\n");
+		}
+
+		for (FIter f_it = faces_begin(); f_it != faces_end(); ++f_it)
+		{
+			TextureForFace* tff = property(fTex, f_it);
+			while(tff!=NULL)
+			{
+				fprintf( fp, "%d ", f_it.handle().idx() );
+				for (int i=0; i<m_TexInfos.size(); i++)
+				{
+					if (m_TexInfos[i] == tff->texInfo)
+					{
+						fprintf( fp, "%d\n", i );
+						break;
+					}
+				}
+				for (int i=0; i<3; i++)
+				{
+					fprintf( fp, "%d ", tff->uvmap[i] );
+				}
+				tff = tff->nextTexture;
+			}
+		}
+		fclose(fp);
+	}
+
+	bool Model::LoadTextureInfoFromFile( const std::string &f_name )
+	{
+		char tex_path[128];
+		int texNum = -1;
+		ClearAllTexture();
+		FILE* fp = fopen(f_name.c_str(), "r");
+		if (!fp)
+			return false;
+		fscanf(fp, "%d\n", &texNum);
+		if (texNum<0)
+			return false;
+		for (int i=0; i<texNum; i++)
+		{
+			fgets(tex_path, 128, fp);
+			for (int j=0; j<128; j++)
+			{
+				if (tex_path[j]=='\0' || tex_path[j]=='\n')
+				{
+					if (tex_path[j]=='\n')
+						tex_path[j] = '\0';
+					break;
+				}
+			}
+			LoadImage(tex_path, 0);
+			m_CurEditTex->img_path = tex_path;
+			int uvNum = -1;
+			fscanf(fp, "%d\n", &uvNum);
+			float uvX, uvY;
+			for (int j=0; j<uvNum; j++)
+			{
+				fscanf(fp, "%f %f ", &uvX, &uvY);
+				m_CurEditTex->UVs.push_back( OpenMesh::Vec2d(uvX, uvY) );
+			}
+		}
+		int fid = -1;
+		while( fscanf(fp, "%d", &fid) == 1 )
+		{
+			if (fid<0)
+				break;
+			FHandle fh = face_handle(fid);
+			if (!is_valid_handle(fh))
+			{
+				printf("have valid id!\n");
+				break;
+			}
+			int mapTexId = -1;
+			fscanf(fp, "%d", &mapTexId);
+			if (mapTexId<0 || mapTexId>=m_TexInfos.size())
+			{
+				printf("have valid map tex id!\n");
+				break;
+			}
+			TextureForFace* tff = new TextureForFace;
+			tff->texInfo = m_TexInfos[mapTexId];
+			tff->nextTexture = NULL;
+			int uvID[3];
+			fscanf(fp, "%d %d %d", uvID, uvID+1, uvID+2);
+			tff->uvmap[0] = uvID[0];
+			tff->uvmap[1] = uvID[1];
+			tff->uvmap[2] = uvID[2];
+			TextureForFace* cur_tff = property(fTex, fh);
+			if (cur_tff == NULL)
+			{
+				property(fTex, fh) = tff;
+			}
+			else
+			{
+				while(cur_tff->nextTexture!=NULL)
+					cur_tff = cur_tff->nextTexture;
+				cur_tff->nextTexture = tff;
+			}
+		}
+		fclose(fp);
+		return true;
+	}
+
+
+	void Model::GenAllTex(unsigned int paneID )
+	{
+		for (int i=0; i < m_TexInfos.size(); i++)
+		{
+			m_CurEditTex = m_TexInfos[i];
+			GenTextures(paneID);
+		}
+	}
+
+	void Model::RenderUVPoint( float r, float g, float b )
+	{
+		if (!m_CurEditTex)
+			return ;
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		glBegin(GL_TRIANGLES);
+		glColor3f(r, g, b);
+		for (int i=0; i<m_CurEditTex->usedFhs.size(); i++)
+		{
+			FHandle fh = m_CurEditTex->usedFhs[i];
+			TextureForFace* tff = property(fTex, fh);
+			while(tff!=NULL)
+			{
+				if (tff->texInfo == m_CurEditTex)
+				{
+					for (int i=0; i<3; i++)
+					{
+						int v_to_uv_id = tff->uvmap[i];
+						glVertex2dv( &(m_CurEditTex->UVs[v_to_uv_id][0]) );
+					}
+				}
+				tff = tff->nextTexture;
+			}
+		}
+		glEnd();
+		glPolygonMode(GL_FRONT, GL_FILL);
+
+// 		glBegin(GL_POINTS);
+// 		for (int i=0; i<m_CurEditTex->UVs.size(); i++)
+// 		{
+// 			glVertex2dv( &(m_CurEditTex->UVs[i][0]) );
+// 		}
+// 		glEnd();
+
+	}
+
+	void Model::ChangeCurEditTex( unsigned int tid )
+	{
+		if (tid < m_TexInfos.size())
+			m_CurEditTex = m_TexInfos[tid];
 	}
 }
 
