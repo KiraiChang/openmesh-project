@@ -917,7 +917,7 @@ private: System::Void saveDataDialog_FileOk(System::Object^  sender, System::Com
 				 std::string filename;
 				 MarshalString( saveDataDialog->FileName, filename );
 				 printf("filename:%s", filename);
-				 mesh->SaveTextureInfoToFile("Test.dat");
+				 mesh->SaveTextureInfoToFile(filename);
 				 printf("save Ok\n");
 			 }
 		 }
